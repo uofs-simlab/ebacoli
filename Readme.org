@@ -1,6 +1,6 @@
 #+TITLE: eBACOLI
 
-extended B-spline Adaptive COLocation by Interpolation
+Extended B-spline Adaptive COLlocation with error control by Interpolation.
 
 * Purpose
 
@@ -65,3 +65,7 @@ To solve a specific problem, 2 things need to be supplied:
 2. A system file (Fortran77) to specify the above systems of equations (ie., [[./examples/extended/toy2.f][toy2.f]])
 
 * TODO Viewing solutions
+
+* TODO Visuals
+
+gifs should be placed in-line here.
