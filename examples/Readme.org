@@ -1,0 +1,6 @@
+#+TITLE: eBACOLI examples
+
+Two variants of examples for the eBACOLI code:
+
+1. standard/  - these could be solved using regular BACOLI
+2. extended/  - these can NOT be solved using regular BACOLI

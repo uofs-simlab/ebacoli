@@ -1,0 +1,41 @@
+#+TITLE: eBACOLI ten Tusscher example
+
+* General
+
+Brief description of the process of using more complicated Cell models
+for monodomain problems in eBACOLI.
+
+** Obtain source by exporting F77 from [[https://models.cellml.org/cellml][CellML]] website
+
+I've implemented RHS function evaluation in terms of a call to ~computeRates~
+and addition of the transmembrane diffusion term.
+
+** Use automatic differentiation to get derivatives
+
+Elham used [[http://www-sop.inria.fr/tropics/tapenade.html][Tapenade]] for automatic differentiation, applied to the function F(),
+and computes columns columns of the Jacobian individually. Calls to ~external~
+functions in files =f_d_COL*.f= compute these.
+
+I suspect there's a nicer way to do this where AD is applied to ~computeRates~
+directly which should generalize more easily to other cell models.
+
+*** TODO AD of computeRates for Jacobian computation of general cell models
+
+Can probably set up a flow of:
+- download f77 -> AD for all Jacobian columns -> Call
+
+** Common variables.
+
+Common variables should be ~CONSTS~, ~RATES~, ~ALGBRC~ . The sizes of these can
+be found in the header of the CellML generated Fortran source. (~chi~ and ~C_m~
+can be defined too, as these are always present for monodomain)
+
+~CONSTS~ and equilibrium states are set by calling ~initConsts~ in the ~uinit~
+
+* TT2006epi specific
+
+Parameters chosen as default from the CellML download. Initial
+conditions chosen to produce a propagating pulse with all variables
+visualized in =trimesh_Points*.png= (at a bad angle).
+
+=simple= and =trimesh= drivers provided.

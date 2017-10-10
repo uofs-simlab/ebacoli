@@ -1,0 +1,5 @@
+#+TITLE: eBACOLI src
+
+This directory builds bacoli as a shared library when using the command ~make~.
+
+Resulting files are ~ebacoli95_mod.mod~ and ~libebacoli.so~.

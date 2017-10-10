@@ -1,0 +1,30 @@
+#+TITLE: Standard parabolic system examples
+
+From Paul Muir's [[http://cs.stmarys.ca/~muir/BACOLI-3_Webpage.htm][website]].
+
+Downloaded [2017-05-31 Wed]. -- Modified to run with the ebacoli solver.
+
+This directory builds example ebacoli programs as the command ~make~.
+
+Resulting in the executables:
+
+EXECUTABLES:=   burg1-simple       \
+		burg2-simple       \
+		steady-simple      \
+		cahn_allen-simple  \
+		rcdsys-simple      \
+		burg1-curve        \
+		burg2-curve        \
+		steady-curve       \
+		cahn_allen-curve   \
+		rcdsys-curve       \
+		burg1-trimesh      \
+		burg2-trimesh      \
+		steady-trimesh     \
+		cahn_allen-trimesh \
+		rcdsys-trimesh
+
+NOTE: Files have been moved to capitals in file extension. This tells gfortran
+to run them through the c preprocessor before applying the fortran compiler.
+This is what allows us to compile executables for different sized systems with
+ease.  System size is provided as ~#define MAC_NPDE <SIZE>~
