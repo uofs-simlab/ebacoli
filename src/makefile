@@ -31,8 +31,8 @@ opt: ${LIBNAME}
 
 ${LIBNAME}: ${EBACOLI_F_OBJ} ${EBACOLI_F95_OBJ}
 	${FC} -shared ${FLFLAGS} -o $@ $^
-	ln -s ../src/${LIBNAME} ../lib/${LIBNAME}
-	ln -s ../src/${MODNAME} ../lib/${MODNAME}
+	cp ${LIBNAME} ../lib/${LIBNAME}
+	cp ${MODNAME} ../lib/${MODNAME}
 
 clean-obj:
 	rm -rf *.o
