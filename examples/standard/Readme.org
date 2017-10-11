@@ -24,7 +24,7 @@ EXECUTABLES:=   burg1-simple       \
 		cahn_allen-trimesh \
 		rcdsys-trimesh
 
-NOTE: Files have been moved to capitals in file extension. This tells gfortran
+*NOTE:* Files have been moved to capitals in file extension. This tells gfortran
 to run them through the c preprocessor before applying the fortran compiler.
 This is what allows us to compile executables for different sized systems with
 ease.  System size is provided as ~#define MAC_NPDE <SIZE>~

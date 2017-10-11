@@ -8,7 +8,7 @@ Brief description of extended examples found in this directory.
 [[./toy2.f]]:
  - Toy model with NPDE=4, NU=2.
  - Obtained by duplicating solution to toy.f, and interchanging the interaction
-   terms in a symmetric way
+   terms of the system equations in a symmetric way
 
 [[./toy3.f]]:
  - Toy model with NPDE=4, NU=2.
@@ -18,15 +18,18 @@ Brief description of extended examples found in this directory.
 
 [[./FHN_monodomain.f]]:
  - modified FitzHugh--Nagumo cell model from Elham's thesis (results in Table 4.3)
+ - NPDE=2, NU=1
 
 [[./FHN2_monodomain.f]]:
  - Original Fitzhugh--Nagumo monodomain problem
+ - NPDE=2, NU=1
  - Initial conditions such that a travelling pulse is generated
 
 [[./TenTusscher]]:
  - ten Tusscher monodomain model directory
+ - NPDE=19, NU=1
  - split to its own directory because of the many files needed for Jacobian computation
- - Initial conditions to create a travelling wave front
+ - Initial conditions such that a travelling pulse is generated
 
 [[./CDM.f]]:
  - Ecological competition between 2 species with differing habitat requirements
