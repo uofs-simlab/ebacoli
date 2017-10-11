@@ -74,7 +74,7 @@ To solve a specific problem, 2 things need to be supplied:
 
 A python library for handling the B-spline output of eBACOLI is found
 at [[./lib/python/ebacoli.py]]. [[./ebacoli.env]] sets the appropriate
-directory in your `PYTHONPATH` for its use.
+directory in your ~PYTHONPATH~ for its use.
 
 Example for how to structure the driver and post-processing to generate
 video frames is found in [[./examples/movie]].
