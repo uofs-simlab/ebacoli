@@ -9,14 +9,17 @@ parabolic partial differential equations (PDEs) in one space variable that are
 coupled to an additional m_v ordinary differential equations (ODEs) in the
 form:
 
-u_t(t,x) = f(t, x, v(t,x), u(t,x), u_x(t,x), u_xx(t,x))
+[[https://latex.codecogs.com/gif.latex?%255Cbegin%257Baligned%257D%2520u_t%2528t%252Cx%2529%2520%2526%2520%253D%2520f%2528t%252C%2520x%252C%2520v%2528t%252Cx%2529%252C%2520u%2528t%252Cx%2529%252C%2520u_x%2528t%252Cx%2529%252C%2520u_%257Bxx%257D%2528t%252Cx%2529%2529%252C%2520%255C%255C%2520v_t%2528t%252Cx%2529%2520%2526%2520%253D%2520g%2528t%252C%2520x%252C%2520v%2528t%252Cx%2529%252C%2520u%2528t%252Cx%2529%2529%2520%255Cend%257Baligned%257D][eBACOLI system]]
+#+BEGIN_COMMENT
+u_t(t,x) = f(t, x, v(t,x), u(t,x), u_x(t,x), u_xx(t,x)),
 v_t(t,x) = g(t, x, v(t,x), u(t,x))
+#+END_COMMENT
 
 where x_a < x < x_b and t > t0, with initial conditions at
 time t = t0 are given by:
 
-u(t0,x) = u_0(x),
-v(t0,x) = v_0(x)
+u(t_0,x) = u_0(x),
+v(t_0,x) = v_0(x)
 
 for a <= x <= b, subject to separated boundary conditions
 given by:
@@ -24,7 +27,7 @@ given by:
 Ba(t, u(t,a), u_x(t,a), v(t,a), v_x(t,a)) = 0,
 Bb(t, u(t,b), u_x(t,b), v(t,b), v_x(t,b)) = 0,
 
-for t > t0 and x = a, x = b, respectively.
+for t > t_0 and x = a, x = b, respectively.
 
 Guide to the above notation:
 u_t(t,x) = denotes the first partial derivative of u(t,x)
