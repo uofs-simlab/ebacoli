@@ -1,3 +1,0 @@
-#+TITLE: eBACOLI media
-
-* TODO gifs for various solutions
