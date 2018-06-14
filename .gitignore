@@ -1,0 +1,17 @@
+
+# image formats
+*.eps
+*.png
+
+# object files etc
+*.o
+*.mod
+*.so
+*.pyc
+
+# generally things placed into examples/ dir
+examples/*
+
+# emacs backups/restore files
+*~
+\#*\#
