@@ -23,7 +23,7 @@ class EbacoliData:
         else:
             self.has_data = False
 
-    def read_bspline_file(self,fname):
+    def read_bspline_file(self,fname=None):
         """Reads eBACOLI bspline output files."""
         self.filename = fname
         with open(fname) as f:
@@ -117,7 +117,7 @@ class EbacoliData:
 #### Functions that use EbacoliData objects
 
 def plot_heatmap_of_field(ed_list, field_str, field_num, cmap=c.cmap_sep,
-                          title=NOTHING):
+                          title=NOTHING, extension="png"):
     """
     Plots the heatmap of a field from a list of EbacoliData structures.
 
@@ -179,7 +179,7 @@ def plot_heatmap_of_field(ed_list, field_str, field_num, cmap=c.cmap_sep,
 
     plt.tight_layout()
 
-    plt.savefig("heatmap_%s%d.png" % (field_str, field_num+1))
+    plt.savefig("heatmap_%s%d." % (field_str, field_num+1) + extension)
     # plt.show()
     plt.gcf().clear()
 
@@ -285,9 +285,10 @@ def plot_interpolated_fields(ed, u_num=NOTHING, v_num=NOTHING,
 
     return axes
 
-def plot_interpolated_error(ed, true_solution, u_num=NOTHING, v_num=NOTHING,
-                             u_colors=None, v_colors=None, n_cont=1000,
-                             knot_show=False):
+def plot_interpolated_error(ed, true_solution, u_num=NOTHING,
+                            v_num=NOTHING, ylim=NOTHING, xlim=NOTHING,
+                            u_colors=None, v_colors=None, n_cont=1000,
+                            knot_show=False):
     """
     Plot the difference between an eBACOLI solution and a true solution over xrange.
 
@@ -320,6 +321,11 @@ def plot_interpolated_error(ed, true_solution, u_num=NOTHING, v_num=NOTHING,
         plt.plot(x, sol_v[i]-v[i], label='$v_{%d}$'%(i+1),linestyle="-")
 
     axes = plt.gca()
+    if ylim is not NOTHING:
+        axes.set_ylim(ylim)
+    if xlim is not NOTHING:
+        axes.set_xlim(xlim)
+
     [fig_bot, fig_top] = axes.get_ylim()
     [fig_left, fig_right] = axes.get_xlim()
 
