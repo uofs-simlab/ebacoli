@@ -6,3 +6,9 @@ Two variants of examples for the eBACOLI code:
 2. [[./extended]]  - these can NOT be solved using regular BACOLI
 
 Post-processing (with python scripts) example found in [[./movie]].
+
+A third directory that contains drivers and results related to
+
+<Insert TOMS citation>
+
+is found in [[./TOMS]].
