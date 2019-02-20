@@ -22,7 +22,8 @@ EXECUTABLES:=   FHN_monodomain-trimesh  	\
 		toy-simple			\
 		toy2-simple			\
 		toy3-simple			\
-		CDM-simple
+		CDM-simple			\
+		test-app
 
 .PHONY: all debug opt clean-obj clean test
 
@@ -69,6 +70,9 @@ CDM-trimesh: driver-CDM-trimesh.o CDM.o ${BACOLI}
 	${FC} ${FLFLAGS} -o $@ $^
 
 rabid-trimesh: driver-rabid-trimesh.o rabid.o ${BACOLI}
+	${FC} ${FLFLAGS} -o $@ $^
+
+test-app: test-app-driver.o test-app.o ${BACOLI}
 	${FC} ${FLFLAGS} -o $@ $^
 
 
