@@ -1,6 +1,0 @@
-#+TITLE: Competition-Diffusion movie
-
-~make~ will compile, run, generate frames, generate movie (if you have
-~avconv~) and generate heatmap.
-
-*Note* the executable requires linking to a =libebacoli.so=.
