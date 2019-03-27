@@ -56,8 +56,8 @@ make
 
 To solve a specific problem, 2 things need to be supplied:
 
-1.  A driver file (Fortran95) to act as the main program (ie., [driver-toy2-simple.F95](./examples/extended/driver-toy2-simple.F95))
-2.  A system file (Fortran77) to specify the above systems of equations (ie., [toy2.F](./examples/extended/toy2.F))
+1.  A driver file (Fortran95) to act as the main program (ie., [driver-toy2-simple.f95](./examples/extended/driver-toy2-simple.f95))
+2.  A system file (Fortran77) to specify the above systems of equations (ie., [toy2.f](./examples/extended/toy2.f))
 
 Viewing solutions
 =================
