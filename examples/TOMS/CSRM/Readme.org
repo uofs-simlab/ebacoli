@@ -1,4 +1,0 @@
-#+TITLE: Catalytic Surface Reaction Model (CSRM)
-
-[[./driver-CSRM-frameoutput.f95]] contains a driver that produces output
-to generate frames of a movie.
