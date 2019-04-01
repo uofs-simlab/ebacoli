@@ -1,13 +1,12 @@
+! This file (ebacoli95.f95) contains the eBACOLI95 (Fortran95) source code
+! that provides a convenient user interface to the eBACOLI (Fortran77)
+! solver whose source code is contained in the separate file, ebacoli.f.
 
 ! BUG FIXES:
 !     - May 25, 2017. Issue found on line 509 when using the default
 !       number of mesh points for building the initial mesh. Caused the
 !       mesh points to be shifted away from the user defined spatial domain
 !       for some inputs. Discovered and resolved by Connor Tannahill.
-
-! This file (ibacoli95.f95) contains the eBACOLI95 (Fortran95) source code
-! that provides a convenient user interface to the eBACOLI (Fortran77)
-! solver whose source code is contained in the separate file, ebacoli.f.
 
 ! In order to run an example, this source code must be linked with
 ! four other compilation units:
