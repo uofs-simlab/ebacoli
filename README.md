@@ -54,7 +54,7 @@ make
 
 `Debug` or `Release` builds can be selected by providing the `-DCMAKE_BUILD_TYPE=<Release|Debug>` flag to `cmake`.
 
-To solve a specific problem, 2 things need to be supplied:
+To solve a specific problem, 2 additional things need to be linked to the library:
 
 1.  A driver file (Fortran95) to act as the main program (ie., [driver-toy2-simple.f95](./examples/extended/driver-toy2-simple.f95))
 2.  A system file (Fortran77) to specify the above systems of equations (ie., [toy2.f](./examples/extended/toy2.f))
@@ -62,7 +62,9 @@ To solve a specific problem, 2 things need to be supplied:
 Viewing solutions
 =================
 
-A python library for handling the B-spline output of eBACOLI is found at [./lib/python/ebacoli.py](./lib/python/ebacoli.py). [./ebacoli.env](./ebacoli.env) sets the appropriate directory in your `PYTHONPATH` for its use.
+A python library for handling the B-spline output of eBACOLI is found at [./lib/python/ebacoli.py](./lib/python/ebacoli.py).
+
+If using bash, [./ebacoli.env](./ebacoli.env) sets the appropriate directory in your `PYTHONPATH` for its use. (Run with `source ebacoli.env`)
 
 Example for how to structure the driver and post-processing to generate video frames is found in [./examples/movie](./examples/movie).
 
