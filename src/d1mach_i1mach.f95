@@ -1,4 +1,5 @@
-
+! This file contains the d1mach and i1mach routines (Fortran77) for
+! determining machine-dependent constants.
 
 
     FUNCTION d1mach(i)

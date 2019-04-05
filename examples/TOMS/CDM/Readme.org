@@ -1,8 +1,0 @@
-#+TITLE: Competition-Diffusion Model (CDM)
-
-
-Using ~make~ will compile, run, and generate the heatmap and temporal
-snapshots (via calling the [[./submit.sh]] script).
-
-
-*Note* the executable requires linking to a =libebacoli.so=.

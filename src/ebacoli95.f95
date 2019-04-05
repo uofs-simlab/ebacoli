@@ -1,37 +1,12 @@
-! Copyright (c) 2013, Paul Muir, Jack Pew
-! Paul Muir, Mathematics and Computing Science, Saint Mary's University.
-! All rights reserved.
-!
-! Redistribution and use in source and binary forms, with or without
-! modification, are permitted provided that the following conditions
-! are met:
-! * Redistributions of source code must retain the above copyright
-!   notice, this list of conditions and the following disclaimer.
-! * Redistributions in binary form must reproduce the above copyright
-!   notice, this list of conditions and the following disclaimer in the
-!   documentation and/or other materials provided with the distribution.
-!
-! THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-! "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-! LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-! A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-! HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-! SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-! LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-! DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-! THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-! (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-! OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+! This file (ebacoli95.f95) contains the eBACOLI95 (Fortran95) source code
+! that provides a convenient user interface to the eBACOLI (Fortran77)
+! solver whose source code is contained in the separate file, ebacoli.f.
 
 ! BUG FIXES:
 !     - May 25, 2017. Issue found on line 509 when using the default
 !       number of mesh points for building the initial mesh. Caused the
 !       mesh points to be shifted away from the user defined spatial domain
 !       for some inputs. Discovered and resolved by Connor Tannahill.
-
-! This file (ibacoli95.f95) contains the eBACOLI95 (Fortran95) source code
-! that provides a convenient user interface to the eBACOLI (Fortran77)
-! solver whose source code is contained in the separate file, ebacoli.f.
 
 ! In order to run an example, this source code must be linked with
 ! four other compilation units:

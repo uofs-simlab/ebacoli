@@ -1,37 +1,3 @@
-c eBACOLI-3 (Modification of BACOLI-3 to include equations without
-c spatial derivatives or boundary conditions.)
-
-c (BACOL is Copyright (c) 2002, Rong Wang, Pat Keast, Paul Muir
-c Rong Wang, School of Mathematics and Statistics, Wuhan University,
-c Pat Keast, Department of Mathematics and Statistics,
-c                            Dalhousie University (retired),
-c Paul Muir, Mathematics and Computing Science, Saint Mary's University.)
-
-c BACOLI-3 is Copyright (c) 2013, Paul Muir, Jack Pew
-c Paul Muir, Mathematics and Computing Science, Saint Mary's University.
-c All rights reserved.
-c
-c Redistribution and use in source and binary forms, with or without
-c modification, are permitted provided that the following conditions
-c are met:
-c * Redistributions of source code must retain the above copyright
-c   notice, this list of conditions and the following disclaimer.
-c * Redistributions in binary form must reproduce the above copyright
-c   notice, this list of conditions and the following disclaimer in the
-c   documentation and/or other materials provided with the distribution.
-c
-c THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-c "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-c LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-c A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-c HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-c SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-c LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-c DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-c THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-c (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-c OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 c This file contains the eBACOLI (Fortran77) source code (including the
 c new code that implements interpolation based spatial error estimates.)
 c
