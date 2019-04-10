@@ -33,13 +33,26 @@ module ebacoli95_mod
     ! information for a PDE system to be solved by eBACOLI.
     !
     ! constant problem parameters
+        integer           :: npde_sub(3)
+    !                        npde_sub is an array of the total number of
+    !                        equations in each subsystem of the problem being
+    !                        solved.
+    !                        Set by ebacoli95_init.
         integer           :: npde
-    !                        npde is the total number of
-    !                        equations in the system being solved.
+    !                        npde is the total number of equations in the
+    !                        system of the problem being solved.
     !                        Set by ebacoli95_init.
         integer           :: nu
     !                        nu is the number of parabolic partial differential
-    !                        equations in the system being solved.
+    !                        equation subsystem in the system being solved.
+    !                        Set by ebacoli95_init.
+        integer           :: nv
+    !                        nv is the number of ordinary differential
+    !                        equation subsystem in the system being solved.
+    !                        Set by ebacoli95_init.
+        integer           :: nw
+    !                        nw is the number of elliptic partial differential
+    !                        equation subsystem in the system being solved.
     !                        Set by ebacoli95_init.
         integer           :: nint_max
     !                        A maximum number of spatial mesh
@@ -201,14 +214,16 @@ module ebacoli95_mod
     ! Initializes a ebacoli95_sol type for the problem specified by
     ! input parameters.
     !
-    !   subroutine ebacoli95_init(sol, npde, x, tstart, atol, rtol, &
+    !   subroutine ebacoli95_init(sol, npde_sub, x, tstart, atol, rtol, &
     !           kcol, nint_max, estimator, dirichlet, maxord, ini_ss)
     !
     ! Required Input:
     ! sol:       ebacoli95_sol type to be initialized.
     !              If sol is being reinitialized, be sure to call
     !              ebacoli95_sol_teardown on it prior to this subroutine.
-    ! npde:      Number of partial differential equations in the system.
+    ! npde_sub:  Array of the number of partial differential equations in the
+    !            system:
+    !            - each component is for a subsystem [NU, NV, NW]
     ! x:         Initial spatial mesh OR left and right endpoints for
     !              which a uniform inital mesh should be generated.
     !
@@ -417,12 +432,11 @@ module ebacoli95_mod
 !=======================================================================
 
     contains
-       subroutine ebacoli95_init(sol, npde, nu, x, tstart, atol, rtol, &
+       subroutine ebacoli95_init(sol, npde_sub, x, tstart, atol, rtol, &
                 kcol, nint_max, estimator, dirichlet, maxord, ini_ss)
             ! parameters
-            type(ebacoli95_sol)              :: sol
-            integer,  intent(in)            :: npde
-            integer,  intent(in)            :: nu
+            type(ebacoli95_sol)             :: sol
+            integer,  intent(in)            :: npde_sub(3)
             real(dp), intent(in)            :: x(:)
             real(dp), intent(in), optional  :: tstart
             real(dp), intent(in), optional  :: atol(:)
@@ -440,11 +454,19 @@ module ebacoli95_mod
             real(dp), parameter :: dflt_tol      = 1d-6
             integer :: i, ier, maxlrp, maxlip, maxy !,ntol
 
+            integer :: npde, nu, nv, nw
+            npde          = sum(npde_sub)
+            nu            = npde_sub(1)
+            nv            = npde_sub(2)
+            nw            = npde_sub(3)
             ! Initialise sol.
             sol%idid      = 0
             sol%mflag     = 0
-            sol%npde      = npde
+            sol%npde_sub  = npde_sub
+            sol%npde      = sum(npde_sub)
             sol%nu        = nu
+            sol%nv        = nv
+            sol%nw        = nw
             sol%estimator = 0
             nullify(sol%x, sol%y, sol%atol, sol%rtol, sol%rpar, sol%ipar)
 
@@ -592,7 +614,7 @@ module ebacoli95_mod
                 end if
             end if
 
-            call calc_array_sizes(sol%npde, sol%nu, sol%nint_max, sol%kcol, &
+            call calc_array_sizes(sol%npde_sub, sol%nint_max, sol%kcol, &
                     sol%estimator, maxlrp, maxlip, maxy)
             allocate(sol%y(maxy), stat=ier)
             if (ier /= 0) then
@@ -927,7 +949,7 @@ module ebacoli95_mod
             .or. (.not.associated(sol%ipar)))               return
 
             minx = sol%nint+1
-            call calc_array_sizes(sol%npde, sol%nu, sol%nint, sol%kcol, &
+            call calc_array_sizes(sol%npde_sub, sol%nint, sol%kcol, &
                     sol%estimator, minlrp, minlip, miny)
 
             allocate(tmp_x(minx), stat=ier)
@@ -961,11 +983,18 @@ module ebacoli95_mod
 
 !-----------------------------------------------------------------------
 
-        subroutine calc_array_sizes(npde, nu, nint, kcol, est, &
+        subroutine calc_array_sizes(npde_sub, nint, kcol, est, &
                 lrp, lip, ly)
             ! Helper routine.
-            integer, intent(in)  :: npde, nu, nint, kcol, est
+            integer, intent(in)  :: npde_sub(3), nint, kcol, est
             integer, intent(out) :: lrp, lip, ly
+            ! locals
+            integer :: npde, nu, nv, nw
+
+            npde = sum(npde_sub)
+            nv   = npde_sub(1)
+            nv   = npde_sub(2)
+            nw   = npde_sub(3)
 
             ly = npde*(kcol*nint+2)
 
@@ -1006,9 +1035,9 @@ module ebacoli95_mod
             ! Warn if they are less than min(1.5*minsize, maxsize),
             ! and error if they are smaller than minsize.
             minx = sol%nint+1 ; maxx = sol%nint_max+1
-            call calc_array_sizes(sol%npde, sol%nu, sol%nint, sol%kcol, &
+            call calc_array_sizes(sol%npde_sub, sol%nint, sol%kcol, &
                     sol%estimator, minlrp, minlip, miny)
-            call calc_array_sizes(sol%npde, sol%nu, sol%nint_max, sol%kcol, &
+            call calc_array_sizes(sol%npde_sub, sol%nint_max, sol%kcol, &
                     sol%estimator, maxlrp, maxlip, maxy)
             midx   = min(int(1.5*minx),   maxx)
             midy   = min(int(1.5*miny),   maxy)
