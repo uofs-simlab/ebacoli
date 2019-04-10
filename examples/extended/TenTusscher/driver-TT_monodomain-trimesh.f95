@@ -97,6 +97,7 @@ program trimesh_example_driver
     ! code; see burg1.f, burg2.f, CahnAllen.f, rcdsys.f, sinmads.f,
     ! and steady.f.
 
+    integer,  parameter, dimension(3) :: npde_sub = (/1,18,0/)
     integer,  parameter    :: npde = 19
     integer,  parameter    :: nu   = 1
     real(dp), parameter    :: xa = 0, xb = 70
@@ -143,7 +144,7 @@ program trimesh_example_driver
     !-------------------------------------------------------------------
     ! Initialization: Allocate storage and set problem parameters.
 !    call ebacoli95_init(sol, npde, (/xa,xb/), atol=atol, rtol=rtol, dirichlet=1)
-    call ebacoli95_init(sol, npde, nu, xin, atol=atol, rtol=rtol, nint_max=10000)
+    call ebacoli95_init(sol, npde_sub, xin, atol=atol, rtol=rtol, nint_max=10000)
 
     allocate(uout(npde,sol%nint_max+1), stat=ier)
     if (ier /= 0 .or. sol%idid == -1000) goto 700

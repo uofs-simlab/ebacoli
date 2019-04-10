@@ -93,7 +93,8 @@ program trimesh_example_driver
     integer, parameter     :: dp = kind(0d0)
     type(ebacoli95_sol)     :: sol
 
-    integer,  parameter    :: npde = 3
+    integer,  parameter, dimension(3) :: npde_sub = (/1,2,0/)
+    integer,  parameter    :: npde = sum(npde_sub)
     integer,  parameter    :: nu   = 1
     real(dp), parameter    :: xa = 0, xb = 40
     integer, parameter     :: nin=100
@@ -156,7 +157,7 @@ program trimesh_example_driver
     !-------------------------------------------------------------------
     ! Initialization: Allocate storage and set problem parameters.
 !    call ebacoli95_init(sol, npde, (/xa,xb/), atol=atol, rtol=rtol, dirichlet=1)
-    call ebacoli95_init(sol, npde, nu, xin, atol=atol, rtol=rtol, kcol=10,nint_max=10000)
+    call ebacoli95_init(sol, npde_sub, xin, atol=atol, rtol=rtol, kcol=10,nint_max=10000)
 
     allocate(uout(npde,sol%nint_max+1), stat=ier)
     if (ier /= 0 .or. sol%idid == -1000) goto 700
