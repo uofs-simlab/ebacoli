@@ -46,6 +46,7 @@ program simple_example_driver
     ! and steady.f.
     ! Assume output at 11 points over (problem specific) spatial domain,
     ! and maximum number of subintervals = 50.
+    integer,  parameter, dimension(3) :: npde_sub = (/MAC_NPDE,1,0/)
     integer,  parameter :: npde = MAC_NPDE, nout = 11, nint_max = 500
 
     ! Set (problem dependent) output time to 1
@@ -86,7 +87,7 @@ program simple_example_driver
 
     ! Initialization (set spatial domain = [0,1]); a default uniform
     ! spatial mesh having 10 subintervals will be constructed.
-    call ebacoli95_init(sol, npde, npde, (/0._dp,1._dp/), nint_max = nint_max)
+    call ebacoli95_init(sol, npde_sub, (/0._dp,1._dp/), nint_max = nint_max)
 
     ! Compute solution at tout
     call ebacoli95(sol, tout, f, bndxa, bndxb, uinit, derivf, difbxa, difbxb)

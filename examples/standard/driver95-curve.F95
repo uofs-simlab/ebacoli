@@ -91,6 +91,7 @@ program curve_example_driver
     ! Choose npde to be consistent with the problem specific source
     ! code; see burg1.f, burg2.f, CahnAllen.f, rcdsys.f, sinmads.f,
     ! and steady.f.
+    integer,  parameter, dimension(3) :: npde_sub = (/MAC_NPDE,0,0/)
     integer,  parameter    :: npde = MAC_NPDE, nderiv = 1
     real(dp), parameter    :: xa = 0, xb = 1
 
@@ -151,7 +152,7 @@ program curve_example_driver
 
     !-------------------------------------------------------------------
     ! Initialization: Allocate storage and set problem parameters.
-    call ebacoli95_init(sol, npde, npde, (/xa,xb/), atol=atol, rtol=rtol)
+    call ebacoli95_init(sol, npde_sub, (/xa,xb/), atol=atol, rtol=rtol)
 
     ! Set ouput at 11 uniformly spaced points across the spatial domain
     nout = 11
