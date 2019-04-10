@@ -754,7 +754,7 @@ module ebacoli95_mod
 
             if (use_finite_differences_both) then
                 sol%mflag(9) = 0
-                call ebacoli(sol%t0, outt, sol%atol, sol%rtol, sol%npde, sol%nu, &
+                call ebacoli(sol%t0, outt, sol%atol, sol%rtol, sol%npde, sol%npde_sub, &
                             sol%kcol, sol%nint_max, sol%nint, sol%x,   &
                             sol%mflag, sol%rpar, size(sol%rpar),       &
                             sol%ipar, size(sol%ipar), sol%y, sol%idid, &
@@ -762,7 +762,7 @@ module ebacoli95_mod
                             dummy_difbx, uinit)
             else if (use_finite_differences_bconds) then
                 sol%mflag(9) = 1
-                call ebacoli(sol%t0, outt, sol%atol, sol%rtol, sol%npde, sol%nu, &
+                call ebacoli(sol%t0, outt, sol%atol, sol%rtol, sol%npde, sol%npde_sub, &
                             sol%kcol, sol%nint_max, sol%nint, sol%x,   &
                             sol%mflag, sol%rpar, size(sol%rpar),       &
                             sol%ipar, size(sol%ipar), sol%y, sol%idid, &
@@ -770,7 +770,7 @@ module ebacoli95_mod
                             dummy_difbx, uinit)
             else if (use_finite_differences_pdes) then
                 sol%mflag(9) = 2
-                call ebacoli(sol%t0, outt, sol%atol, sol%rtol, sol%npde, sol%nu, &
+                call ebacoli(sol%t0, outt, sol%atol, sol%rtol, sol%npde, sol%npde_sub, &
                             sol%kcol, sol%nint_max, sol%nint, sol%x,   &
                             sol%mflag, sol%rpar, size(sol%rpar),       &
                             sol%ipar, size(sol%ipar), sol%y, sol%idid, &
@@ -778,7 +778,7 @@ module ebacoli95_mod
                             difbxb, uinit)
             else
                 sol%mflag(9) = 3
-                call ebacoli(sol%t0, outt, sol%atol, sol%rtol, sol%npde, sol%nu, &
+                call ebacoli(sol%t0, outt, sol%atol, sol%rtol, sol%npde, sol%npde_sub, &
                             sol%kcol, sol%nint_max, sol%nint, sol%x,   &
                             sol%mflag, sol%rpar, size(sol%rpar),       &
                             sol%ipar, size(sol%ipar), sol%y, sol%idid, &

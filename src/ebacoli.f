@@ -3,7 +3,7 @@ c new code that implements interpolation based spatial error estimates.)
 c
 
 
-      subroutine ebacoli(t0, tout, atol, rtol, npde, nu,
+      subroutine ebacoli(t0, tout, atol, rtol, npde, npde_sub,
      &                  kcol, nintmx, nint, x,
      &                  mflag, rpar, lrp, ipar, lip, y, idid,
      &                  f, derivf, bndxa, difbxa, bndxb, difbxb, uinit)
@@ -179,11 +179,11 @@ c
         integer                 npde
 c                               npde is the total number of components in
 c                               the system. npde > 0.
+
+        integer                 npde_sub(3)
+c                               npde is an array of the number of components in
+c                               each subsystem [nu, nv, nw]
 c
-        integer                 nu
-c                               nu is the number of components in the
-c                               subsystem of parabolic PDEs:
-c                               0 < nu <= npde.
 c
         double precision        atol(npde)
 c                               atol is the absolute error tolerance
@@ -709,6 +709,19 @@ c
 c-----------------------------------------------------------------------
 c Local variables:
 c
+        integer                 nu
+c                               nu is the number of components in the
+c                               subsystem of parabolic PDEs:
+c                               0 < nu <= npde.
+        integer                 nv
+c                               nv is the number of components in the
+c                               subsystem of ODEs
+c                               0 < nu <= npde.
+        integer                 nw
+c                               nu is the number of components in the
+c                               subsystem of elliptic PDEs:
+c                               0 < nu <= npde.
+
         integer                 kerr
 c                               kerr is what kcol would be for the
 c                               solution whose error is being estimated.
@@ -1176,10 +1189,11 @@ c BLAS Subroutines Called:
 c                               dcopy
 c
 c-----------------------------------------------------------------------
-c
-c Last modified by Jack Pew, August 9, 2013.
-c
-c-----------------------------------------------------------------------
+
+c     Initialize the subsystem sizes with convenient names
+      nu = npde_sub(1)
+      nv = npde_sub(2)
+      nw = npde_sub(3)
 
 c     Check validity of the mflag vector.
       do 1 i = 1, 8
