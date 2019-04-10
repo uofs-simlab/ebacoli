@@ -35,6 +35,7 @@ program curve_example_driver
     integer, parameter     :: dp = kind(0d0)
     type(ebacoli95_sol)     :: sol
 
+    integer,  parameter, dimension(3) :: npde_sub = (/2,1,0/)
     integer,  parameter    :: npde = 3
     integer,  parameter    :: nu   = 2
     integer,  parameter    :: nderiv = 2
@@ -110,7 +111,7 @@ program curve_example_driver
 
     !-------------------------------------------------------------------
     ! Initialization: Allocate storage and set problem parameters.
-    call ebacoli95_init(sol, npde, nu, xin, atol=atol, rtol=rtol)
+    call ebacoli95_init(sol, npde_sub, xin, atol=atol, rtol=rtol)
     tstart = sol%t0
     tout = tstart + 1.d-12
 
