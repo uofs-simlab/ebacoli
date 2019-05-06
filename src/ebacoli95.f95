@@ -1005,7 +1005,7 @@ module ebacoli95_mod
                 + 27*npde*nint*kcol + 7*nint*npde          &
                 + 2*npde*npde*nint*kcol*kcol               &
                 + 4*npde*npde*kcol*nint                    &
-                + 4*nu*npde   ! space for temporary storage of top/bot on reinit
+                + 4*(nu+nw)*npde   ! space for temporary storage of top/bot on reinit
             ! The LOI/LE scheme requires slightly less storage.
             if (est == 0) then
                 lrp = lrp - 15*nint + 3*kcol - 8*kcol*nint &

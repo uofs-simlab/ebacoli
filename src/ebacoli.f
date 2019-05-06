@@ -351,7 +351,7 @@ c    +                               +13*npde*npde+9*kcol+24*kcol*nintmx
 c    +                               +6*nintmx*kcol*kcol+7*nintmx*npde
 c    +                               +27*npde*nintmx*kcol
 c    +                               +2*npde*npde*nintmx*kcol*kcol
-c    +                               +4*npde*npde*kcol*nintmx
+c    +                               +4*npde*(nu+nw)*kcol*nintmx
 c    -                               -15*nintmx+3*kcol+kcol*kcol
 c    -                               -8*kcol*nintmx-3*nintmx*npde
 c    -                               -nintmx*kcol*kcol+2
