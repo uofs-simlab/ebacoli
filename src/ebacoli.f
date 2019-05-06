@@ -5792,8 +5792,10 @@ c Direct pointers into the IPAR integer work array:
         integer                 inpde
 c                               ipar(inpde) = npde
 c
-        integer                 inu
-c                               ipar(inu) = nu
+        integer                 inpde_sub
+c                               ipar(inpde_sub) = nu
+c                               ipar(inpde_sub + 1) = nv
+c                               ipar(inpde_sub + 2) = nw
 c
         integer                 ikcol
 c                               ipar(ikcol) = kcol.
@@ -5849,7 +5851,7 @@ c
 c-----------------------------------------------------------------------
 c Local Variables:
         integer                 npde
-        integer                 nu
+        integer                 npde_sub(3)
         integer                 kcol
         integer                 nint
         integer                 ncpts
@@ -5857,12 +5859,12 @@ c Local Variables:
 c
 c-----------------------------------------------------------------------
 c       Direct IPAR indices:
-        parameter              (inpde  =  1)
-        parameter              (inu    = 17)
-        parameter              (ikcol  =  2)
-        parameter              (inint  =  3)
-        parameter              (incpts =  4)
-        parameter              (ineq   =  5)
+        parameter              (inpde     =  1)
+        parameter              (inpde_sub = 17)
+        parameter              (ikcol     =  2)
+        parameter              (inint     =  3)
+        parameter              (incpts    =  4)
+        parameter              (ineq      =  5)
 c
 c-----------------------------------------------------------------------
 c       IPAR indices which serve as an indirect pointer into RPAR:
@@ -5879,25 +5881,27 @@ c                              calres
 c
 c-----------------------------------------------------------------------
 
-      npde   = ipar(inpde)
-      nu     = ipar(inu)
-      kcol   = ipar(ikcol)
-      nint   = ipar(inint)
-      ncpts  = ipar(incpts)
-      neq    = ipar(ineq)
+      npde        = ipar(inpde)
+      npde_sub(1) = ipar(inpde_sub)
+      npde_sub(2) = ipar(inpde_sub+1)
+      npde_sub(3) = ipar(inpde_sub+2)
+      kcol        = ipar(ikcol)
+      nint        = ipar(inint)
+      ncpts       = ipar(incpts)
+      neq         = ipar(ineq)
 
 c     Calculate residual for dassl.
-      call calres(npde, nu, kcol, nint, ncpts, neq, rpar(ipar(ixcol)),
-     &       rpar(ipar(iabtop)), rpar(ipar(iabblk)), rpar(ipar(iabbot)),
-     &       rpar(ipar(ibasi)), t, y, yprime, rpar(ipar(iwkrj)), delta,
-     &            f, bndxa, bndxb)
+      call calres(npde, npde_sub, kcol, nint, ncpts, neq,
+     $     rpar(ipar(ixcol)),rpar(ipar(iabtop)), rpar(ipar(iabblk)),
+     $     rpar(ipar(iabbot)),rpar(ipar(ibasi)), t, y, yprime,
+     $     rpar(ipar(iwkrj)), delta,f, bndxa, bndxb)
 
 c     Second call to calres removed.
 
       return
       end
 
-      subroutine calres(npde, nu, kcol, nint, ncpts, neq, xcol,
+      subroutine calres(npde, npde_sub, kcol, nint, ncpts, neq, xcol,
      &                  abdtop, abdblk, abdbot,
      &                  fbasis, t, y, yprime, work, delta,
      &                  f, bndxa, bndxb)
@@ -5933,10 +5937,9 @@ c       Input:
 c                               npde is the number of components in
 c                               the system of PDEs. npde > 0.
 c
-        integer                 nu
-c                               nu is the number of components in
-c                               the system of PDEs.
-c                               0 < nu <= npde.
+        integer                 npde_sub(3)
+c                               npde is an array of the number of components in
+c                               each subsystem [nu, nv, nw]
 c
         integer                 kcol
 c                               kcol is the number of collocation points
@@ -6022,6 +6025,20 @@ c       Indices:
         integer                 kk
 c
 c-----------------------------------------------------------------------
+c
+        integer                 nu
+c                               nu is the number of components in the
+c                               subsystem of parabolic PDEs:
+c                               0 < nu <= npde.
+        integer                 nv
+c                               nv is the number of components in the
+c                               subsystem of ODEs
+c                               0 < nu <= npde.
+        integer                 nw
+c                               nu is the number of components in the
+c                               subsystem of elliptic PDEs:
+c                               0 < nu <= npde.
+
 c       Pointers into the floating point work array work:
         integer                 iu
 c                               work(iu) stores the approximation to
@@ -6048,6 +6065,11 @@ c BLAS Subroutines:
 c       double precision:
 c                               dscal
 c-----------------------------------------------------------------------
+
+c     Initialize the subsystem sizes with convenient names
+      nu = npde_sub(1)
+      nv = npde_sub(2)
+      nw = npde_sub(3)
 
 c     Set pointers into the temporary floating point work array.
       iu     = 1
