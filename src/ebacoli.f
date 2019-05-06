@@ -1475,7 +1475,7 @@ c        This is a remeshing at the initial step. Increment the counter.
          goto 620
       endif
 
-      call iniyp(t0, npde, nu, kcol, nint, neq, ncpts,
+      call iniyp(t0, npde, npde_sub, kcol, nint, neq, ncpts,
      &           rpar(ipar(ixcol)), rpar(ipar(iabtop)),
      &           rpar(ipar(iabblk)), rpar(ipar(iabbot)),
      &           rpar(ipar(ibasi)), rpar(ipar(iy)), rpar(ipar(iyp)),
@@ -1645,7 +1645,7 @@ c     Restore the (PDE part of) top and bottom blocks to state before reinit cal
 c     cold start.
       if (irshfg .eq. 2) then
          call dcopy(neq, rpar(ipar(irwork)+40), 1, rpar(ipar(iy)), 1)
-         call iniyp(t0, npde, nu, kcol, nint, neq, ncpts,
+         call iniyp(t0, npde, npde_sub, kcol, nint, neq, ncpts,
      &              rpar(ipar(ixcol)), rpar(ipar(iabtop)),
      &              rpar(ipar(iabblk)), rpar(ipar(iabbot)),
      &              rpar(ipar(ibasi)), rpar(ipar(iy)),
@@ -3884,7 +3884,7 @@ c-----------------------------------------------------------------------
   999 return
       end
 
-      subroutine iniyp(t0, npde, nu, kcol, nint, neq, ncpts, xcol,
+      subroutine iniyp(t0, npde, npde_sub, kcol, nint, neq, ncpts, xcol,
      &                 abdtop, abdblk, abdbot, fbasis, y, yprime,
      &                 ipivot, work, lw, icflag,
      &                 ifgfdj, f, bndxa, difbxa, bndxb, difbxb)
@@ -3922,10 +3922,9 @@ c
 c                               npde is the number of components in
 c                               the system of PDEs. npde > 0.
 c
-        integer                 nu
-c                               nu is the number of components in
-c                               the system of PDEs.
-c                               0 < nu <= npde.
+        integer                 npde_sub(3)
+c                               npde is an array of the number of components in
+c                               each subsystem [nu, nv, nw]
 c
         integer                 kcol
 c                               kcol is the number of collocation points
@@ -4017,6 +4016,19 @@ c                               factorization of the temporary matrix.
 c
 c-----------------------------------------------------------------------
 c Local Variables:
+c
+        integer                 nu
+c                               nu is the number of components in the
+c                               subsystem of parabolic PDEs:
+c                               0 < nu <= npde.
+        integer                 nv
+c                               nv is the number of components in the
+c                               subsystem of ODEs
+c                               0 < nu <= npde.
+        integer                 nw
+c                               nu is the number of components in the
+c                               subsystem of elliptic PDEs:
+c                               0 < nu <= npde.
 c       Pointers into the floating point work array:
         integer                 iabdtp
 c                               work(iabdtp) contains a copy of abdtop
@@ -4098,6 +4110,11 @@ c       double precision:
 c                               dcopy
 c
 c-----------------------------------------------------------------------
+
+c     Initialize the subsystem sizes with convenient names
+      nu = npde_sub(1)
+      nv = npde_sub(2)
+      nw = npde_sub(3)
 
 c     Set the pointers into the floating point work array.
       iabdtp = 1
