@@ -1464,7 +1464,7 @@ c        This is a remeshing at the initial step. Increment the counter.
      &            rpar(ipar(ixbs)))
 
 
-      call iniy(t0, npde, nu, kcol, nint, neq, ncpts, mflag(5),
+      call iniy(t0, npde, npde_sub, kcol, nint, neq, ncpts, mflag(5),
      &          rpar(ipar(ixcol)), rpar(ipar(ixbs)),
      &      rpar(ipar(iabtop)),rpar(ipar(iabblk)),rpar(ipar(iabbot)),
      &          rpar(ipar(ibasi)), rpar(ipar(iy)),
@@ -3319,10 +3319,9 @@ c     Define the collocation point sequence.
       return
       end
 
-      subroutine iniy(t0, npde, nu, kcol, nint, neq, ncpts, ifglin,
-     &                xcol, xbs, abdtop, abdblk, abdbot, fbasis, y,
-     &                ipivot, work, lw, icflag,
-     &                ifgfdj, uinit, bndxa, difbxa, bndxb, difbxb)
+      subroutine iniy(t0, npde, npde_sub, kcol, nint, neq, ncpts, ifglin
+     $     , xcol, xbs, abdtop, abdblk, abdbot, fbasis, y,ipivot, work,
+     $     lw, icflag,ifgfdj, uinit, bndxa, difbxa, bndxb, difbxb)
 
 c-----------------------------------------------------------------------
 c Purpose:
@@ -3362,10 +3361,9 @@ c
 c                               npde is the total number of components in
 c                               the system of equations. npde > 0.
 c
-        integer                 nu
-c                               nu is the number of components in
-c                               the system of PDEs. 0 < nu <= npde.
-c
+        integer                 npde_sub(3)
+c                               npde is an array of the number of components in
+c                               each subsystem [nu, nv, nw]
 c
         integer                 kcol
 c                               kcol is the number of collocation points
@@ -3466,6 +3464,20 @@ c                               icflag =  1, indicates invalid input.
 c
 c-----------------------------------------------------------------------
 c Local Variables:
+c
+        integer                 nu
+c                               nu is the number of components in the
+c                               subsystem of parabolic PDEs:
+c                               0 < nu <= npde.
+        integer                 nv
+c                               nv is the number of components in the
+c                               subsystem of ODEs
+c                               0 < nu <= npde.
+        integer                 nw
+c                               nu is the number of components in the
+c                               subsystem of elliptic PDEs:
+c                               0 < nu <= npde.
+c
         integer                 ileft
 c                               breakpoint index information.
 c
@@ -3571,6 +3583,11 @@ c                               dcopy
 c                               dscal
 c
 c-----------------------------------------------------------------------
+c     Initialize the subsystem sizes with convenient names
+      nu = npde_sub(1)
+      nv = npde_sub(2)
+      nw = npde_sub(3)
+
       nels = npde*npde*kcol*(kcol+nconti)
 
 c     Set the pointers into the floating point work array.
