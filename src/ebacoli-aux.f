@@ -1107,7 +1107,7 @@ C
      *   NZFLG
 c-----------------------------------------------------------------------
       integer lcjsca
-      integer lnpde, lnu, lkcol, lnint, nconti
+      integer lnpde, lkcol, lnint, nconti
       integer npde, kcol, nint
       parameter (nconti = 2)
 c-----------------------------------------------------------------------
@@ -1130,7 +1130,6 @@ c     Define the ABD related offsets.
       parameter (lnpde = 17)
       parameter (lkcol = 18)
       parameter (lnint = 19)
-      parameter (lnu   = 20)
 c-----------------------------------------------------------------------
 C
 C     SET RELATIVE OFFSET INTO RWORK
