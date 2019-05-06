@@ -961,8 +961,8 @@ c                               ipar(imflg9) stores the value of
 c                               mflag(9) in order for it to be passed
 c                               down to caljac.
 c
-        integer                 inu
-        parameter              (inu  =  17)
+        integer                 inpde_sub
+        parameter              (inpde_sub  =  17)
 c                               ipar(inu) = nu
 c
         integer                 idasi
@@ -1342,12 +1342,14 @@ c     The SCI scheme needs slightly more storage here.
 c-----------------------------------------------------------------------
 c     Save the input parameters in the ipar integer communication
 c     storage array.
-      ipar(inpde)  = npde
-      ipar(inu)    = nu
-      ipar(ikcol)  = kcol
-      ipar(inint)  = nint
-      ipar(incpts) = ncpts
-      ipar(ineq)   = neq
+      ipar(inpde)       = npde
+      ipar(inpde_sub)   = nu
+      ipar(inpde_sub+1) = nv
+      ipar(inpde_sub+2) = nw
+      ipar(ikcol)       = kcol
+      ipar(inint)       = nint
+      ipar(incpts)      = ncpts
+      ipar(ineq)        = neq
 
 c-----------------------------------------------------------------------
 c     Calculate the offsets into the rpar floating point storage array.
