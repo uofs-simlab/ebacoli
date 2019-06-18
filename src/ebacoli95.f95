@@ -992,7 +992,7 @@ module ebacoli95_mod
             integer :: npde, nu, nv, nw
 
             npde = sum(npde_sub)
-            nv   = npde_sub(1)
+            nu   = npde_sub(1)
             nv   = npde_sub(2)
             nw   = npde_sub(3)
 
