@@ -5670,7 +5670,7 @@ c     Update part of the PD_TOP that is related to the ODEs
      &     work(iux), work(iuxx), work(idfdu),
      &     work(idfdux), work(idfuxx), npde)
 
-      do 31 n = nu+1, npde
+      do 31 n = nu+1, nu+nv
          do 51 k = 1, nconti
             kk  = ipdtop + (k-1)*(npde*npde) - 1
             jk  = k
@@ -5691,11 +5691,13 @@ c     Update part of the PD_TOP that is related to the ODEs
 c     update part of the PD_BOT that is related to the ODEs
       call eval(npde, kcol, ncpts, ncpts, ncpts, work(iu), work(iux),
      &     work(iuxx), fbasis(1+(ncpts-1)*(kcol+nconti)*3), y)
+
       call derivf(t, xcol(ncpts), work(iu),
      &     work(iux), work(iuxx), work(idfdu),
      &     work(idfdux), work(idfuxx), npde)
+
       alpha = (ncpts-1)*(kcol+nconti)*3 + kcol + nconti
-      do 32 n = nu+1, npde
+      do 32 n = nu+1, nu+nv
          do 52 k = 1, nconti
             kk  = ipdbot -1 + (npde*npde) * (k-1)
             jk  = alpha - nconti + k
@@ -5731,16 +5733,24 @@ c$$$      end if
 
 c     Update the top block of the collocation matrix dG/dY'.
       do 90 j = 1, npde
-c        only looping over the PDEs
+c     parabolic part
          do 80 i = 1, nu
             ii = (j - 1) * npde + i
             jj = ii + npde * npde
-            mm = (j - 1) * npde + i
             abdtop(jj) =
-     &            fbasis(2+kcol+nconti) * work(idbdux-1+mm)
+     &            fbasis(2+kcol+nconti) * work(idbdux-1+ii)
             abdtop(ii) =
-     &            work(idbdu-1+mm) - abdtop(jj)
+     &            work(idbdu-1+ii) - abdtop(jj)
    80    continue
+c     elliptic part
+         do 85 i = 1, nw
+            ii = (j - 1) * npde + nu + nv + i
+            jj = ii + npde * npde
+            abdtop(jj) =
+     &            fbasis(2+kcol+nconti) * work(idbdux-1+ii)
+            abdtop(ii) =
+     &            work(idbdu-1+ii) - abdtop(jj)
+   85    continue
    90 continue
 
 c-----------------------------------------------------------------------
@@ -5762,7 +5772,7 @@ c$$$      end if
 
 c     Update the bottom block of the collocation matrix.
       do 110 j = 1, npde
-c        Only loop over PDEs
+c     parabolic part
          do 100 i = 1, nu
             ii = (j - 1) * npde + i
             jj = ii + npde * npde
@@ -5773,6 +5783,16 @@ c        Only loop over PDEs
             abdbot(jj) =
      &            work(idbdu-1+mm) - abdbot(ii)
   100    continue
+c     elliptic part
+         do 105 i = 1, nw
+            ii = (j - 1) * npde + nu + nv + i
+            jj = ii + npde * npde
+            abdbot(ii) =
+     &            fbasis(1+kcol+kcol+nconti+(ncpts-1)*(kcol+nconti)*3)
+     &            * work(idbdux-1+ii)
+            abdbot(jj) =
+     &            work(idbdu-1+ii) - abdbot(ii)
+  105    continue
   110 continue
 
 c-----------------------------------------------------------------------
