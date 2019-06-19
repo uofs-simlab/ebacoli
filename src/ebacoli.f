@@ -3704,18 +3704,18 @@ c        Interior
          call dcopy(neq-2*npde,y(npde+1),1,work(ivcol),1)
          if (npde .gt. nu) then
 c           Left BC (copy only ODEs)
-            call dcopy(npde-nu,y(nu+1),1,work(ivcol-npde+nu),1)
+            call dcopy(nv,y(nu+1),1,work(ivcol-npde+nu),1)
 c           Right BC (copy only ODEs)
-            call dcopy(npde-nu,y(neq-npde+nu+1),1,
-     &                 work(ivcol+neq-2*npde+nu),1)
+            call dcopy(nv,y(neq-npde+nu+1),1,
+     &                 work(iu+nu),1)
          endif
 
 c        Scaling of each portion (interior)
          call dscal(neq-2*npde,negone,work(ivcol),1)
 c        Left and right BCs (again only ODE parts)
          if (npde .gt. nu) then
-            call dscal(npde-nu,negone,work(ivcol-npde+nu),1)
-            call dscal(npde-nu,negone,work(ivcol+neq-2*npde+nu),1)
+            call dscal(nv,negone,work(ivcol-npde+nu),1)
+            call dscal(nv,negone,work(iu+nu),1)
          endif
       endif
 
@@ -3750,8 +3750,8 @@ c     on the nint blocks in the middle of the collocation matrix A.
       call dcopy(neq-2*npde,work(ivcol),1,work(idelta+npde),1)
 c     Top and bottom blocks, only the ODE parts
       if (npde .gt. nu) then
-         call dcopy(npde-nu,work(ivcol-npde+nu),1,work(idelta+nu),1)
-         call dcopy(npde-nu,work(ivcol+neq-2*npde+nu),1,
+         call dcopy(nv,work(ivcol-npde+nu),1,work(idelta+nu),1)
+         call dcopy(nv,work(iu+nu),1,
      &                work(idelta+neq-npde+nu),1)
       endif
 
@@ -3775,7 +3775,7 @@ c     Copy the middle of the collocation matrix into temporary storage.
 
 c     Update the values at the left boundary for the ODEs
 c     -> residual
-      do i = 1,npde-nu
+      do i = 1,nv
          mm = nu + i
          ii = idelta + mm - 1
          do  j = 1, npde*nconti
@@ -3801,8 +3801,9 @@ c$$$      else
      &        work(idbdux), work(idbdt), npde)
 c$$$      end if
 
-c     Set up the top block (PDE part) and save in work(iabdtp).
+c     Set up the top block (Parabolic and Elliptic parts) and save in work(iabdtp).
       do 150 j = 1, npde
+c     parabolic part
          do 140 i = 1, nu
             mm = (j - 1) * npde + i - 1
             ii = iabdtp + mm
@@ -3810,16 +3811,24 @@ c     Set up the top block (PDE part) and save in work(iabdtp).
             work(jj) = fbasis(2,2,1) * work(idbdux+mm)
             work(ii) = work(idbdu+mm) - work(jj)
   140    continue
+c     elliptic part
+         do 145 i = 1, nw
+            mm = (j - 1) * npde + nu + nv + i - 1
+            ii = iabdtp + mm
+            jj = ii + npde * npde
+            work(jj) = fbasis(2,2,1) * work(idbdux+mm)
+            work(ii) = work(idbdu+mm) - work(jj)
+  145    continue
   150 continue
 
 c     Copy the ODE part of the TOP block to work array
-      do i = 1, npde-nu
+      do i = 1, nv
          call dcopy(npde*nconti,abdtop(nu+i),npde,
      &              work(iabdtp+nu+i-1),npde)
       enddo
 
 c     Update the values at the right boundary for the ODEs
-      do i = 1, npde-nu
+      do i = 1, nv
          mm = nu + i
          ii = idelta + neq - npde + mm - 1
          do  j = 1, npde*nconti
@@ -3845,8 +3854,9 @@ c$$$      else
      &        work(idbdux), work(idbdt), npde)
 c$$$      end if
 
-c     Set up the bottom block and save in work(iabdbt).
+c     Set up the bottom block (Parabolic and Elliptic parts) and save in work(iabdbt).
       do 170 j = 1, npde
+c     parabolic part
          do 160 i = 1, nu
             mm = (j - 1) * npde + i - 1
             ii = iabdbt + mm
@@ -3854,10 +3864,18 @@ c     Set up the bottom block and save in work(iabdbt).
             work(ii) = fbasis(kcol+1,2,ncpts) * work(idbdux+mm)
             work(jj) = work(idbdu+mm) - work(ii)
   160    continue
+c     elliptic part
+         do 165 i = 1, nw
+            mm = (j - 1) * npde + nu + nv + i - 1
+            ii = iabdbt + mm
+            jj = ii + npde * npde
+            work(ii) = fbasis(kcol+1,2,ncpts) * work(idbdux+mm)
+            work(jj) = work(idbdu+mm) - work(ii)
+  165    continue
   170 continue
 
 c     Copy the ODE part of bottom block to the work array
-      do i = 1, npde-nu
+      do i = 1, nv
          call dcopy(npde*nconti,abdbot(nu+i),npde,
      &               work(iabdbt+nu+i-1),npde)
       enddo
