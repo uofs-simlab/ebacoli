@@ -6180,7 +6180,7 @@ c           collocation point, storing the result in delta.
    30 continue
 
 c     generate part of the f_tilde TOP that is related to the ODE(s): F_tilde(nu+1:npde)
-      if (npde .gt. nu) then
+      if (nv .gt. 0) then
          i = 1
          ii = kcol + nconti + (i - 1) * kcol
          j = 0
@@ -6193,12 +6193,17 @@ c     generate part of the f_tilde TOP that is related to the ODE(s): F_tilde(nu
      &        work(iuxx), delta(mm), npde)
       endif
 c     Set delta(i) to 0 for the PDE portion at the left boundary
+c     parabolic part
       do i = 1, nu
          delta(i)=zero
       enddo
+c     elliptic part
+      do i = 1, nw
+         delta(nu+nv+i)=zero
+      enddo
 
 c     Generate part of the f_tilde BOT that is related to the ODE(s): F_tilde(neq-npde+nu:neq)
-      if (npde .gt. nu) then
+      if (nv .gt. 0) then
          i = nint
          ii = kcol + nconti + (i - 1) * kcol
          j = kcol+1
@@ -6211,8 +6216,13 @@ c     Generate part of the f_tilde BOT that is related to the ODE(s): F_tilde(ne
      &        work(iuxx), delta(mm), npde)
       endif
 c     Set delta(neq-npde+i) to 0 for the PDE portion at the right boundary
+c     parabolic part
       do i = 1, nu
          delta(neq-npde+i)=zero
+      enddo
+c     elliptic part
+      do i = 1, nw
+         delta(neq-npde+nu+nv+i)=zero
       enddo
 
 c     Scale entire delta by negative 1
@@ -6237,7 +6247,7 @@ c     boundary point.
 
 c     Calculate the portion of the residual vector which depends on the
 c     ODE for the left boundary: delta(nu+1:npde)
-      do i = 1, npde-nu
+      do i = 1, nv
          ii = nu + i
          do 61 j = 1, nconti*npde
             jj = (j-1)*npde + ii
@@ -6247,7 +6257,7 @@ c     ODE for the left boundary: delta(nu+1:npde)
 
 c     Calculate the portion of the residual vector which depends on the
 c     ODE for the right boundary: delta(neq-npde+nu+1:neq)
-      do i = 1, npde-nu
+      do i = 1, nv
          mm = nu + i
          ii = neq - npde + mm
          do 62 j = 1, nconti*npde
