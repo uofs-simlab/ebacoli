@@ -4173,6 +4173,7 @@ c$$$      end if
 
 c     Set up the PDE part of the top block and save in abdtop.
       do 120 j = 1, npde
+c     parabolic part
          do 110 i = 1, nu
             ii = (j - 1) * npde + i
             mm = ii-1
@@ -4180,10 +4181,18 @@ c     Set up the PDE part of the top block and save in abdtop.
             abdtop(jj) = fbasis(2,2,1) * work(idbdux+mm)
             abdtop(ii) = work(idbdu+mm) - abdtop(jj)
   110    continue
+c     elliptic part
+         do 115 i = 1, nw
+            ii = (j - 1) * npde +nu + nv + i
+            mm = ii-1
+            jj = ii + npde * npde
+            abdtop(jj) = fbasis(2,2,1) * work(idbdux+mm)
+            abdtop(ii) = work(idbdu+mm) - abdtop(jj)
+  115    continue
   120 continue
 
 c     Generate the value of yprime for the ODEs - Left BC
-      if (npde .gt. nu) then
+      if (nv .gt. 0) then
          i = 1
          ii = kcol + nconti + (i - 1) * kcol
          j = 0
@@ -4209,6 +4218,9 @@ c       Now the PDE part is overwritten with its correct values
       do 100 i = 1, nu
          yprime(i) = - work(idbdt-1+i)
   100 continue
+      do 101 i = 1, nw
+         yprime(nu+nv+i) = - work(idbdt-1+nu+nv+i)
+ 101  continue
 
 c-----------------------------------------------------------------------
 c     Generate the right side of ODEs at the collocation points
@@ -4254,6 +4266,7 @@ c$$$      end if
 
 c     Set up the bottom block (PDE part) and save in abdbot.
       do 170 j = 1, npde
+c     parabolic part
          do 160 i = 1, nu
             ii = (j - 1) * npde + i
             mm = ii - 1
@@ -4261,10 +4274,18 @@ c     Set up the bottom block (PDE part) and save in abdbot.
             abdbot(ii) = fbasis(kcol+1,2,ncpts) * work(idbdux+mm)
             abdbot(jj) = work(idbdu+mm) - abdbot(ii)
   160    continue
+c     elliptic part
+         do 165 i = 1, nw
+            ii = (j - 1) * npde + nu + nv + i
+            mm = ii - 1
+            jj = ii + npde * npde
+            abdbot(ii) = fbasis(kcol+1,2,ncpts) * work(idbdux+mm)
+            abdbot(jj) = work(idbdu+mm) - abdbot(ii)
+ 165     continue
   170 continue
 
 c     Generate the value of yprime for the ODEs - Right BC
-      if (npde .gt. nu) then
+      if (nv .gt. 0) then
          i = nint
          ii = kcol + nconti + (i - 1) * kcol
          j = kcol+1
@@ -4286,6 +4307,10 @@ c     conditions of the PDEs, into yprime.
          ii = neq - npde + i
          yprime(ii) = - work(idbdt-1+i)
   150 continue
+      do 151 i = 1, nw
+         ii = neq - npde +nu + nv + i
+         yprime(ii) = - work(idbdt-1+i)
+  151 continue
 
 c-----------------------------------------------------------------------
 c     Copy the collocation matrix into temporary storage.
