@@ -273,8 +273,6 @@ C
 C                               DBDT(I) IS THE PARTIAL DERIVATIVE
 C                               OF THE I-TH COMPONENT OF THE VECTOR B
 C                               WITH RESPECT TO TIME T.
-      DOUBLE PRECISION coeff1
-      COMMON /BURGER/ coeff1
 c-----------------------------------------------------------------------
 c Loop indices:
         integer                 i, j
