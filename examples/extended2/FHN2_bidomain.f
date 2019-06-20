@@ -43,8 +43,8 @@ C                               FVAL(1:NPDE) IS THE RIGHT HAND SIDE
 C                               VECTOR F(T, X, U, UX, UXX) OF THE PDE.
 c-----------------------------------------------------------------------
 c parameters
-        double precision    epsilon, beta, gamma, lambda, sigma_i
-        common /fhn2/       epsilon, beta, gamma, lambda, sigma_i
+        double precision    epsilon, beta, gamma, sigmae, sigmai
+        common /fhn2/       epsilon, beta, gamma, sigmae, sigmai
 c
 c-----------------------------------------------------------------------
 c Loop indices:
@@ -55,11 +55,14 @@ C     ASSIGN FVAL(1:NPDE) ACCORDING TO THE RIGHT HAND SIDE OF THE PDE
 C     IN TERMS OF U(1:NPDE), UX(1:NPDE), UXX(1:NPDE).
 C
 c     The parabolic equation
-      FVAL(1)= lambda*sigma_i * UXX(1) / (1 + lambda) +
+      FVAL(1) = sigmai*UXX(1) + sigmae*UXX(3) +
      &     ( U(1) - U(1)*U(1)*U(1)/3.D0 - U(2) ) / epsilon
 
 c     The cell model equation
       FVAL(2) = epsilon * ( U(1) + beta - gamma*U(2) )
+
+c     The elliptic equation, 0 = FVAL(elliptic components)
+      FVAL(3) = sigmai*UXX(1) + (sigmai+sigmae)*UXX(3)
 C
       RETURN
       END
@@ -121,8 +124,8 @@ C                               OF THE SECOND SPATIAL DERIVATIVE OF THE
 C                               UNKNOWN FUNCTION U.
 c-----------------------------------------------------------------------
 c parameters
-        double precision    epsilon, beta, gamma, lambda, sigma_i
-        common /fhn2/       epsilon, beta, gamma, lambda, sigma_i
+        double precision    epsilon, beta, gamma, sigmae, sigmai
+        common /fhn2/       epsilon, beta, gamma, sigmae, sigmai
 c
 c-----------------------------------------------------------------------
 c Loop indices:
@@ -135,21 +138,40 @@ C     IN TERMS OF U(1:NPDE), UX(1:NPDE), UXX(1:NPDE).
 C
       DFDU(1,1) = ( 1.D0 - U(1)*U(1) ) / epsilon
       DFDU(1,2) = -1.D0/epsilon
+      DFDU(1,3) = 0.D0
 
       DFDU(2,1) = epsilon
       DFDU(2,2) = -gamma*epsilon
+      DFDU(2,3) = 0.D0
+
+      DFDU(3,1) = 0.D0
+      DFDU(3,2) = 0.D0
+      DFDU(3,1) = 0.D0
+
 c
       DFDUX(1,1) = 0.D0
       DFDUX(1,2) = 0.D0
+      DFDUX(1,3) = 0.D0
 
       DFDUX(2,1) = 0.D0
       DFDUX(2,2) = 0.D0
-c
-      DFDUXX(1,1) = lambda*sigma_i / ( 1.D0 + lambda )
-      DFDUXX(1,2) = 0.d0
+      DFDUX(2,3) = 0.D0
 
-      DFDUXX(2,1) = 0.d0
-      DFDUXX(2,2) = 0.d0
+      DFDUX(3,1) = 0.D0
+      DFDUX(3,2) = 0.D0
+      DFDUX(3,1) = 0.D0
+c
+      DFDUXX(1,1) = sigmai
+      DFDUXX(1,2) = 0.d0
+      DFDUXX(1,3) = sigmae
+
+      DFDUXX(2,1) = 0.D0
+      DFDUXX(2,2) = 0.D0
+      DFDUXX(2,3) = 0.D0
+
+      DFDUXX(3,1) = sigmai
+      DFDUXX(3,2) = 0.D0
+      DFDUXX(3,1) = sigmai+sigmae
 C
       RETURN
       END
@@ -183,10 +205,16 @@ C OUTPUT:
 C                               BVAL(1:NPDE) IS THE BOUNDARY CONTIDITION
 C                               AT THE LEFT BOUNDARY POINT.
 c-----------------------------------------------------------------------
+c parameters
+        double precision    epsilon, beta, gamma, sigmae, sigmai
+        common /fhn2/       epsilon, beta, gamma, sigmae, sigmai
+c
+c-----------------------------------------------------------------------
 c Loop indices:
         integer                 i
 C-----------------------------------------------------------------------
-      BVAL(1) = UX(1)
+      BVAL(1) = sigmai*(UX(1)+UX(3))
+      BVAL(3) = sigmae*UX(3)
 C
       RETURN
       END
@@ -219,11 +247,19 @@ C OUTPUT:
         DOUBLE PRECISION        BVAL(NPDE)
 C                               BVAL(1:NPDE) IS THE BOUNDARY CONTIDITION
 C                               AT THE RIGHT BOUNDARY POINT.
+c-----------------------------------------------------------------------
+c parameters
+        double precision    epsilon, beta, gamma, sigmae, sigmai
+        common /fhn2/       epsilon, beta, gamma, sigmae, sigmai
+c
 C-----------------------------------------------------------------------
 c Loop indices:
         integer                 i
 C-----------------------------------------------------------------------
-      BVAL(1) = UX(1)
+c     sigma{ei} are technically tensors, though they can be removed here
+c     if constant
+      BVAL(1) = sigmai*(UX(1)+UX(3))
+      BVAL(3) = sigmae*UX(3)
 C
       RETURN
       END
@@ -273,8 +309,11 @@ C
 C                               DBDT(I) IS THE PARTIAL DERIVATIVE
 C                               OF THE I-TH COMPONENT OF THE VECTOR B
 C                               WITH RESPECT TO TIME T.
-      DOUBLE PRECISION coeff1
-      COMMON /BURGER/ coeff1
+c-----------------------------------------------------------------------
+c parameters
+        double precision    epsilon, beta, gamma, sigmae, sigmai
+        common /fhn2/       epsilon, beta, gamma, sigmae, sigmai
+c
 c-----------------------------------------------------------------------
 c Loop indices:
         integer                 i, j
@@ -286,9 +325,19 @@ C     U(1:NPDE), UX(1:NPDE).
 C
       DBDU(1,1) = 0.0D0
       DBDU(1,2) = 0.0D0
+      DBDU(1,3) = 0.D0
+
+      DBDU(3,1) = 0.D0
+      DBDU(3,2) = 0.D0
+      DBDU(3,3) = 0.D0
 c
-      DBDUX(1,1) = 1.0D0
+      DBDUX(1,1) = sigmai
       DBDUX(1,2) = 0.0D0
+      DBDUX(1,3) = sigmai
+
+      DBDUX(3,1) = 0.D0
+      DBDUX(3,2) = 0.D0
+      DBDUX(3,3) = sigmae
 c
       DBDT(1) = 0.0D0
       RETURN
@@ -342,6 +391,11 @@ C                               DBDT(I) IS THE PARTIAL DERIVATIVE
 C                               OF THE I-TH COMPONENT OF THE VECTOR B
 C                               WITH RESPECT TO TIME T.
 c-----------------------------------------------------------------------
+c parameters
+        double precision    epsilon, beta, gamma, sigmae, sigmai
+        common /fhn2/       epsilon, beta, gamma, sigmae, sigmai
+c
+c-----------------------------------------------------------------------
 c Loop indices:
         integer                 i, j
 C-----------------------------------------------------------------------
@@ -354,9 +408,19 @@ C     U(1:NPDE), UX(1:NPDE).
 C
       DBDU(1,1) = 0.0D0
       DBDU(1,2) = 0.0D0
+      DBDU(1,3) = 0.0D0
+
+      DBDU(3,1) = 0.D0
+      DBDU(3,2) = 0.D0
+      DBDU(3,3) = 0.D0
 c
-      DBDUX(1,1) = 1.0D0
+      DBDUX(1,1) = sigmai
       DBDUX(1,2) = 0.0D0
+      DBDUX(1,3) = sigmai
+
+      DBDUX(3,1) = 0.D0
+      DBDUX(3,2) = 0.D0
+      DBDUX(3,3) = sigmae
 c
       DBDT(1) = 0.0D0
 c
@@ -400,13 +464,15 @@ C     Note these are values for:
 C            epsilon = 0.1
 C            beta = 1
 C           gamma = 0.5
-C           lambda = sigma_i = 1
+C           lambda = sigmai = 1
       IF ( x .le. 10.D0 ) THEN
          U(1) = (Ulow-Uhigh)*x/10.D0 + Uhigh
       ELSE
          U(1) = Ulow
       ENDIF
       U(2) = U2low
+
+      U(3) = 0.D0
 C
 
       RETURN
