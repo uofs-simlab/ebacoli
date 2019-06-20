@@ -963,7 +963,9 @@ c                               down to caljac.
 c
         integer                 inpde_sub
         parameter              (inpde_sub  =  17)
-c                               ipar(inu) = nu
+c                               ipar(inpde_sub) = nu
+c                               ipar(inpde_sub+1) = nv
+c                               ipar(inpde_sub+2) = nw
 c
         integer                 idasi
         parameter              (idasi  = 60)
@@ -1389,14 +1391,14 @@ c-----------------------------------------------------------------------
 
       ipar(iey)    = ipar(irwork) + 40 + 3 * neq
 
-c     size of work array holding reinit storage: 4*nu*npde
+c     size of work array holding reinit storage: 2*nconti*(nu+nw)*npde
       ipar(iresto) = ipar(iey)  + neq
 
 c     Zero out top and bottom block PDE storage for reinit
-        do 21 i = 1, nu*npde*nconti
+        do 21 i = 1, (nu+nw)*npde*nconti
            ii = ipar(iresto) + i - 1
            rpar(ii) = 0.D0
-           rpar(ii+nu*npde*nconti) = 0.D0
+           rpar(ii+(nu+nw)*npde*nconti) = 0.D0
  21     continue
 
 c     This offset is different between the initial call and remeshing.
@@ -1617,11 +1619,21 @@ c     DASSL.
 
 
 c     Store the (PDE part of) top and bottom blocks before reinit
+c     parabolic part
       do i = 1, nu
          ii = ipar(iresto) + i - 1
          call dcopy(npde*nconti, rpar(ipar(iabtop)) ,npde, rpar(ii), 1)
          call dcopy(npde*nconti, rpar(ipar(iabbot)) ,npde,
      &                           rpar(ii+nu*npde*nconti), 1)
+      end do
+c     elliptic part
+      do i = 1, nw
+c        ii is index into temporary storage, does not have space for nv
+         ii = ipar(iresto) + nu + i - 1
+         call dcopy(npde*nconti, rpar(ipar(iabtop)+nu+nv), npde,
+     $        rpar(ii), 1)
+         call dcopy(npde*nconti, rpar(ipar(iabbot)+nu+nv), npde,
+     &        rpar(ii+(nu+nw)*npde*nconti), 1)
       end do
 
 c     reinit uses rpar(ipar(irwork)+40+6*neq) as its work array and
@@ -1635,11 +1647,21 @@ c     outputs y to rpar(ipar(irwork)+40).
      &            rpar(ipar(iabblk)), rpar(ipar(iabbot)), icflag)
 
 c     Restore the (PDE part of) top and bottom blocks to state before reinit called
+c     parabolic part
       do i = 1, nu
          ii = ipar(iresto) + i - 1
          call dcopy(npde*nconti, rpar(ii), 1, rpar(ipar(iabtop)) ,npde)
          call dcopy(npde*nconti, rpar(ii+nu*npde*nconti), 1,
      &                           rpar(ipar(iabbot)) ,npde)
+      end do
+c     elliptic part
+      do i = 1, nw
+c        ii is index into temporary storage, does not have space for nv
+         ii = ipar(iresto) + nu + i - 1
+         call dcopy(npde*nconti, rpar(ii), npde,
+     $        rpar(ipar(iabtop)+nu+nv), 1)
+         call dcopy(npde*nconti, rpar(ii+(nu+nw)*npde*nconti), npde,
+     &        rpar(ipar(iabbot)+nu+nv), 1)
       end do
 
       if (icflag .ne. 0) then
