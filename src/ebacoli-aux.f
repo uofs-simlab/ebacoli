@@ -2606,8 +2606,8 @@ c-----------------------------------------------------------------------
       integer nconti
       parameter (nconti = 2)
 
-      integer lnpde, lnu, lkcol, lnint
-      integer npde, nu, kcol, nint
+      integer lnpde, lnu, lnv, lnw, lkcol, lnint
+      integer npde, nu, nv, nw, kcol, nint
       integer npdbk1, npdbt1
 
 c-----------------------------------------------------------------------
@@ -2618,6 +2618,8 @@ c-----------------------------------------------------------------------
 c-----------------------------------------------------------------------
       parameter (lnpde = 17)
       parameter (lnu   = 20)
+      parameter (lnv   = 21)
+      parameter (lnw   = 22)
       parameter (lkcol = 18)
       parameter (lnint = 19)
       parameter (lipvt = 23)
@@ -2638,15 +2640,24 @@ C     DUMMY SECTION FOR MTYPE=3
 c-----------------------------------------------------------------------
       npde   = iwm(lnpde)
       nu     = iwm(lnu)
+      nv     = iwm(lnv)
+      nw     = iwm(lnw)
       kcol   = iwm(lkcol)
       nint   = iwm(lnint)
 
       npdbk1 = npd + npde * npde * nconti
       npdbt1 = npdbk1 + npde * npde * nint * kcol * (kcol + nconti)
 
+c$$$      write(*,*) 'nu,nv,nw: ', nu, nv, nw
 c     Only scale the PDE subsystem in the TOP and BOT blocks
+c     TOP
       call dscal(nu, cj, delta(1), 1)
+      call dscal(nw, cj, delta(nu+nv+1), 1)
+c     BOT
       call dscal(nu, cj, delta(neq-npde+1), 1)
+      call dscal(nw, cj, delta(neq-nw+1), 1)
+
+c     TODO: scale elliptic component of all blocks
 
       call crslve(wm(npd), npde, 2*npde, wm(npdbk1), kcol*npde,
      &            (kcol+nconti)*npde, nint, wm(npdbt1), npde,
