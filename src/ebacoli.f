@@ -363,7 +363,7 @@ c
         integer                 lip
 c                               lip is the size of the ipar integer
 c                               work array and must satisfy:
-c                               lip>=115+npde*(nintmx*kcol+2)
+c                               lip>=117+npde*(nintmx*kcol+2)
 c
         external                f
         external                derivf
@@ -734,7 +734,7 @@ c                               bspline coefficients (or DAEs) when
 c                               using dassl_{kcol}.
 c
         integer                 leniw
-c                               leniw = 20 + neq is the length of the
+c                               leniw = 22 + neq is the length of the
 c                               integer work array required by dassl.
 c
         integer                 lenpd
@@ -989,7 +989,7 @@ c                               ipar(iiwork) is the integer work array
 c                               for dassl.
 c
         integer                 ipivot
-        parameter              (ipivot = 115)
+        parameter              (ipivot = 117)
 c                               ipar(ipivot-1+i), i = 1, neq, contains
 c                               the pivoting information from the
 c                               factorization of the temporary matrix
@@ -1239,7 +1239,7 @@ c     Check for continuation of a previous problem.
 
          neq   = ipar(ineq)
          lenpd = npde*npde*(nconti+nconti+kcol*(kcol+nconti)*nint)
-         leniw = 20 + neq
+         leniw = 22 + neq
          lenrw = 40 + (MAXORD + 4) * neq + lenpd
          if (mflag(8) .eq. 0) then
             necpts = (kcol + 2) * nint
@@ -1316,7 +1316,7 @@ c     Total size of the DASSL floating point work array.
       lenrw = 40 + (MAXORD + 4) * neq + lenpd
 
 c     Total size of the DASSL integer work array.
-      leniw = 20 + neq
+      leniw = 22 + neq
 
 c-----------------------------------------------------------------------
 c     Calculate the number of quadrature points used for error
@@ -1497,6 +1497,8 @@ c     include npde, kcol, nint.
       ipar(iiwork-1+18) = kcol
       ipar(iiwork-1+19) = nint
       ipar(iiwork-1+20) = nu
+      ipar(iiwork-1+21) = nv
+      ipar(iiwork-1+22) = nw
 
 c     Set initial idid to be zero.
       idid = 0

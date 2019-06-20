@@ -1217,7 +1217,7 @@ c     Compute lenpd and lenrw with responding to an ABD Jacobian matrix.
 c-----------------------------------------------------------------------
 C
 C     CHECK LENGTHS OF RWORK AND IWORK
-      LENIW=20+NEQ
+      LENIW=22+NEQ
       IWORK(LNPD)=LENPD
       IF(LRW.LT.LENRW)GO TO 704
       IF(LIW.LT.LENIW)GO TO 705
@@ -2206,7 +2206,7 @@ c-----------------------------------------------------------------------
       parameter (lnpde  = 17)
       parameter (lkcol  = 18)
       parameter (lnint  = 19)
-      parameter (lipvt  = 21)
+      parameter (lipvt  = 23)
       parameter (iework = 50)
 c-----------------------------------------------------------------------
 C
@@ -2620,7 +2620,7 @@ c-----------------------------------------------------------------------
       parameter (lnu   = 20)
       parameter (lkcol = 18)
       parameter (lnint = 19)
-      parameter (lipvt = 21)
+      parameter (lipvt = 23)
 c-----------------------------------------------------------------------
 C
 C***FIRST EXECUTABLE STATEMENT  DDASLV

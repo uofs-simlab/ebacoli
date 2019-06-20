@@ -998,8 +998,10 @@ module ebacoli95_mod
 
             ly = npde*(kcol*nint+2)
 
-            lip = 115 + ly
+            ! size of integer work array
+            lip = 117 + ly
 
+            ! size of real work array
             lrp = 113 + 59*npde + 27*nint + 13*npde*npde   &
                 + 9*kcol + 24*kcol*nint + 6*nint*kcol*kcol &
                 + 27*npde*nint*kcol + 7*nint*npde          &
