@@ -3737,7 +3737,7 @@ c           Right BC (copy only ODEs)
 c        Scaling of each portion (interior)
          call dscal(neq-2*npde,negone,work(ivcol),1)
 c        Left and right BCs (again only ODE parts)
-         if (npde .gt. nu) then
+         if (nv .gt. 0) then
             call dscal(nv,negone,work(ivcol-npde+nu),1)
             call dscal(nv,negone,work(iu+nu),1)
          endif
@@ -6122,7 +6122,7 @@ c
 c-----------------------------------------------------------------------
 c       Loop indices:
         integer                 i
-      integer                 j
+        integer                 j
         integer                 m
         integer                 k
 c
@@ -6134,6 +6134,7 @@ c       Indices:
 c
 c-----------------------------------------------------------------------
 c
+c     Subsystem sizes           nu+nv+nw = npde
         integer                 nu
 c                               nu is the number of components in the
 c                               subsystem of parabolic PDEs:
@@ -6141,11 +6142,11 @@ c                               0 < nu <= npde.
         integer                 nv
 c                               nv is the number of components in the
 c                               subsystem of ODEs
-c                               0 < nu <= npde.
+c                               0 <= nv <= npde.
         integer                 nw
 c                               nu is the number of components in the
 c                               subsystem of elliptic PDEs:
-c                               0 < nu <= npde.
+c                               0 <= nw <= npde.
 
 c       Pointers into the floating point work array work:
         integer                 iu
@@ -6308,7 +6309,6 @@ c     ODE for the right boundary: delta(neq-npde+nu+1:neq)
             jj = (j-1)*npde + mm
             delta(ii) = delta(ii) + abdbot(jj) *
      &                              yprime(neq-(npde*nconti)+j)
-c     &        abdbot(neq-npde+nu+i+j*npde) * yprime(neq-(npde*nconti)+j)
  62      continue
       enddo
 
@@ -6320,7 +6320,8 @@ c     on the nint blocks in the middle of the collocation matrix A.
             do 50 k = 1, kcol
                kk = 1+(i-1)*npde*npde*kcol*(kcol+nconti)
      &              +(j-1)*npde*npde*kcol+(k-1)*npde
-               do 40 m = 1, npde
+c              ONLY the parabolic and ODE subsystems
+               do 40 m = 1, nu+nv
                   ii = npde+(i-1)*npde*kcol+(k-1)*npde+m
                   mm = (i-1)*kcol*npde+(j-1)*npde+m
                   delta(ii) = delta(ii) + abdblk(kk) * yprime(mm)

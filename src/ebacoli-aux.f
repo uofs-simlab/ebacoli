@@ -2649,7 +2649,7 @@ c-----------------------------------------------------------------------
       npdbt1 = npdbk1 + npde * npde * nint * kcol * (kcol + nconti)
 
 c$$$      write(*,*) 'nu,nv,nw: ', nu, nv, nw
-c     Only scale the PDE subsystem in the TOP and BOT blocks
+c     Only scale the PDE subsystem (BCs) in the TOP and BOT blocks
 c     TOP
       call dscal(nu, cj, delta(1), 1)
       call dscal(nw, cj, delta(nu+nv+1), 1)
