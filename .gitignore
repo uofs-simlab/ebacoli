@@ -11,9 +11,6 @@ build/*
 *.so
 *.pyc
 
-# generally things placed into examples/ dir
-examples/*
-
 # emacs backups/restore files
 *~
 \#*\#
