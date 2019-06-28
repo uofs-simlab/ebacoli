@@ -12,13 +12,10 @@ endmacro(create_standard_executable)
 ############################################################################
 # Burgers equation examples
 
-create_standard_executable(driver95-simple burg1 1)
 create_standard_executable(driver95-simple burg2 1)
 
-create_standard_executable(driver95-curve burg1 1)
 create_standard_executable(driver95-curve burg2 1)
 
-create_standard_executable(driver95-trimesh burg1 1)
 create_standard_executable(driver95-trimesh burg2 1)
 
 ############################################################################

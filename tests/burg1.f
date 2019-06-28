@@ -1,6 +1,6 @@
 c       Problem definition for One Layer Burgers Equation.
 c       PDE: u_t = eps*u_xx - u*u_x, with initial and boundary conditions
-c       defined from the exact solution: 
+c       defined from the exact solution:
 c       u = 0.5d0 - 0.5d0 * tanh( (x-0.5d0*t-0.25d0) / (4.0d0*eps) ),
 c       where eps is a problem dependent parameter.
 
@@ -127,7 +127,7 @@ c loop indices:
         integer                 i, j
 c-----------------------------------------------------------------------
 c
-      
+
 c     assign dfdu(1:npde,1:npde), dfdux(1:npde,1:npde), and
 c     dfduxx(1:npde,1:npde) according to the right hand side of the pde
 c     in terms of u(1:npde), ux(1:npde), uxx(1:npde).
@@ -182,7 +182,7 @@ c-----------------------------------------------------------------------
 c loop indices:
         integer                 i
 c-----------------------------------------------------------------------
-      
+
       do i = 1, npde
          bval(i) = u(i) - 0.5d0
      &           + 0.5d0 * tanh( (-0.5d0*t-0.25d0) / (4.0d0*eps) )
@@ -227,7 +227,7 @@ c-----------------------------------------------------------------------
 c loop indices:
         integer                 i
 c-----------------------------------------------------------------------
-      
+
       do i = 1, npde
 c      this leads to cancellation issues (between u(i) and 0.5d))
 c      which breaks the forward difference approximation of the
@@ -295,7 +295,7 @@ c loop indices:
 c-----------------------------------------------------------------------
 
 c-----------------------------------------------------------------------
-      
+
 c
 c     assign dbdu(1:npde,1:npde), dbdu(1:npde,1:npde), and dbdt(1:npde)
 c     according to the right boundary condition equation in terms of
@@ -367,7 +367,7 @@ c-----------------------------------------------------------------------
 c loop indices:
         integer                 i, j
 c-----------------------------------------------------------------------
-      
+
 c
 c     assign dbdu(1:npde,1:npde), dbdu(1:npde,1:npde), and dbdt(1:npde)
 c     according to the right boundary condition equation in terms of
@@ -414,8 +414,10 @@ c-----------------------------------------------------------------------
 c-----------------------------------------------------------------------
 c loop indices:
         integer                 i
-c-----------------------------------------------------------------------
 
+c-------------------------------------------------------------------------
+c Set problem dependent parameters
+        eps = 1.D-3
 c
 c     assign u(1:npde) the initial values of u(t0,x).
 c
@@ -453,7 +455,7 @@ c-----------------------------------------------------------------------
 c loop indices:
         integer                 i
 c-----------------------------------------------------------------------
-      
+
       do i = 1, npde
          u(i) = 0.5d0 - 0.5d0 * tanh( (x-0.5d0*t-0.25d0) / (4.0d0*eps) )
       end do
