@@ -76,8 +76,12 @@ program test_toy3_par_plus_ode
        call write_solution_uniformly_spaced(sol,nout)
     end if
 
+    ! Display tolerances
+    write(*,*)
+    write(*,*) 'Tolerances (atol, rtol):', sol%atol, sol%rtol
+
     ! Display actual error
-    call compare_L2_error(sol,truu)
+    call write_discrete_L2_error(sol,truu,nout)
 
     call ebacoli95_sol_teardown(sol)
 

@@ -53,10 +53,39 @@ end subroutine write_solution_uniformly_spaced
 
 
 ! ----------------------------------------------------------------------------
-subroutine compare_L2_error(sol,truu)
+subroutine write_discrete_L2_error(sol,truu,npoints)
 
-  ! Compute the L2 error relative to known solution truu(t,x)
+  ! Computes the discrete L2 error of the solution at npoints equally spaced
+  ! points. Writes the result to screen
 
-  write(*,*) 'L2 @ U. lolz'
+  use ebacoli95_mod, only: ebacoli95_sol, ebacoli95_vals
 
-end subroutine compare_L2_error
+  implicit none
+
+  type(ebacoli95_sol) :: sol
+  integer npoints
+
+  ! Declare output points and output solution values arrays
+  double precision :: xout(npoints), uout(sol%npde*npoints), uactual(sol%npde*npoints)
+
+  double precision error
+
+  integer i, ij, k
+
+  ! Compute the discrete L2 error relative to known solution truu(t,x)
+
+  ! Solution at uniformly spaced coordinates
+  xout = (/(sol%x(1)+i*(sol%x(sol%nint+1)-sol%x(1))/(npoints-1), i=0,npoints-1)/)
+  call ebacoli95_vals(sol, xout, uout)
+
+  error = 0
+  do i = 1, npoints
+     ij = 1+(i-1)*sol%npde
+     call truu(sol%t0,xout(i),uactual(ij),sol%npde)
+  end do
+
+  error = norm2(uactual-uout)
+
+  write(*,*) "Discrete L2 error at output points:", error
+
+end subroutine write_discrete_L2_error
