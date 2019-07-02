@@ -1,11 +1,5 @@
 Brief description of extended examples found in this directory.
 
-[./toy3.f](./toy3.f):
-
--   Toy model with NPDE=4, NU=2.
--   Obtained by duplicating all of toy2.f, but replacing one of the boundary conditions to use spatial derivative of v
--   Has the same solution as toy2.f
-
 [./FHN\_monodomain.f](./FHN_monodomain.f):
 
 -   modified FitzHugh--Nagumo cell model from Elham's thesis (results in Table 4.3)

@@ -23,71 +23,61 @@
 ! (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 ! OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-program simple_example_driver
+program test_toy3_par_plus_ode
 
     ! A minimal example driver for the EBACOLI95 wrapper of EBACOLI.
     ! See the comments within ebacoli95.f95 for details regarding use.
 
     use ebacoli95_mod, only: ebacoli95_init, ebacoli95, ebacoli95_vals, &
-                            ebacoli95_sol, ebacoli95_sol_teardown
+                             ebacoli95_sol, ebacoli95_sol_teardown
 
     implicit none
     integer, parameter  :: dp = kind(0d0)
 
     ! Declare data structure that will hold solution
-    type(ebacoli95_sol)  :: sol
+    type(ebacoli95_sol) :: sol
 
-    ! Choose npde to be consistent with the problem specific source
-    ! code; see burg1.f, burg2.f, CahnAllen.f, rcdsys.f, sinmads.f,
-    ! and steady.f.
-    ! Assume output at 11 points over (problem specific) spatial domain,
-    ! and maximum number of subintervals = 50.
-    integer,  parameter, dimension(3) :: npde_sub = (/2,2,0/)
-    integer,  parameter :: npde = 4, nu = 2, nout = 11, nint_max = 500
-    real(dp), parameter :: xa = 1, xb = 2
+    ! Subsystem sizes
+    integer,  parameter :: nu = 2, nv = 2, nw = 0
+    integer,  parameter, dimension(3) :: npde_sub = (/nu,nv,nw/)
+    integer,  parameter :: npde = sum(npde_sub)
+
+    ! Set boundary locations
+    double precision, parameter :: xL = 1._dp, xR = 2._dp
+
+    ! Maximum number of subintervals to allow
+    integer,  parameter :: nint_max = 500
 
     ! Set (problem dependent) output time to 1
-    real(dp), parameter :: tout = 1
+    real(dp), parameter :: tout = 1.D0
 
-    ! Declare output points and output solution values arrays
-    real(dp) :: xout(nout), uout(npde*nout)
+    ! Assume output at 11 points over (problem specific) spatial domain,
+    integer,  parameter :: nout = 11
 
     integer :: i, k, ij
 
-    external f, bndxa, bndxb, uinit, derivf, difbxa, difbxb
+    external f, bndxa, bndxb, uinit, derivf, difbxa, difbxb, truu
 
-    ! Write out value of npde to allow user to confirm that its value
-    ! is appropriate for the problem to be solved.
+    ! BEGIN executable statements
 
-    write(6,*) 'The total number of equations is ', npde
-    write(6,*) 'The size of the parabolic subsystem is ', nu
-    write(6,*)
-
-    ! Initialization (set spatial domain = [0,1]); a default uniform
+    ! Initialization (set spatial domain = [xL,xR]); a default uniform
     ! spatial mesh having 10 subintervals will be constructed.
-    call ebacoli95_init(sol, npde_sub, (/xa,xb/), nint_max = nint_max)
+    call ebacoli95_init(sol, npde_sub, (/xL,xR/), nint_max = nint_max)
+
+    call write_subsystem_sizes(sol%npde_sub)
 
     ! Compute solution at tout
     call ebacoli95(sol, tout, f, bndxa, bndxb, uinit, derivf, difbxa, difbxb)
 
-    ! Output idid to check for a successful computation
+    ! Output solution over uniformly spaced points if solution successful
     print '("idid=",i5)',sol%idid
-    if (sol%idid > 0) print '("idid > 0 => Successful computation")'
-
-    ! Output solution at tout for nout values of x uniformly
-    ! distributed over spatial domain
     if (sol%idid > 0) then
-        xout = (/(xa+i*(xb-xa)/(nout-1), i=0,nout-1)/)
-        call ebacoli95_vals(sol, xout, uout)
-
-        print '("At t=",f4.2)', sol%t0
-        write(*,'(/a)') 'the solution is'
-        write(*,'(a13,a27)') 'XOUT', 'UOUT'
-        do i = 1, nout
-           ij = (i-1)*npde
-           write(*,*) xout(i), (uout(ij+k), k = 1, npde)
-        end do
+       print '("idid > 0 => Successful computation")'
+       call write_solution_uniformly_spaced(sol,nout)
     end if
+
+    ! Display actual error
+    call compare_L2_error(sol,truu)
 
     call ebacoli95_sol_teardown(sol)
 
