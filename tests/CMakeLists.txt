@@ -14,6 +14,7 @@ endmacro(create_test_executable)
 
 ## tests of standard BACOLI
 create_test_executable(burg1)
+create_test_executable(burg2)
 
 
 ## tests of eBACOLI
@@ -23,4 +24,4 @@ create_test_executable(burg1)
 # parabolic + elliptic
 
 
-# parabolic  + ODE + elliptic
+# parabolic + ODE + elliptic

@@ -8,7 +8,7 @@ c           expa1 = 0.d0, expa2 = 0.d0, expa3 = 0.d0, temp = max(a1, a2, a3).
 c           if ((a1-temp) .ge. -35.d0) expa1 = exp(a1-temp)
 c           if ((a2-temp) .ge. -35.d0) expa2 = exp(a2-temp)
 c           if ((a3-temp) .ge. -35.d0) expa3 = exp(a3-temp)
-c       Then 
+c       Then
 c           u = (0.1d0*expa1+0.5d0*expa2+expa3) / (expa1+expa2+expa3)
 c
 c       This code uses loops to produce multiple independent copies of
@@ -470,8 +470,8 @@ c                               u(1:npde) is vector of initial values of
 c                               the unknown function at t = t0 and the
 c                               given value of x.
 c-----------------------------------------------------------------------
-      double precision eps
-      common /burger/ eps
+        double precision eps
+        common /burger/ eps
 c-----------------------------------------------------------------------
 c
 c local variables
@@ -482,10 +482,11 @@ c-----------------------------------------------------------------------
 c loop indices:
         integer                 i
 c-----------------------------------------------------------------------
+c Set problem dependent parameters
+        eps = 1.D-3
 c
 c     assign u(1:npde) the initial values of u(t0,x).
 c
-c-----------------------------------------------------------------------
       a1 = (-x + 0.5d0) * 0.5d-1 / eps
       a2 = (-x + 0.5d0) * 0.25d0 / eps
       a3 = (-x + 0.375d0) * 0.5 / eps

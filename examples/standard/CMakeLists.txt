@@ -10,15 +10,6 @@ macro(create_standard_executable driver_file system_file number_of_fields)
 endmacro(create_standard_executable)
 
 ############################################################################
-# Burgers equation examples
-
-create_standard_executable(driver95-simple burg2 1)
-
-create_standard_executable(driver95-curve burg2 1)
-
-create_standard_executable(driver95-trimesh burg2 1)
-
-############################################################################
 # "Steady" examples
 
 create_standard_executable(driver95-simple steady 1)
