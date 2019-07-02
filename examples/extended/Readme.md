@@ -1,10 +1,5 @@
 Brief description of extended examples found in this directory.
 
-[./toy2.f](./toy2.f):
-
--   Toy model with NPDE=4, NU=2.
--   Obtained by duplicating solution to toy.f, and interchanging the interaction terms of the system equations in a symmetric way
-
 [./toy3.f](./toy3.f):
 
 -   Toy model with NPDE=4, NU=2.

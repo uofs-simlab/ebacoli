@@ -22,6 +22,7 @@ create_test_executable(sincmads)
 # parabolic + ODE
 
 create_test_executable(toy_par_plus_ode)
+create_test_executable(toy2_par_plus_ode)
 
 # parabolic + elliptic
 
