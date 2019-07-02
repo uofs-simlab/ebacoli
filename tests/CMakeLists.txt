@@ -16,6 +16,7 @@ endmacro(create_test_executable)
 create_test_executable(burg1)
 create_test_executable(burg2)
 
+create_test_executable(sincmads)
 
 ## tests of eBACOLI
 # parabolic + ODE
