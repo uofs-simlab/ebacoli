@@ -21,6 +21,7 @@ create_test_executable(sincmads)
 ## tests of eBACOLI
 # parabolic + ODE
 
+create_test_executable(toy_par_plus_ode)
 
 # parabolic + elliptic
 

@@ -11,11 +11,9 @@ endmacro(create_extended_executable)
 ############################################################################
 # Toy problem examples
 
-create_extended_executable(driver-toy-simple toy)
 create_extended_executable(driver-toy2-simple toy2)
 create_extended_executable(driver-toy3-simple toy3)
 
-create_extended_executable(driver-toy-trimesh toy)
 create_extended_executable(driver-toy2-trimesh toy2)
 
 ############################################################################

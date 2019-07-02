@@ -1,9 +1,5 @@
 Brief description of extended examples found in this directory.
 
-[./toy.f](./toy.f):
-
--   Toy model with NPDE=2, NU=1 from Elham's thesis.
-
 [./toy2.f](./toy2.f):
 
 -   Toy model with NPDE=4, NU=2.
