@@ -26,5 +26,6 @@ create_test_executable(toy2_par_plus_ode)
 
 # parabolic + elliptic
 
+create_test_executable(burg1_plus_w_zero)
 
 # parabolic + ODE + elliptic
