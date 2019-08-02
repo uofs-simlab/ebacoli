@@ -59,6 +59,24 @@ To solve a specific problem, 2 additional things need to be linked to the librar
 1.  A driver file (Fortran95) to act as the main program (ie., [driver-toy2-simple.f95](./examples/extended/driver-toy2-simple.f95))
 2.  A system file (Fortran77) to specify the above systems of equations (ie., [toy2.f](./examples/extended/toy2.f))
 
+## Linking with your own problems
+
+### Without cmake
+
+With the build instructions above (note there is currently no `install` target), the ebacoli library should be found at `/path/to/ebacoli/build/src/libebacoli.{a,so}` and the required module file in `/path/to/ebacoli/build/modules/ebacoli95_mod.mod`. Therefore linking requires the command line options `-I/path/to/ebacoli/build/modules -I/path/to/ebacoli/build/src -lebacoli`.
+
+### With cmake
+
+Exploiting our setup for cmake, new examples can be added by following the conventions applied in the  `./examples/*/CMakeLists.txt` files.
+
+If you wish to add a subdirectory for your code, you need to:
+1. Inform the `CMakeLists.txt` file of the parent directory about your new directory using the `add_subdirectory(<dir name>)` function.
+2. Create a `CMakeLists.txt` file in the new subdirectory.
+3. Add the compile and link rules for your code. For simplicity, you can use our cmake macro `create_extended_executable`, which can be called as `create_extended_example(<driver file> <system file>)`.
+
+Now, your code will be compiled when `make` is run from within the `build/` directory. The executable will be stored in the same relative path from `build/` as the source is from this directory. i.e., `build/examples/extended/...` and will have the same name as the driver file (without the `.f95` extension.
+
+
 Viewing solutions
 =================
 
