@@ -1285,6 +1285,7 @@ c-----------------------------------------------------------------------
 c     Check validity of npde, kcol, and nint.
       if (npde .le. 0) goto 730
       if ((nu .le. 0) .or. (nu .gt. npde)) goto 735
+      if (nu+nv+nw .ne. npde) goto 735
       if ((kcol .le. 2) .or. (kcol .gt. mxkcol)) goto 740
       if ((nint .le. 0) .or. (nint .gt. nintmx)) goto 640
 
@@ -1939,6 +1940,7 @@ c-----------------------------------------------------------------------
  735  continue
       write(6,9999) 'ERROR: eBACOLI input violation.'
       write(6,9999) 'Require: 0 < nu <= npde.'
+      write(6,9999) '    and nu+nv+nw = npde.'
       idid = -55
       return
   740 continue
