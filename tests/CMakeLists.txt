@@ -1,5 +1,5 @@
 
-# Rule for creating and properly linking the executables in this directory
+# Rule for creating and properly linking executables in these subdirectories
 macro(create_test_executable problem_file)
   add_executable(test_${problem_file}
     test_${problem_file}.f95
@@ -12,20 +12,6 @@ endmacro(create_test_executable)
 ############################################################################
 ## Executables for all tests
 
-## tests of standard BACOLI
-create_test_executable(burg1)
-create_test_executable(burg2)
-
-create_test_executable(sincmads)
-
-## tests of eBACOLI
-# parabolic + ODE
-
-create_test_executable(toy_par_plus_ode)
-create_test_executable(toy2_par_plus_ode)
-
-# parabolic + elliptic
-
-create_test_executable(burg1_plus_w_zero)
-
-# parabolic + ODE + elliptic
+add_subdirectory(par)
+add_subdirectory(par-ode)
+add_subdirectory(par-ellip)
