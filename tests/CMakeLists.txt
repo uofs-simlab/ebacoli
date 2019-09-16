@@ -7,6 +7,7 @@ macro(create_test_executable problem_file)
     utilities.f95
     )
   target_link_libraries(test_${problem_file} ebacoli)
+  add_test(${problem_file} test_${problem_file})
 endmacro(create_test_executable)
 
 ############################################################################
