@@ -422,8 +422,8 @@ def print_latex_error_table(error_table,filename=NOTHING):
         sys.stdout = open(filename, "w")
 
     # write conents
-    print "\\begin{tabular}{r|r|r|r}"
-    print error_table.to_csv(
+    print("\\begin{tabular}{r|r|r|r}")
+    print(error_table.to_csv(
         columns=["atol","rtol","err","nint"],
         header=["{\\tt ATOL}", "{\\tt RTOL}", "$E$", "$N$"],
         sep="&", line_terminator="\\\\\n", float_format="%.1e",
@@ -432,8 +432,8 @@ def print_latex_error_table(error_table,filename=NOTHING):
     ).replace("&"," & "
     ).replace("\\\\"," \\\\"
     ).replace("\"",""
-    )[:-4]  # slice off last newline and LaTeX newline
-    print "\\end{tabular}"
+    )[:-4])  # slice off last newline and LaTeX newline
+    print("\\end{tabular}")
 
     # restore stdout
     if filename is not NOTHING:
