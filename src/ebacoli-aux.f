@@ -2196,6 +2196,8 @@ c-----------------------------------------------------------------------
 
       integer step, jj, jn
 
+      double precision condest, condv(neq)
+
 c-----------------------------------------------------------------------
 C
       PARAMETER (NPD=1)
@@ -2411,6 +2413,13 @@ c     Scale the algebraic equations to improve conditioning.
       call dscal(sizbot, cj, wm(npdbt1), 1)
 
   390 continue
+
+c------------------------------------------------------------------------
+c     Compute the condition number and
+      call BSPCND(neq, wm(npd), npde, 2*npde, wm(npdbk1), kcol*npde,
+     &            (kcol+nconti)*npde, nint, wm(npdbt1), condest, condv,
+     &            iwm(lipvt), ier)
+
 c     ABD LU decomposition of PD
       call crdcmp(neq, wm(npd), npde, 2*npde, wm(npdbk1), kcol*npde,
      &            (kcol+nconti)*npde, nint, wm(npdbt1), npde,
