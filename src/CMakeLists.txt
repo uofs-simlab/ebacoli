@@ -6,4 +6,5 @@ add_library(ebacoli
   d1mach_i1mach.f95
   condcolrow.f
   condcolrowmax.f
+  DASUM.f
   )
