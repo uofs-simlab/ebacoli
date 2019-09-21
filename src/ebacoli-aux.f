@@ -2196,7 +2196,8 @@ c-----------------------------------------------------------------------
 
       integer step, jj, jn
 
-      double precision condest, condv(neq)
+      double precision condest, condv(neq), condwrk(neq)
+      integer condsgn(neq)
 
 c-----------------------------------------------------------------------
 C
@@ -2417,13 +2418,15 @@ c     Scale the algebraic equations to improve conditioning.
 c------------------------------------------------------------------------
 c     Compute the condition number and
       call BSPCND(neq, wm(npd), npde, 2*npde, wm(npdbk1), kcol*npde,
-     &            (kcol+nconti)*npde, nint, wm(npdbt1), condest, condv,
-     &            iwm(lipvt), ier)
+     &     (kcol+nconti)*npde, nint, wm(npdbt1), npde, condest,
+     $     condv, condsgn, condwrk, iwm(lipvt), ier)
+
+      write(*,*) "[LOG]: IER:", ier, " CONDEST:", condest
 
 c     ABD LU decomposition of PD
-      call crdcmp(neq, wm(npd), npde, 2*npde, wm(npdbk1), kcol*npde,
-     &            (kcol+nconti)*npde, nint, wm(npdbt1), npde,
-     &            iwm(lipvt), ier)
+c$$$      call crdcmp(neq, wm(npd), npde, 2*npde, wm(npdbk1), kcol*npde,
+c$$$     &            (kcol+nconti)*npde, nint, wm(npdbt1), npde,
+c$$$     &            iwm(lipvt), ier)
 
 c     Second call to crdcmp removed.
 
@@ -3010,6 +3013,7 @@ C     COMPUTE A NEW ITERATE (BACK-SUBSTITUTION).
 C     STORE THE CORRECTION IN DELTA.
 c-----------------------------------------------------------------------
       CALL DDASLV(NEQ,DELTA,WM,IWM,cjscal)
+c$$$      call exit(0)
 c-----------------------------------------------------------------------
 C
 C     UPDATE Y,E,AND YPRIME
