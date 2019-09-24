@@ -133,7 +133,57 @@ C
       RETURN
       END
 C
+      SUBROUTINE WRTDNS(N,DENSE,FNAME,IFLAG)
 C
+C***************************************************************
+C
+C  THIS ROUTINE WRITES OUT A DENSE MATRIX OF SIZE NXN TO FILE FNAME
+c
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C
+C               *****  PARAMETERS  *****
+C
+C       *** ON ENTRY ...
+C
+C               N      - INTEGER
+C                         LINEAR DIMENSION OF SQUARE MATRIX
+C
+C               DENSE - DOUBLE PRECISION(NRWTOP,NOVRLP)
+C                         THE FIRST BLOCK OF THE ALMOST BLOCK
+C                         DIAGONAL MATRIX A
+C
+C               FNAME - CHARACTER(32)
+C                         NUMBER OF ROWS IN THE BLOCK TOPBLK
+C
+C       *** ON RETURN  ...
+C
+C               IFLAG  - INTEGER
+C                         =  1, IF INPUT PARAMETERS ARE INVALID
+C                         = -1, IF ERROR OCCURED
+C                         =  0, OTHERWISE
+C
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C
+C     DOUBLE PRECISION TOPBLK,ARRAY,BOTBLK
+      INTEGER N,IFLAG
+      CHARACTER(LEN=32) FNAME
+      DOUBLE PRECISION DENSE(N*N)
+C
+      INTEGER I,II,J,JJ,DI,DJ,DD
+
+      OPEN(UNIT=22,FILE=FNAME)
+      WRITE(22,*) N, ",", N
+      DO I = 1, N
+         DO J = 1, N
+            WRITE(22,'(D15.14,$)') DENSE(I + (J-1)*N)
+         END DO
+         WRITE(22,*) ""
+      END DO
+      CLOSE(22)
+
+
+      END
+
       SUBROUTINE BSPCND(N,TOPBLK,NRWTOP,NOVRLP,ARRAY,NRWBLK,NCLBLK,
      *                  NBLOKS,BOTBLK,NRWBOT,EST,V,ISIGN,WORK,
      *                  PIVOT,IFLAG)
