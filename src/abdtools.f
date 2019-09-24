@@ -1,6 +1,139 @@
 C
 C     Tools for dealing with ABD matrices
 C
+      SUBROUTINE ABDDNS(N,TOPBLK,NRWTOP,NOVRLP,ARRAY,NRWBLK,NCLBLK,
+     $     NBLOKS,BOTBLK,NRWBOT,DENSE,IFLAG)
+C
+C***************************************************************
+C
+C  THIS ROUTINE  CONVERTS AN ALMOST BLOCK
+C  DIAGONAL MATRIX OF THE FORM:
+C
+C               TOPBLK
+C               ARRAY(1)
+C                     ARRAY(2)
+C                          .
+C                             .
+C                                .
+C                                   .
+C                                    ARRAY(NBLOKS)
+C                                           BOTBLK
+C
+C  WHERE
+C           TOPBLK IS  NRWTOP  BY NOVRLP
+C           ARRAY(K), K=1,NBLOKS, ARE NRWBLK BY NRWBLK+NOVRLP
+C           BOTBLK IS NRWBOT BY NOVRLP,
+C  AND
+C           NOVRLP = NRWTOP + NRWBOT
+C  WITH
+C           NOVRLP.LE.NRWBLK,
+C
+c  INTO ITS DENSE REPRESENTATION.
+C
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C
+C               *****  PARAMETERS  *****
+C
+C       *** ON ENTRY ...
+C
+C               N      - INTEGER
+C                         THE ORDER OF THE LINEAR SYSTEM,
+C                         GIVEN BY NBLOKS*NRWBLK + NOVRLP
+C
+C               TOPBLK - DOUBLE PRECISION(NRWTOP,NOVRLP)
+C                         THE FIRST BLOCK OF THE ALMOST BLOCK
+C                         DIAGONAL MATRIX A
+C
+C               NRWTOP - INTEGER
+C                         NUMBER OF ROWS IN THE BLOCK TOPBLK
+C
+C               NOVRLP - INTEGER
+C                         THE NUMBER OF COLUMNS IN WHICH SUCC-
+C                         ESSIVE BLOCKS OVERLAP, WHERE
+C                                NOVRLP = NRWTOP + NRWBOT
+C
+C               ARRAY  - DOUBLE PRECISION(NRWBLK,NCLBLK,NBLOKS)
+C                         ARRAY(,,K) CONTAINS THE K-TH NRWBLK
+C                         BY NCLBLK BLOCK OF THE MATRIX A
+C
+C               NRWBLK - INTEGER
+C                         NUMBER OF ROWS IN K-TH BLOCK
+C
+C               NCLBLK - INTEGER
+C                         NUMBER OF COLUMNS IN K-TH BLOCK
+C
+C               NBLOKS - INTEGER
+C                         NUMBER OF NRWBLK BY NCLBLK BLOCKS IN
+C                         THE MATRIX A
+C
+C               BOTBLK - DOUBLE PRECISION(NRWBOT,NOVRLP)
+C                         THE LAST BLOCK OF THE MATRIX A
+C
+C               NRWBOT - INTEGER
+C                         NUMBER OF ROWS IN THE BLOCK BOTBLK
+C
+C               DENSE  - INTEGER(N*N)
+C                         Allocated space for the dense representation
+C
+C       *** ON RETURN  ...
+C
+C               IFLAG  - INTEGER
+C                         =  1, IF INPUT PARAMETERS ARE INVALID
+C                         = -1, IF AN ERROR OCCURRED
+C                         =  0, OTHERWISE
+C
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C
+C     DOUBLE PRECISION TOPBLK,ARRAY,BOTBLK
+      INTEGER N,NRWTOP,NOVRLP,NRWBLK,NCLBLK,NBLOKS,NRWBOT, IFLAG
+      DOUBLE PRECISION TOPBLK(*),ARRAY(*), BOTBLK(*),DENSE(*)
+C
+      INTEGER NSIZTP,NSIZBK
+      INTEGER I,II,J,JJ,DI,DJ,DD
+C
+C     COMPUTE SIZES OF TOP AND MIDDLE BLOCKS
+      NSIZTP = NRWTOP*NOVRLP
+      NSIZBK = NCLBLK*NRWBLK
+C
+C     COPY TOP BLOCK INTO DENSE
+      DO I = 1, NOVRLP
+         II = 1+(I-1)*NRWTOP
+         CALL DCOPY(NRWTOP,TOPBLK(II),1,DENSE(II),1)
+      END DO
+C
+C     COPY BLOCKS INTO DENSE
+      DO I = 1, NBLOCKS
+C     II IS POINTER (IN ARRAY) TO FIRST ELEMENT IN BLOCK I
+         II = (I-1)*NSIZBK
+C     DI,DJ MARK THE (DI,DJ) COORDINATE OF THE TOP LEFT OF BLOCK I IN
+C     THE DENSE MATRIX REPRESENTATION
+         DI = NROWTP+(I-1)*NROWBK+1
+         DJ = (I-1)*NCLBLK - (I-1)*NOVRLP
+         DO J = 1,NCLBLK
+C     JJ IS THE POINTER INTO THE BEGINNING OF COLUMN J IN BLOCK I
+            JJ = II + (J-1)*NROWBK + 1
+C     DD IS THE POINTER INTO THE CORRECT MEMORY LOCATION OF DENSE
+            DD = DI + (DJ-1)*N + J
+            CALL DCOPY(NRWBLK,ARRAY(JJ),1,DENSE(DD),1)
+         END DO
+      END DO
+C
+      DI = N - NOVRLP
+      DJ = N - NRWBOT
+C     COPY TOP BLOCK INTO DENSE MATRIX
+      DO I = 1, NOVRLP
+C     II IS THE POINTER TO THE FIRST ELEMENT OF COLUMN I IN BOTBLK
+         II = 1+(I-1)*NRWBOT
+C     DD IS POINTER INTO THE FIRST ELEMENT OF THE BOTTOM BLOCK IN DENSE
+         DD = DI + (DJ-1)*N + I
+         CALL DCOPY(NRWBOT,BOTBLK(II),1,DENSE(DD),1)
+      END DO
+C
+      IFLAG = 0
+      RETURN
+      END
+C
+C
       SUBROUTINE BSPCND(N,TOPBLK,NRWTOP,NOVRLP,ARRAY,NRWBLK,NCLBLK,
      *                  NBLOKS,BOTBLK,NRWBOT,EST,V,ISIGN,WORK,
      *                  PIVOT,IFLAG)
