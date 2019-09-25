@@ -193,7 +193,162 @@ C
       CLOSE(22)
 
       END
+C
+      SUBROUTINE WRTABD(N,TOPBLK,NRWTOP,NOVRLP,ARRAY,NRWBLK,NCLBLK,
+     $     NBLOKS,BOTBLK,NRWBOT,FNAME,IFLAG)
+C
+C***************************************************************
+C
+C  THIS ROUTINE WRITES AN ALMOST BLOCK
+C  DIAGONAL MATRIX OF THE FORM:
+C
+C               TOPBLK
+C               ARRAY(1)
+C                     ARRAY(2)
+C                          .
+C                             .
+C                                .
+C                                   .
+C                                    ARRAY(NBLOKS)
+C                                           BOTBLK
+C
+C  WHERE
+C           TOPBLK IS  NRWTOP  BY NOVRLP
+C           ARRAY(K), K=1,NBLOKS, ARE NRWBLK BY NRWBLK+NOVRLP
+C           BOTBLK IS NRWBOT BY NOVRLP,
+C  AND
+C           NOVRLP = NRWTOP + NRWBOT
+C  WITH
+C           NOVRLP.LE.NRWBLK,
+C
+c  TO FILE FNAME.
+C
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C  FILE FORMAT IS:
+C
+C      NRWTOP NOVRLP
+C      ABDTOP(I): COLUMN MAJOR ORDERED ENTRIES OF ABDTOP, 1 PER LINE
+C      .
+C      .
+C      NBLOKS NRWBLK NCLBLK
+C      ABDBLK(1,I): COLUMN MAJOR ORDERED ENTRIES OF ABDBLK 1, 1 PER LINE
+C      .
+C      .
+C      ABDBLK(2,I): COLUMN MAJOR ORDERED ENTRIES OF ABDBLK 2, 1 PER LINE
+C      .
+C      .
+C      ETC
+C      .
+C      NRWBOT NOVRLP
+C      ABDBOT(I): COLUMN MAJOR ORDERED ENTRIES OF ABDBOT, 1 PER LINE
+C      .
+C      .
+C
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C
+C               *****  PARAMETERS  *****
+C
+C       *** ON ENTRY ...
+C
+C               N      - INTEGER
+C                         THE ORDER OF THE LINEAR SYSTEM,
+C                         GIVEN BY NBLOKS*NRWBLK + NOVRLP
+C
+C               TOPBLK - DOUBLE PRECISION(NRWTOP,NOVRLP)
+C                         THE FIRST BLOCK OF THE ALMOST BLOCK
+C                         DIAGONAL MATRIX A
+C
+C               NRWTOP - INTEGER
+C                         NUMBER OF ROWS IN THE BLOCK TOPBLK
+C
+C               NOVRLP - INTEGER
+C                         THE NUMBER OF COLUMNS IN WHICH SUCC-
+C                         ESSIVE BLOCKS OVERLAP, WHERE
+C                                NOVRLP = NRWTOP + NRWBOT
+C
+C               ARRAY  - DOUBLE PRECISION(NRWBLK,NCLBLK,NBLOKS)
+C                         ARRAY(,,K) CONTAINS THE K-TH NRWBLK
+C                         BY NCLBLK BLOCK OF THE MATRIX A
+C
+C               NRWBLK - INTEGER
+C                         NUMBER OF ROWS IN K-TH BLOCK
+C
+C               NCLBLK - INTEGER
+C                         NUMBER OF COLUMNS IN K-TH BLOCK
+C
+C               NBLOKS - INTEGER
+C                         NUMBER OF NRWBLK BY NCLBLK BLOCKS IN
+C                         THE MATRIX A
+C
+C               BOTBLK - DOUBLE PRECISION(NRWBOT,NOVRLP)
+C                         THE LAST BLOCK OF THE MATRIX A
+C
+C               NRWBOT - INTEGER
+C                         NUMBER OF ROWS IN THE BLOCK BOTBLK
+C
+C                FNAME  - CHARACTER(*)
+C                         file name to write to
+C
+C       *** ON RETURN  ...
+C
+C               IFLAG  - INTEGER
+C                         =  1, IF INPUT PARAMETERS ARE INVALID
+C                         = -1, IF AN ERROR OCCURRED
+C                         =  0, OTHERWISE
+C
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C
+C     DOUBLE PRECISION TOPBLK,ARRAY,BOTBLK
+      INTEGER N,NRWTOP,NOVRLP,NRWBLK,NCLBLK,NBLOKS,NRWBOT, IFLAG
+      DOUBLE PRECISION TOPBLK(*),ARRAY(*), BOTBLK(*)
+      CHARACTER(LEN=*) FNAME
+C
+      INTEGER NSIZTP,NSIZBK
+      INTEGER I,J,JJ,D,DD
+C
+C     COMPUTE SIZES OF TOP AND MIDDLE BLOCKS
+      NSIZTP = NRWTOP*NOVRLP
+      NSIZBK = NCLBLK*NRWBLK
 
+      OPEN(UNIT=22,FILE=FNAME,ACTION='write')
+
+C     WRITE TOP BLOCK INTO FILE
+      WRITE(22,*) NRWTOP, NOVRLP
+      DO J = 1, NOVRLP
+         DO I = 1, NRWTOP
+C     JJ IS POINTER TO CURRENT ELEMENT IN TOPBLK
+            JJ = I + (J-1)*NRWTOP
+            WRITE(22,*) TOPBLK(JJ)
+            END DO
+      END DO
+C     WRITE MIDDLE BLOCKS INTO FILE
+      WRITE(22,*) NBLOKS, NRWBLK, NCLBLK
+      DO D = 1, NBLOKS
+C     NN IS POINTER TO THE START OF A BLOCK
+         DD = (D-1)*NSIZBK
+         DO J = 1, NCLBLK
+            DO I = 1, NRWBLK
+C     JJ IS POINTER TO CURRENT ELEMENT IN ARRAY
+               JJ = DD + I + (J-1)*NRWBLK
+               WRITE(22,*) ARRAY(JJ)
+            END DO
+         END DO
+      END DO
+C     WRITE BOT BLOCK INTO FILE
+      WRITE(22,*) NRWBOT, NOVRLP
+      DO J = 1, NOVRLP
+         DO I = 1, NRWBOT
+C     JJ IS POINTER TO CURRENT ELEMENT IN BOTBLK
+            JJ = I + (J-1)*NRWBOT
+            WRITE(22,*) BOTBLK(JJ)
+            END DO
+      END DO
+C
+
+      CLOSE(22)
+      RETURN
+      END
+C
       SUBROUTINE BSPCND(N,TOPBLK,NRWTOP,NOVRLP,ARRAY,NRWBLK,NCLBLK,
      *                  NBLOKS,BOTBLK,NRWBOT,EST,V,ISIGN,WORK,
      *                  PIVOT,IFLAG)
