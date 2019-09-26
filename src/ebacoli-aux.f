@@ -2669,7 +2669,16 @@ c     BOT
       call dscal(nu, cj, delta(neq-npde+1), 1)
       call dscal(nw, cj, delta(neq-nw+1), 1)
 
-c     TODO: scale elliptic component of all blocks
+c     Scale elliptic component of all blocks
+      do 10 i = 1, nint
+c     ii is pointer to first unknown in the interval
+         ii = npde + (i-1)*kcol*npde
+         do 20 k = 1, kcol
+c     kk is pointer to first unknown of collocation point k in interval i
+            kk = ii + (k-1)*npde
+            call dscal(nw, cj, delta(kk+nu+nv+1), 1)
+ 20      continue
+ 10   continue
 
       call crslve(wm(npd), npde, 2*npde, wm(npdbk1), kcol*npde,
      &            (kcol+nconti)*npde, nint, wm(npdbt1), npde,

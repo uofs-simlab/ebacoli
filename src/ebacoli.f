@@ -5661,7 +5661,7 @@ c              above basis function.
                jk3 = jk2 + kcol + nconti
 
                do 40 m = 1, npde
-                  do 30 n = 1, npde
+                  do 30 n = 1, nu+nv
 
 c                    nn is the pointer to the (n, m) element of the
 c                    npde by npde submatrix.
@@ -5687,18 +5687,37 @@ c                    now set up the value in pd at the place nn.
    60    continue
    70 continue
 
-c     Elliptic interior blocks need to have the time derivative (abdblk) zeroed
+
+c     Elliptic interior blocks are done in place in abdblk
       do 79 i = 1, nint
 
 c        ii+1 is the pointer to the first element at the i-th subblock
 c        of the jacobian matrix, i = 1, nint.
          ii = (i - 1) * nsizbk
 
+c        ij is the value of ileft for the current collocation point.
+         ij = kcol + nconti + (i - 1) * kcol
+
          do 69 j = 1, kcol
 
 c           jj+1 is the pointer to the first element corresponding to
 c           the j-th collocation point in the i-th interval.
             jj = ii + (j - 1) * npde
+
+c           mm is the index of the current collocation point.
+            mm = (i - 1) * kcol + j + 1
+
+c           Generate the approximate solution and its spatial
+c           derivatives at the current collocation point.
+            call eval(npde,kcol,ij,mm,ncpts,work(iu),work(iux),
+     &                work(iuxx),fbasis(1+(mm-1)*(kcol+nconti)*3),y)
+
+c           Generate dfdu, dfdux, and dfdux at the current
+c           collocation point (the j-th point of the i-th
+c           subinterval).
+            call derivf(t, xcol(1+(i-1)*kcol+j), work(iu),
+     &                  work(iux), work(iuxx), work(idfdu),
+     &                  work(idfdux), work(idfuxx), npde)
 
             do 59 k = 1, kcol + nconti
 
@@ -5708,6 +5727,19 @@ c              collocation point in the i-th interval, and the k-th
 c              nonzero basis function.
                kk = jj + (k-1) * npde * npde * kcol
 
+c              jk is the pointer to the k-th nonzero function at the
+c              mm-th collocation point in the basis function,
+c              fbasis(1).
+               jk = (mm - 1) * (kcol + nconti) * 3 + k
+
+c              jk2 is the pointer to the first derivative for the
+c              above basis function.
+               jk2 = jk + kcol + nconti
+
+c              jk3 is the pointer to the second derivative for the
+c              above basis function.
+               jk3 = jk2 + kcol + nconti
+
                do 49 m = 1, npde
                   do 39 n = nu+nv+1, nu+nv+nw
 
@@ -5715,8 +5747,19 @@ c                    nn is the pointer to the (n, m) element of the
 c                    npde by npde submatrix.
                      nn = kk + (m-1)*npde*kcol + n
 
+c                    mn is the pointer to the (n, m) element of dfdu.
+                     mn = idfdu - 1 + (m - 1) * npde + n
+
+c                    mn2 is the pointer to the (n, m) element of dfdux.
+                     mn2 = mn + npde * npde
+
+c                    mn3 is the pointer to the (n, m) element of dfduxx.
+                     mn3 = mn2 + npde * npde
+
 c                    now set up the value in abdblk at the place nn.
-                     abdblk(nn) = zero
+                     abdblk(nn) = - work(mn) * fbasis(jk)
+     &                        - work(mn2) * fbasis(jk2)
+     &                        - work(mn3) * fbasis(jk3)
 
  39               continue
  49            continue
