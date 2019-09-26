@@ -5687,6 +5687,43 @@ c                    now set up the value in pd at the place nn.
    60    continue
    70 continue
 
+c     Elliptic interior blocks need to have the time derivative (abdblk) zeroed
+      do 79 i = 1, nint
+
+c        ii+1 is the pointer to the first element at the i-th subblock
+c        of the jacobian matrix, i = 1, nint.
+         ii = (i - 1) * nsizbk
+
+         do 69 j = 1, kcol
+
+c           jj+1 is the pointer to the first element corresponding to
+c           the j-th collocation point in the i-th interval.
+            jj = ii + (j - 1) * npde
+
+            do 59 k = 1, kcol + nconti
+
+c              kk+1 is the pointer to the first element of a npde by
+c              npde submatrix, which is corresponding to the j-th
+c              collocation point in the i-th interval, and the k-th
+c              nonzero basis function.
+               kk = jj + (k-1) * npde * npde * kcol
+
+               do 49 m = 1, npde
+                  do 39 n = nu+nv+1, nu+nv+nw
+
+c                    nn is the pointer to the (n, m) element of the
+c                    npde by npde submatrix.
+                     nn = kk + (m-1)*npde*kcol + n
+
+c                    now set up the value in abdblk at the place nn.
+                     abdblk(nn) = zero
+
+ 39               continue
+ 49            continue
+ 59         continue
+ 69      continue
+ 79   continue
+
 c-----------------------------------------------------------------------
 c     Update part of the PD_TOP that is related to the ODEs
       call eval(npde, kcol, kcol+2, 1, ncpts, work(iu), work(iux),
