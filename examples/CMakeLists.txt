@@ -1,7 +1,8 @@
 
-add_subdirectory(extended2)
-add_subdirectory(extended)
-add_subdirectory(standard)
+add_subdirectory(par)
+add_subdirectory(par-ode)
+add_subdirectory(par-ellip)
+add_subdirectory(par-ode-ellip)
 add_subdirectory(TOMS)
 
 add_subdirectory(movie)
