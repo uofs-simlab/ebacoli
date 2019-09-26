@@ -3728,7 +3728,7 @@ c     points to work(ivcol), which will be used for newton iterations.
       if (ifglin .eq. 0) then
 c        Interior
          call dcopy(neq-2*npde,y(npde+1),1,work(ivcol),1)
-         if (npde .gt. nu) then
+         if (nv .gt. 0) then
 c           Left BC (copy only ODEs)
             call dcopy(nv,y(nu+1),1,work(ivcol-npde+nu),1)
 c           Right BC (copy only ODEs)
@@ -3775,7 +3775,7 @@ c     Calculate (work(idelta-1+i), i = npde+1, neq-npde), which depends
 c     on the nint blocks in the middle of the collocation matrix A.
       call dcopy(neq-2*npde,work(ivcol),1,work(idelta+npde),1)
 c     Top and bottom blocks, only the ODE parts
-      if (npde .gt. nu) then
+      if (nv .gt. 0) then
          call dcopy(nv,work(ivcol-npde+nu),1,work(idelta+nu),1)
          call dcopy(nv,work(iu+nu),1,
      &                work(idelta+neq-npde+nu),1)
