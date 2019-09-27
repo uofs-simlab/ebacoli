@@ -1,0 +1,2 @@
+
+create_ebacoli_executable(driver-FHN_bidomain-trimesh FHN_bidomain)
