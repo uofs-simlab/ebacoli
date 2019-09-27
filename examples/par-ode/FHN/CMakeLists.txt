@@ -1,0 +1,3 @@
+
+create_ebacoli_executable(driver-FHN_monodomain-simple FHN_monodomain)
+create_ebacoli_executable(driver-FHN_monodomain-trimesh FHN_monodomain)

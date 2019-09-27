@@ -1,15 +1,29 @@
 Brief description of extended examples found in this directory.
 
-[./FHN\_monodomain.f](./FHN_monodomain.f):
+[./CDM](./CDM):
+
+-   Ecological competition between 2 species with differing habitat requirements
+-   NPDE=3, NU=2
+-   front solution can move either direction dependent on parameters
+-   epsilon sets steepness of the front (and its propagation speed)
+
+[./FHN](./FHN):
 
 -   modified FitzHugh--Nagumo cell model from Elham's thesis (results in Table 4.3)
 -   NPDE=2, NU=1
 
-[./FHN2\_monodomain.f](./FHN2_monodomain.f):
+[./FHN2](./FHN2):
 
 -   Original Fitzhugh--Nagumo monodomain problem
 -   NPDE=2, NU=1
 -   Initial conditions such that a travelling pulse is generated
+
+[./rabid](./rabid)
+
+-   Model of rabid fox population (Murray et al. Proc R Soc Lond B Biol Sci. 1986 Nov 22;229(1255):111-50)
+-   NPDE=3, NU=1
+-   Small perturbation of rabid population at left end produces wave front with an oscillatory tail
+-   Due to unstable dynamics of the R=0 solution, eBACOLI solutions can blow up if spatial domain is too large
 
 [./TenTusscher](./TenTusscher):
 
@@ -17,17 +31,3 @@ Brief description of extended examples found in this directory.
 -   NPDE=19, NU=1
 -   split to its own directory because of the many files needed for Jacobian computation
 -   Initial conditions such that a travelling pulse is generated
-
-[./CDM.f](./CDM.f):
-
--   Ecological competition between 2 species with differing habitat requirements
--   NPDE=3, NU=2
--   front solution can move either direction dependent on parameters
--   epsilon sets steepness of the front (and its propagation speed)
-
-[./rabid.f](./rabid.f)
-
--   Model of rabid fox population (Murray et al. Proc R Soc Lond B Biol Sci. 1986 Nov 22;229(1255):111-50)
--   NPDE=3, NU=1
--   Small perturbation of rabid population at left end produces wave front with an oscillatory tail
--   Due to unstable dynamics of the R=0 solution, eBACOLI solutions can blow up if spatial domain is too large
