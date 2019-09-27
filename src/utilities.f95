@@ -1,5 +1,4 @@
-! Utility functions for testing
-
+! Utility functions
 
 ! ----------------------------------------------------------------------------
 subroutine write_subsystem_sizes(npde_sub)

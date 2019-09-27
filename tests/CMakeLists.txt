@@ -4,7 +4,6 @@ macro(create_test_executable problem_file)
   add_executable(test_${problem_file}
     test_${problem_file}.f95
     ${problem_file}.f
-    utilities.f95
     )
   target_link_libraries(test_${problem_file} ebacoli)
   add_test(${problem_file} test_${problem_file})
