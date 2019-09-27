@@ -84,8 +84,14 @@
 ! It drapes a surface over a triangularization of the data.
 !-----------------------------------------------------------------------
 
-#ifndef MAC_NPDE
-#define MAC_NPDE 1
+#ifndef MAC_NU
+#define MAC_NU 0
+#endif
+#ifndef MAC_NV
+#define MAC_NV 0
+#endif
+#ifndef MAC_NW
+#define MAC_NW 0
 #endif
 
 program trimesh_example_driver
@@ -101,8 +107,8 @@ program trimesh_example_driver
     ! code; see burg1.f, burg2.f, CahnAllen.f, rcdsys.f, sinmads.f,
     ! and steady.f.
 
-    integer,  parameter, dimension(3) :: npde_sub = (/MAC_NPDE,1,0/)
-    integer,  parameter    :: npde = MAC_NPDE
+    integer,  parameter, dimension(3) :: npde_sub = (/MAC_NU,MAC_NV,MAC_NW/)
+    integer,  parameter    :: npde = sum(npde_sub)
     real(dp), parameter    :: xa = 0, xb = 1
     real(dp), allocatable  :: uout(:,:)
     real(dp)               :: tout, tstart, tstop, atol(npde), rtol(npde)

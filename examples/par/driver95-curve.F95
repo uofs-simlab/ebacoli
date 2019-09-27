@@ -72,8 +72,14 @@
 ! scipy.interpolate.splev is an interface to SPLEV of FITPACK.
 !-----------------------------------------------------------------------
 
-#ifndef MAC_NPDE
-#define MAC_NPDE 1
+#ifndef MAC_NU
+#define MAC_NU 0
+#endif
+#ifndef MAC_NV
+#define MAC_NV 0
+#endif
+#ifndef MAC_NW
+#define MAC_NW 0
 #endif
 
 program curve_example_driver
@@ -91,8 +97,8 @@ program curve_example_driver
     ! Choose npde to be consistent with the problem specific source
     ! code; see burg1.f, burg2.f, CahnAllen.f, rcdsys.f, sinmads.f,
     ! and steady.f.
-    integer,  parameter, dimension(3) :: npde_sub = (/MAC_NPDE,0,0/)
-    integer,  parameter    :: npde = MAC_NPDE, nderiv = 1
+    integer,  parameter, dimension(3) :: npde_sub = (/MAC_NU,MAC_NV,MAC_NW/)
+    integer,  parameter    :: npde = sum(npde_sub), nderiv = 1
     real(dp), parameter    :: xa = 0, xb = 1
 
     integer                :: nout

@@ -23,8 +23,14 @@
 ! (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 ! OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef MAC_NPDE
-#define MAC_NPDE 1
+#ifndef MAC_NU
+#define MAC_NU 0
+#endif
+#ifndef MAC_NV
+#define MAC_NV 0
+#endif
+#ifndef MAC_NW
+#define MAC_NW 0
 #endif
 
 program simple_example_driver
@@ -46,8 +52,8 @@ program simple_example_driver
     ! and steady.f.
     ! Assume output at 11 points over (problem specific) spatial domain,
     ! and maximum number of subintervals = 50.
-    integer,  parameter, dimension(3) :: npde_sub = (/MAC_NPDE,1,0/)
-    integer,  parameter :: npde = MAC_NPDE, nout = 11, nint_max = 500
+    integer,  parameter, dimension(3) :: npde_sub = (/MAC_NU,MAC_NV,MAC_NW/)
+    integer,  parameter :: npde = sum(npde_sub), nout = 11, nint_max = 500
 
     ! Set (problem dependent) output time to 1
     real(dp), parameter :: tout = 1
