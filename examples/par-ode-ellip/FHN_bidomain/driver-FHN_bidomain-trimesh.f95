@@ -99,12 +99,13 @@ program trimesh_example_driver
 
     integer,  parameter, dimension(3)    :: npde_sub = (/1,1,1/)
     integer,  parameter    :: npde = sum(npde_sub)
-    integer,  parameter    :: nu   = 1, nv = 1, nw = 1
+    integer,  parameter    :: nu   = npde_sub(1), nv = npde_sub(2), nw = npde_sub(3)
     real(dp), parameter    :: xa = 0, xb = 70
+    real(dp), allocatable  :: xinit(:)
     real(dp), allocatable  :: uout(:,:)
     real(dp)               :: tout, tstart, tstop, atol(npde), rtol(npde)
 
-    integer                :: i, j, k, ier, ntout
+    integer                :: i, j, k, ier, ntout, nint_init
     character(len=32)      :: fname, npde_str
 
     external f, bndxa, bndxb, uinit, derivf, difbxa, difbxb
@@ -127,13 +128,25 @@ program trimesh_example_driver
     ! Set solution parameters
     tstop = 30.d0
     ntout = 100
-    atol(1) = 1d-3
+    atol(1) = 1d-2
     rtol(1) = atol(1)
+
+    ! set initial mesh
+    nint_init = 40
+    allocate(xinit(nint_init), stat=ier)
+    do i = 1, 30
+       xinit(i) = (i-1)*0.5
+    end do
+    do i = 31, 40
+       xinit(i) = 15 + (i-30)*5.5
+    end do
+    ! write(*,*) xinit
+    ! call exit(0)
 
     !-------------------------------------------------------------------
     ! Initialization: Allocate storage and set problem parameters.
-!    call ebacoli95_init(sol, npde, (/xa,xb/), atol=atol, rtol=rtol, dirichlet=1)
-    call ebacoli95_init(sol, npde_sub, (/xa,xb/), atol=atol, rtol=rtol, nint_max=10000)
+   ! call ebacoli95_init(sol, npde_sub, (/xa,xb/), atol=atol, rtol=rtol, nint_max=10000)
+    call ebacoli95_init(sol, npde_sub, xinit, atol=atol, rtol=rtol, nint_max=10000)
 
     allocate(uout(npde,sol%nint_max+1), stat=ier)
     if (ier /= 0 .or. sol%idid == -1000) goto 700

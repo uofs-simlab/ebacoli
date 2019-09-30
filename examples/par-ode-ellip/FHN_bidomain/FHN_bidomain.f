@@ -45,6 +45,7 @@ c-----------------------------------------------------------------------
 c parameters
         double precision    epsilon, beta, gamma, sigmai, sigmae
         common /fhn/       epsilon, beta, gamma, sigmai, sigmae
+        double precision   istim
 c
 c-----------------------------------------------------------------------
 c Loop indices:
@@ -54,9 +55,24 @@ C
 C     ASSIGN FVAL(1:NPDE) ACCORDING TO THE RIGHT HAND SIDE OF THE PDE
 C     IN TERMS OF U(1:NPDE), UX(1:NPDE), UXX(1:NPDE).
 C
+      if (X .le. 35 .and. X .ge. 30) then
+         if (T .le. 5) then
+            istim = -0.5d0
+         else if (T .le. 10) then
+            istim = -1.d0
+         else if (T .le. 11) then
+            istim = -2.0d0
+         else
+            istim = 0.d0
+         end if
+      else
+         istim = 0
+      end if
+
+
 c     The parabolic equation
       FVAL(1)= sigmai*( UXX(1) + UXX(3) ) +
-     &     ( U(1) - U(1)*U(1)*U(1)/3.D0 - U(2) ) / epsilon
+     &     ( U(1) - U(1)*U(1)*U(1)/3.D0 - U(2) ) / epsilon - istim
 
 c     The cell model equation
       FVAL(2) = epsilon * ( U(1) + beta - gamma*U(2) )
@@ -443,11 +459,12 @@ C            epsilon = 0.1
 C            beta = 1
 C           gamma = 0.5
 C           lambda = sigmai = 1
-      IF ( x .le. 10.D0 ) THEN
-         U(1) = (Ulow-Uhigh)*x/10.D0 + Uhigh
-      ELSE
-         U(1) = Ulow
-      ENDIF
+c$$$      IF ( x .le. 10.D0 ) THEN
+c$$$         U(1) = (Ulow-Uhigh)*x/10.D0 + Uhigh
+c$$$      ELSE
+c$$$         U(1) = Ulow
+c$$$      ENDIF
+      U(1) = Ulow
       U(2) = U2low
       U(3) = 0.d0
 C
