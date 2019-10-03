@@ -29,7 +29,7 @@ vline_positions = [50]
 if __name__=="__main__":
 
     if len(sys.argv) < 2:
-        print "Usage: plot_all_bsplines.py <list of Bspline filenames>"
+        print("Usage: plot_all_bsplines.py <list of Bspline filenames>")
         sys.exit(1)
 
     fnames = sys.argv[1:]

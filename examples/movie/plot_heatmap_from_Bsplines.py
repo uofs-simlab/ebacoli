@@ -22,7 +22,7 @@ cmap = colors.cmap_widesep_r
 if __name__ == "__main__":
 
     if len(sys.argv) < 2:
-        print "Usage: plot_heatmap_from_Bsplines.py <u or v> <component> <list of Bspline filenames>"
+        print("Usage: plot_heatmap_from_Bsplines.py <u or v> <component> <list of Bspline filenames>")
         sys.exit(1)
 
     plot_var_str = sys.argv[1]   # u or v
