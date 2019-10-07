@@ -1623,18 +1623,19 @@ c     Store the (PDE part of) top and bottom blocks before reinit
 c     parabolic part
       do i = 1, nu
          ii = ipar(iresto) + i - 1
-         call dcopy(npde*nconti, rpar(ipar(iabtop)) ,npde, rpar(ii), 1)
-         call dcopy(npde*nconti, rpar(ipar(iabbot)) ,npde,
-     &                           rpar(ii+nu*npde*nconti), 1)
+         call dcopy(npde*nconti, rpar(ipar(iabtop)) ,npde, rpar(ii),2
+     $        *(nu+nw))
+         call dcopy(npde*nconti, rpar(ipar(iabbot)) ,npde, rpar(ii+(nu
+     $        +nw)*npde*nconti), 2*(nu+nw))
       end do
 c     elliptic part
       do i = 1, nw
 c        ii is index into temporary storage, does not have space for nv
          ii = ipar(iresto) + nu + i - 1
          call dcopy(npde*nconti, rpar(ipar(iabtop)+nu+nv), npde,
-     $        rpar(ii), 1)
+     $        rpar(ii), 2*(nu+nw))
          call dcopy(npde*nconti, rpar(ipar(iabbot)+nu+nv), npde,
-     &        rpar(ii+(nu+nw)*npde*nconti), 1)
+     &        rpar(ii+(nu+nw)*npde*nconti), 2*(nu+nv))
       end do
 
 c     reinit uses rpar(ipar(irwork)+40+6*neq) as its work array and
@@ -1651,18 +1652,19 @@ c     Restore the (PDE part of) top and bottom blocks to state before reinit cal
 c     parabolic part
       do i = 1, nu
          ii = ipar(iresto) + i - 1
-         call dcopy(npde*nconti, rpar(ii), 1, rpar(ipar(iabtop)) ,npde)
-         call dcopy(npde*nconti, rpar(ii+nu*npde*nconti), 1,
-     &                           rpar(ipar(iabbot)) ,npde)
+         call dcopy(npde*nconti, rpar(ii), 2*(nu+nw), rpar(ipar(iabtop))
+     $        ,npde)
+         call dcopy(npde*nconti, rpar(ii+(nu+nw)*npde*nconti), 2*(nu+nw)
+     $        ,rpar(ipar(iabbot)) ,npde)
       end do
 c     elliptic part
       do i = 1, nw
 c        ii is index into temporary storage, does not have space for nv
          ii = ipar(iresto) + nu + i - 1
-         call dcopy(npde*nconti, rpar(ii), npde,
-     $        rpar(ipar(iabtop)+nu+nv), 1)
-         call dcopy(npde*nconti, rpar(ii+(nu+nw)*npde*nconti), npde,
-     &        rpar(ipar(iabbot)+nu+nv), 1)
+         call dcopy(npde*nconti, rpar(ii), 2*(nu+nw),
+     $        rpar(ipar(iabtop)+nu+nv), npde)
+         call dcopy(npde*nconti, rpar(ii+(nu+nw)*npde*nconti), 2*(nu+nw)
+     $        ,rpar(ipar(iabbot)+nu+nv), npde)
       end do
 
       if (icflag .ne. 0) then
@@ -4209,7 +4211,7 @@ c     parabolic part
   110    continue
 c     elliptic part
          do 115 i = 1, nw
-            ii = (j - 1) * npde +nu + nv + i
+            ii = (j - 1) * npde + nu + nv + i
             mm = ii-1
             jj = ii + npde * npde
             abdtop(jj) = fbasis(2,2,1) * work(idbdux+mm)
