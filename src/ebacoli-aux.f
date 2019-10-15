@@ -2417,16 +2417,16 @@ c     Scale the algebraic equations to improve conditioning.
 
 c------------------------------------------------------------------------
 c     Compute the condition number and
-      call BSPCND(neq, wm(npd), npde, 2*npde, wm(npdbk1), kcol*npde,
-     &     (kcol+nconti)*npde, nint, wm(npdbt1), npde, condest,
-     $     condv, condsgn, condwrk, iwm(lipvt), ier)
+c$$$      call BSPCND(neq, wm(npd), npde, 2*npde, wm(npdbk1), kcol*npde,
+c$$$     &     (kcol+nconti)*npde, nint, wm(npdbt1), npde, condest,
+c$$$     $     condv, condsgn, condwrk, iwm(lipvt), ier)
 
-      write(*,*) "[LOG]: IER:", ier, " CONDEST:", condest
+c$$$      write(*,*) "[LOG]: IER:", ier, " CONDEST:", condest
 
 c     ABD LU decomposition of PD
-c$$$      call crdcmp(neq, wm(npd), npde, 2*npde, wm(npdbk1), kcol*npde,
-c$$$     &            (kcol+nconti)*npde, nint, wm(npdbt1), npde,
-c$$$     &            iwm(lipvt), ier)
+      call crdcmp(neq, wm(npd), npde, 2*npde, wm(npdbk1), kcol*npde,
+     &            (kcol+nconti)*npde, nint, wm(npdbt1), npde,
+     &            iwm(lipvt), ier)
 
 c     Second call to crdcmp removed.
 
