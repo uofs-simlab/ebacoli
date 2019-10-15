@@ -1107,7 +1107,7 @@ module ebacoli95_mod
           fname = 'Bsplines' // adjustl(trim(step_str))
           open(unit=20,file=fname)
           ! line 1: number of PDEs in the system and current time
-          write(20,*) splines%npde, ',', sol%nu, ",", sol%nint, ",", time, ",", sol%atol(1), ",", sol%rtol(1)
+          write(20,*) sol%nu, ',', sol%nv, ",", sol%nw, ",", sol%nint, ",", time, ",", sol%atol(1), ",", sol%rtol(1)
           ! line 2: breakpoint/knot sequence
           write(20,*) splines%knots
           ! line 3: coefficient values at time t0
