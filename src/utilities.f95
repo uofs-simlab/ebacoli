@@ -88,3 +88,19 @@ subroutine write_discrete_L2_error(sol,truu,npoints)
   write(*,*) "Discrete L2 error at output points:", error
 
 end subroutine write_discrete_L2_error
+
+
+! Timing routines
+subroutine tic(t1)
+  implicit none
+  real(8) :: t1
+  call cpu_time(t1)
+end subroutine tic
+
+subroutine toc(t1,split)
+  implicit none
+  real(8) :: t1, split
+  real(8) :: t2
+  call cpu_time(t2)
+  split = real(t2-t1)
+end subroutine toc
