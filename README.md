@@ -7,7 +7,7 @@ The purpose of eBACOLI is to solve m~u~ dimensional systems of second order para
 
 u\_t(t,x) = f(t, x, v(t,x), u(t,x), u\_x(t,x), u\_xx(t,x)),
 
-v]_t(t,x) = g(t, x, v(t,x), u(t,x)),
+v\_t(t,x) = g(t, x, v(t,x), u(t,x)),
 
 where x\_a &lt; x &lt; x\_b and t &gt; t0, with initial conditions at time t = t0 are given by:
 
