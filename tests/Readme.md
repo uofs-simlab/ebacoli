@@ -1,5 +1,4 @@
-eBACOLI tests
-===
+# eBACOLI tests
 
 Problem definitions that have exact solutions.
 
