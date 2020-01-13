@@ -1,0 +1,54 @@
+\documentclass{article}
+
+\usepackage{amsmath,amssymb}
+
+\newcommand{\der}[2]{ \frac{d{#1}}{d{#2}} }
+\providecommand*{\pder}[3][]{ \frac{\partial^{#1}#2}{\partial #3^{#1}} }
+
+\begin{document}
+
+\section{Solution}
+\begin{align*}
+  u_1 & = e^{-xt}\sin\left(x+t\right) \\
+  u_2 & = \cos\left(x+t\right) \\
+  v_1 & = e^{-xt}\cos\left(x+t\right) \\
+  v_2 & = \left(x-t\right)^2 \\
+  w_1 & = \tanh\left(x-t\right) \\
+  w_2 & = \sin\left(x+t\right)
+\end{align*}
+
+Take $t=0$ for ICs.
+
+\section{PDEs}
+\label{sec:pdes}
+
+\begin{align*}
+  \pder{u_1}{t} & = -xu_1 + v_1 + \pder[2]{u_1}{x} - 2tv_1 - \left(t^2-1\right)u_1 + \left(\pder{w_1}{x} + w_1^2 - 1\right) + \cos^{-1}\left(u_2\right) - 2t - v_2 \\
+  \pder{u_2}{t} & = \pder{u_2}{x} + \left(\pder[2]{u_2}{x} + \pder{w_2}{x}\right) + \left(\pder{u_1}{x} - tu_1 + v_1\right) + \left(\sqrt{1-u_2^2} - w_2\right) \\
+  \pder{v_1}{t} & = -xv_1 - u_1 + u_2 - \sqrt{1-w_2^2} \\
+  \pder{v_2}{t} & = -2\tanh^{-1}w_1 + \sin\left(e^{xt}u_1-w_2\right) + \left(e^{xt}v_1-u_2\right) + v_2^{3/2}-\left(x-t\right)^3 \\
+  0 & = -\pder[2]{w_1}{x} - 2w_1\left(\pder{u_1}{x}\right)^2 + e^{2xt}\left(u_1^2+v_1^2-1\right) + \sin{v_2} - \sin\left(\left(x-t\right)^2\right) \\
+  0 & = -\pder[2]{w_2}{x} + e^{xt}u_1 + \left(u_2^2+w_2^2\right) - \left(\left(\pder{w_2}{x}\right)^2+\left(\pder{u_2}{x}\right)^2\right) + \left(\pder{u_1}{x} -tu_1+v_1\right)
+\end{align*}
+
+\section{Boundary conditions}
+\label{sec:boundary-conditions}
+
+Left boundary:
+
+\begin{align*}
+  u_1(1,t) & = e^{-t}\sin(1+t) \\
+  u_2(1,t) & = \cos(1+t) \\
+  w_1(1,t) & = \tanh(1-t) \\
+  w_2(1,t) & = \sin(1+t) \\
+\end{align*}
+
+Right boundary:
+
+\begin{align*}
+  \pder{u_1}{x}(2,t) & = -t u_1(2,t) + v_1(2,t) \\
+  \pder{u_2}{x}(2,t) & = \sqrt{1+\left(\pder{w_2}{x}(2,t)\right)^2} \\
+  \pder{w_1}{x}(2,t) & = 1 - w_1^2(2,t) + v_2(2,t) - \left(2-t\right)^2 \\
+  \pder{w_2}{x}(2,t) & = u_2(2,t) + \pder{u_2}{x}(2,t) + w_2(2,t)
+\end{align*}
+\end{document}

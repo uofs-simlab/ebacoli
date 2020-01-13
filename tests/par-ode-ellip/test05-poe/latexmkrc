@@ -1,0 +1,18 @@
+# latexmkrc for generic main.tex file
+#
+#   running `latexmk` should be all that's needed to build the pdf
+#
+#      latexmk -c  -> like `make clean`
+#      latexmk -C  -> like `make distclean`
+
+# use pdflatex
+$pdf_mode       = 1;        # tex -> pdf
+
+# pdflatex command
+$pdflatex       = 'pdflatex -file-line-error -synctex=1';
+@generated_exts = (@generated_exts, 'synctex.gz');
+
+
+$default_files  = ('main.tex');
+
+$clean_ext      = "bbl nav out snm vrb";
