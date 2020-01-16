@@ -541,7 +541,7 @@ C
       DBDUX(1,8) = 0.0D0
       DBDUX(1,9) = 0.0D0
       DBDUX(1,10) = 0.0D0
-      DBDUX(1,11) = 1.0D0
+      DBDUX(1,11) = 0.0D0
       DBDUX(1,12) = 0.0D0
       DBDUX(1,13) = 0.0D0
       DBDUX(1,14) = 0.0D0
@@ -644,7 +644,7 @@ C
       DBDUX(1,8) = 0.0D0
       DBDUX(1,9) = 0.0D0
       DBDUX(1,10) = 0.0D0
-      DBDUX(1,11) = 1.0D0
+      DBDUX(1,11) = 0.0D0
       DBDUX(1,12) = 0.0D0
       DBDUX(1,13) = 0.0D0
       DBDUX(1,14) = 0.0D0
