@@ -420,7 +420,7 @@ C            beta = 1
 C           gamma = 0.5
 C           lambda = sigma_i = 1
       U(1) = 1.d0
-      U(2) = 1.d0 + 0.2d0*DSIN(2.d0*PI*X/20.d0)
+      U(2) = 1.d0 + 0.1*DEXP(-10.d0*X*X)
 C
       RETURN
       END

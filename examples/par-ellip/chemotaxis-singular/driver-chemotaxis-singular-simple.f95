@@ -44,8 +44,9 @@ program simple_example_driver
     ! and maximum number of subintervals = 50.
     integer,  parameter, dimension(3) :: npde_sub = (/1,0,1/)
     integer,  parameter :: npde = 2, nu = 1, nv = 0, nw = 1, nout = 11, nint_max = 5000
-    real(dp), parameter :: xa = 0, xb = 20
-
+    real(dp), parameter :: xa = 0, xb = 1
+    integer,  parameter :: nin = 100
+    real(dp) :: xin(nin)
     ! Set (problem dependent) output time to 1
     real(dp), parameter :: tout = 1.0D-2
 
@@ -63,9 +64,15 @@ program simple_example_driver
     chi = 5.d0
     tau = 0.d0 ! singular chemotaxis when tau=0
 
+
+    ! Initialize a grid to pass to ebacoli
+    xin = (/(xa+i*(xb-xa)/(nin-1), i=0,nin-1)/)
+
+    write(*,*) xin
+
     ! Initialization (set spatial domain = [0,1]); a default uniform
     ! spatial mesh having 10 subintervals will be constructed.
-    call ebacoli95_init(sol, npde_sub, (/xa,xb/), atol=(/1d-6/), &
+    call ebacoli95_init(sol, npde_sub, xin, atol=(/1d-6/), &
          rtol=(/1d-6/), nint_max = nint_max)
 
     call write_subsystem_sizes(sol%npde_sub)
