@@ -1,0 +1,9 @@
+# Richards' equation
+
+Based on [Celia1990] and [Miller1998]:
+- https://doi.org/10.1029/WR026i007p01483
+- https://doi.org/10.1029/98WR01673
+
+## Generation of Fortran code
+
+Done from richards_codegen.maple. NOT automatic. Output code segments copied to functions in richards.f, common block variables added.
