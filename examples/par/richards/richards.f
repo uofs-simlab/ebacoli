@@ -374,9 +374,11 @@ C OUTPUT:
 C                               U(1:NPDE) IS VECTOR OF INITIAL VALUES OF
 C                               THE UNKNOWN FUNCTION AT T = T0 AND THE
 C                               GIVEN VALUE OF X.
+      double precision         xsplit
 C-----------------------------------------------------------------------
-      if (X .le. 0.6) then
-         U(1) = -0.75 - 9.25d0*X/0.6
+      xsplit = 0.006d0
+      if (X .le. xsplit) then
+         U(1) = -0.75 - 9.25d0*X/xsplit
       else
          U(1) = -10.d0
       end if

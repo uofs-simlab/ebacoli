@@ -64,7 +64,7 @@ program richards_driver
     phi = 1.d0 ! not specified in laugh draft paper
     thetar = 0.102d0
     thetas = 0.368d0
-    alpha = 0.0335d0
+    alpha = 3.35d0
     n = 2.d0
     m = 1.d0 - 1.d0/n
     ks = 9.22d-5
@@ -79,7 +79,7 @@ program richards_driver
     write(6,*)
 
     ! Set output time
-    tstop = 1.d4
+    tstop = 1.d5
     ntout = 20
 
     ! Set tolerance
