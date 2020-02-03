@@ -66,7 +66,7 @@ C
       k = hydcon(psi)
       dk = dhydco(psi)
 C
-      FVAL(1) = ( -k*ddpsi - dk*dpsi*(1.d0+dpsi) + qs(x,t) )
+      FVAL(1) = ( k*ddpsi + dk*dpsi*(-1.d0+dpsi) + qs(x,t) )
      &     / (ss*theta/phi+dtheta)
 C
       RETURN
@@ -159,13 +159,13 @@ C
 c
       denom1 = ss*theta/phi+dtheta
 C
-      DFDU(1,1) = (ss*dtheta/phi+ddthet)*
-     &     (-k*ddpsi-dk*dpsi*(1.d0+dpsi)+qs(x,t)) / denom1**2
-     &     + (-dk*ddpsi-ddk*dpsi*(1.d0+dpsi))/denom1
+      DFDU(1,1) = -(ss*dtheta/phi+ddthet)*
+     &     (k*ddpsi+dk*dpsi*(-1.d0+dpsi)+qs(x,t)) / denom1**2
+     &     + (dk*ddpsi+ddk*dpsi*(-1.d0+dpsi))/denom1
 c
-      DFDUX(1,1) = -dk*(1.d0+2.d0*dpsi)/denom1
+      DFDUX(1,1) = dk*(-1.d0+2.d0*dpsi)/denom1
 c
-      DFDUXX(1,1) = -k/denom1
+      DFDUXX(1,1) = k/denom1
 C
       RETURN
       END
