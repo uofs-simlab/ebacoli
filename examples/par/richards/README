@@ -6,4 +6,11 @@ Based on [Celia1990] and [Miller1998]:
 
 ## Generation of Fortran code
 
-Done from richards_codegen.maple. NOT automatic. Output code segments copied to functions in richards.f, common block variables added.
+Done from richards_codegen.maple. NOT automatic, the following steps were taken:
+- Copy generated code segments to functions in richards.f
+- Add common block variables
+- Fix function output names
+- String replace "#" -> "$" in the generated code line continuations
+- Use emacs' auto formatting of multi-line fortran statements to make them legitimate F77 code
+- String replace "signum(1, psi)" -> "0.d0"
+  - In Maple, `signum(1,x)` = undefined for x=0, 0 otherwise. We are assuming the pressure head never takes on value 0. There is no corresponding function in Fortran, and I couldn't manipulate the code generation to deal with this after adding the `abs(psi)` statements.
