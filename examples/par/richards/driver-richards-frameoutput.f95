@@ -38,12 +38,20 @@ program richards_driver
     integer,  parameter, dimension(3) :: npde_sub = (/1,0,0/)
     integer,  parameter    :: npde = 1
     integer,  parameter    :: nu   = 1
-    real(dp), parameter    :: xa = 0, xb = 0.6
-    integer,  parameter    :: nin = 100
+    real(dp), parameter    :: xa = 0d0, xb = 0.6d0
+
+    ! Specify the two sections of the input mesh:
+    ! - 1 from xa to xsplit, nint1 number of intervals
+    ! - 2 from xsplit to xb, nint2 number of intervals
+    real(dp), parameter    :: xsplit = 0.01d0
+    integer,  parameter    :: nint1 = 10, nint2 = 10
+    integer,  parameter    :: nin = nint1+nint2+1
+    real(dp), parameter    :: h1 = (xsplit-xa)/nint1, h2 = (xb-xsplit)/nint2
+    real(dp)               :: xin(nin)
 
     integer                :: nout, ntout
     real(dp), allocatable  :: xout(:), uout(:,:,:)
-    real(dp)               :: tout, tstart, tstop, atol(npde), rtol(npde), xin(nin)
+    real(dp)               :: tout, tstart, tstop, atol(npde), rtol(npde)
 
     integer                :: i, j, ier
 
@@ -80,7 +88,13 @@ program richards_driver
     !    atol(4) = 1d-1
 
     ! Initialize a grid to pass to ebacoli
-    xin = (/(xa+i*(xb-xa)/(nin-1), i=0,nin-1)/)
+    xin(1) = xa
+    do i = 1, nint1
+       xin(i+1) = xa+i*h1
+    end do
+    do i = 1, nint2
+       xin(nint1+i+1) = xsplit + i*h2
+    end do
 
     !-------------------------------------------------------------------
     ! Initialization: Allocate storage and set problem parameters.
