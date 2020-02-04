@@ -239,6 +239,7 @@ c-----------------------------------------------------------------------
       common /richards/ ss,phi,thetas,thetar,alpha,n,m,ks
 C     Careful with units of this!
       BVAL(1) = U(1) + 10.0d0
+c$$$      BVAL(1) = UX(1)
 C
       RETURN
       END
@@ -346,8 +347,10 @@ C                               OF THE I-TH COMPONENT OF THE VECTOR B
 C                               WITH RESPECT TO TIME T.
 C-----------------------------------------------------------------------
       DBDU(1,1) = 1.0D0
+c$$$      DBDU(1,1) = 0.0D0
 c
       DBDUX(1,1) = 0.0D0
+c$$$      DBDUX(1,1) = 1.0D0
 c
       DBDT(1) = 0.0D0
 C
