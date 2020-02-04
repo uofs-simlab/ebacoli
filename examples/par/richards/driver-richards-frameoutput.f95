@@ -49,7 +49,7 @@ program richards_driver
     real(dp), parameter    :: h1 = (xsplit-xa)/nint1, h2 = (xb-xsplit)/nint2
     real(dp)               :: xin(nin)
 
-    integer                :: nout, ntout
+    integer                :: nout, ntout, kcol
     real(dp), allocatable  :: xout(:), uout(:,:,:)
     real(dp)               :: tout, tstart, tstop, atol(npde), rtol(npde)
 
@@ -87,6 +87,10 @@ program richards_driver
     rtol = atol
     !    atol(4) = 1d-1
 
+    ! Set kcol (order of expansion is p = kcol+1)
+    ! kcol=4 is default
+    kcol = 4
+
     ! Initialize a grid to pass to ebacoli
     xin(1) = xa
     do i = 1, nint1
@@ -98,7 +102,7 @@ program richards_driver
 
     !-------------------------------------------------------------------
     ! Initialization: Allocate storage and set problem parameters.
-    call ebacoli95_init(sol, npde_sub, xin, atol=atol, rtol=rtol, nint_max=10000)
+    call ebacoli95_init(sol, npde_sub, xin, atol=atol, kcol=kcol, rtol=rtol, nint_max=10000)
     tstart = sol%t0
     tout = tstart + 1.d-12
 
