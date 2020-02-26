@@ -1,0 +1,28 @@
+restart;
+# hydraulic conductivity and its derivatives
+hydcon:=psi->ks*(1-(alpha*abs(psi))^(n-1)*(1+(alpha*abs(psi))^n)^(-m))^2/(1+(alpha*abs(psi))^n)^(m/2);
+dhydco:=D(hydcon);
+ddhydc:=D(dhydco);
+
+# volumetric water content and its derivatives
+volcon:=psi->(thetas-thetar)/(1+(alpha*abs(psi))^n)^m + thetar;
+dvolco:=D(volcon);
+ddvolc:=D(dvolco);
+
+
+with(CodeGeneration);
+with(codegen);
+
+# Generate code
+#
+# NOTE: The code will need to be copied into the source file
+# manually. Don't forget to add the common block with var names!
+#
+Fortran(hydcon,deducetypes=false,defaulttype=float);
+Fortran(dhydco,deducetypes=false,defaulttype=float);
+codegen[split](ddhydc);
+Fortran(%,optimize=true,deducetypes=false,defaulttype=float);
+
+Fortran(volcon,deducetypes=false,defaulttype=float);
+Fortran(dvolco,deducetypes=false,defaulttype=float);
+Fortran(ddvolc,optimize=true,deducetypes=false,defaulttype=float);
