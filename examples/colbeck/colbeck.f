@@ -52,38 +52,44 @@ C     ASSIGN FVAL(1:NPDE) ACCORDING TO THE RIGHT HAND SIDE OF THE PDE
 C     IN TERMS OF U(1:NPDE), UX(1:NPDE), UXX(1:NPDE).
 C
       if (U(1) > thetar) then
-      FVAL(1) = -((rhoair * cair * (0.1D1 - rholiq * omega ** 2 * (Tfrz
-     $     -U(2)) ** 2 / rhoice) + rholiq * cice * omega ** 2 * (Tfrz
-     $     -U(2)) ** 2 + rholiq * cliq) * U(1) + rhoair * cair + 0.2D1
-     $     *rholiq * Lf us * omega * (Tfrz - U(2)) * U(1)) / ((rhoair
-     $     *cair * (0.1D1 - rholiq * omega ** 2 * (Tfrz - U(2)) ** 2
-     $     /rhoice) + rholiq * cipce * omega ** 2 * (Tfrz - U(2)) ** 2
-     $     +rholiq * cliq) * U(1) + rhoair * cair) / (0.1D1 + omega ** 2
-     $     * (Tfrz - U(2)) ** 2) * ksnow * ns * ((U(1) - thetar) /(0.1D1
-     $     - rholiq * omega ** 2 * (Tfrz - U(2)) ** 2 - thetar))** (ns -
-     $     0.1D1) * ((0.1D1 - rholiq * omega ** 2 * (Tfrz -U(2)) ** 2 -
-     $     thetar) * UX(1) / rhoice - 0.2D1 * (U(1) - thetar) * rholiq *
-     $     omega ** 2 * (Tfrz - U(2)) * UX(2) / rhoice)/ (0 .1D1 -
-     $     rholiq * omega ** 2 * (Tfrz - U(2)) ** 2 -thetar) ** 2
-      FVAL(2) = -((rhoair * cair * (0.1D1 - rholiq * omega ** 2 * (Tfrz
-     $     -U(2)) ** 2 / rhoice) + rholiq * cice * omega ** 2 * (Tfrz
-     $     -U(2)) ** 2 + rholiq * cliq) * U(1) + rhoair * cair + 0.2D1
-     $     *rholiq * Lf us * omega * (Tfrz - U(2)) * U(1)) / ((rhoair
-     $     *cair * (0.1D1 - rh oliq * omega ** 2 * (Tfrz - U(2)) ** 2
-     $     /rhoice) + rholiq * cipce * omega ** 2 * (Tfrz - U(2)) ** 2
-     $     +rholiq * cliq) * U(1) + rhoair * cair) / (0.1D1 + omega ** 2
-     $     * (Tfrz - U(2)) ** 2) * ksnow * ns * ((U(1) - thetar) /(0.1D1
-     $     - rholiq * omega ** 2 * (Tfrz - U(2)) ** 2 - thetar))** (ns -
-     $     0.1D1) * ((0.1D1 - rholiq * omega ** 2 * (Tfrz -U(2)) ** 2 -
-     $     thetar) * UX(1) / rhoice - 0.2D1 * (U(1) - thetar) * rholiq *
-     $     omega ** 2 * (Tfrz - U(2)) * UX(2) / rhoice)/ (0 .1D1 -
-     $     rholiq * omega ** 2 * (Tfrz - U(2)) ** 2 -thetar) ** 2
+         FVAL(1) = -((rhoair * cair * (0.1D1 - rholiq * omega ** 2 *
+     $        (Tfrz-U(2)) ** 2 / rhoice) + rholiq * cice * omega ** 2 *
+     $        (Tfrz- U(2))** 2 + rholiq * cliq) * U(1) + rhoair * cair
+     $        +0.2D1 * rholiq * Lfus * omega * (Tfrz - U(2)) * U(1))
+     $        /((rhoair * cair * (0.1D1 - rholiq * omega ** 2 * (Tfrz
+     $        -U(2)) ** 2 / rhoice) + rholiq * cice *omega ** 2 * (Tfrz
+     $        -U(2)) ** 2 + rholiq * cliq) * U(1) + rhoair* cair)
+     $        /(0.1D1 + omega ** 2 * (Tfrz - U(2)) ** 2) * ksnow * ns
+     $        *((U(1) - thetar) / (0.1D1 - rholiq * omega ** 2 * (Tfrz
+     $        -U(2)) ** 2 * U(1) - thetar)) ** (ns - 0.1D1) * ((0.1D1
+     $        -rholiq * omega ** 2 * (Tfrz - U(2)) ** 2 * U(1) / rhoice
+     $        -thetar) * UX(1) - (U(1)- thetar) * (0.2D1 * rholiq *
+     $        omega** 2 * (Tfrz - U(2)) * UX(2)/ rhoice + (Tfrz - T) **
+     $        2 *UX(1))) / (0.1D1 - rholiq * omega **2 * (Tfrz - U(2))
+     $        ** 2* U(1) - thetar) ** 2
+         FVAL(2) = -((rhoair * cair * (0.1D1 - rholiq * omega ** 2 *
+     $        (Tfrz-U(2)) ** 2 / rhoice) + rholiq * cice * omega ** 2 *
+     $        (Tfrz- U(2))** 2 + rholiq * cliq) * U(1) + rhoair * cair
+     $        +0.2D1 * rholiq * Lfus * omega * (Tfrz - U(2)) * U(1))
+     $        /((rhoair * cair * (0.1D1 - rholiq * omega ** 2 * (Tfrz
+     $        -U(2)) ** 2 / rhoice) + rholiq * cice *omega ** 2 * (Tfrz
+     $        -U(2)) ** 2 + rholiq * cliq) * U(1) + rhoair* cair)
+     $        /(0.1D1 + omega ** 2 * (Tfrz - U(2)) ** 2) * ksnow * ns
+     $        *((U(1) - thetar) / (0.1D1 - rholiq * omega ** 2 * (Tfrz
+     $        -U(2)) ** 2 * U(1) - thetar)) ** (ns - 0.1D1) * ((0.1D1
+     $        -rholiq * omega ** 2 * (Tfrz - U(2)) ** 2 * U(1) / rhoice
+     $        -thetar) * UX(1) - (U(1)- thetar) * (0.2D1 * rholiq *
+     $        omega** 2 * (Tfrz - U(2)) * UX(2)/ rhoice + (Tfrz - T) **
+     $        2 *UX(1))) / (0.1D1 - rholiq * omega **2 * (Tfrz - U(2))
+     $        ** 2* U(1) - thetar) ** 2
       else
          FVAL(1) = 0.d0
          FVAL(2) = 0.d0
       endif
-         FVAL(1) = FVAL(1) + eps*UXX(1)
-         FVAL(2) = FVAL(2) + eps*UXX(2)
+c
+c     And add diffusion
+      FVAL(1) = FVAL(1) + eps*UXX(1)
+      FVAL(2) = FVAL(2) + eps*UXX(2)
 C
       RETURN
       END
@@ -157,74 +163,71 @@ c     Local variables
       doubleprecision Temp
       doubleprecision thetaz
       doubleprecision Tempz
-      doubleprecision cgret(2,4)
-      doubleprecision df(10)
-      doubleprecision dfr0(10)
-      doubleprecision grd(2,4)
-      doubleprecision t1
-      doubleprecision t10
-      doubleprecision t102
-      doubleprecision t107
-      doubleprecision t115
-      doubleprecision t12
-      doubleprecision t122
-      doubleprecision t127
-      doubleprecision t129
-      doubleprecision t135
-      doubleprecision t137
-      doubleprecision t14
-      doubleprecision t141
-      doubleprecision t144
-      doubleprecision t15
-      doubleprecision t16
-      doubleprecision t166
-      doubleprecision t167
-      doubleprecision t17
-      doubleprecision t170
-      doubleprecision t18
-      doubleprecision t2
-      doubleprecision t20
-      doubleprecision t3
-      doubleprecision t30
-      doubleprecision t31
-      doubleprecision t32
-      doubleprecision t33
-      doubleprecision t34
-      doubleprecision t36
-      doubleprecision t39
-      doubleprecision t4
-      doubleprecision t40
-      doubleprecision t43
-      doubleprecision t45
-      doubleprecision t46
-      doubleprecision t47
-      doubleprecision t48
-      doubleprecision t49
-      doubleprecision t5
-      doubleprecision t50
-      doubleprecision t51
-      doubleprecision t54
-      doubleprecision t55
-      doubleprecision t57
-      doubleprecision t59
-      doubleprecision t6
-      doubleprecision t61
-      doubleprecision t63
-      doubleprecision t69
-      doubleprecision t7
-      doubleprecision t70
-      doubleprecision t72
-      doubleprecision t73
-      doubleprecision t75
-      doubleprecision t76
-      doubleprecision t80
-      doubleprecision t83
-      doubleprecision t84
-      doubleprecision t85
-      doubleprecision t87
-      doubleprecision t89
-      doubleprecision t91
-      doubleprecision t96
+        doubleprecision cgret(2,4)
+        doubleprecision df(11)
+        doubleprecision dfr0(11)
+        doubleprecision grd(2,4)
+        doubleprecision t1
+        doubleprecision t103
+        doubleprecision t107
+        doubleprecision t109
+        doubleprecision t110
+        doubleprecision t112
+        doubleprecision t113
+        doubleprecision t12
+        doubleprecision t123
+        doubleprecision t129
+        doubleprecision t141
+        doubleprecision t147
+        doubleprecision t149
+        doubleprecision t15
+        doubleprecision t16
+        doubleprecision t164
+        doubleprecision t165
+        doubleprecision t17
+        doubleprecision t18
+        doubleprecision t19
+        doubleprecision t2
+        doubleprecision t20
+        doubleprecision t22
+        doubleprecision t24
+        doubleprecision t26
+        doubleprecision t29
+        doubleprecision t3
+        doubleprecision t30
+        doubleprecision t33
+        doubleprecision t37
+        doubleprecision t38
+        doubleprecision t4
+        doubleprecision t40
+        doubleprecision t41
+        doubleprecision t42
+        doubleprecision t43
+        doubleprecision t47
+        doubleprecision t48
+        doubleprecision t49
+        doubleprecision t5
+        doubleprecision t50
+        doubleprecision t51
+        doubleprecision t53
+        doubleprecision t56
+        doubleprecision t57
+        doubleprecision t59
+        doubleprecision t6
+        doubleprecision t61
+        doubleprecision t67
+        doubleprecision t68
+        doubleprecision t71
+        doubleprecision t73
+        doubleprecision t79
+        doubleprecision t82
+        doubleprecision t85
+        doubleprecision t88
+        doubleprecision t89
+        doubleprecision t92
+        doubleprecision t93
+        doubleprecision t95
+        doubleprecision t97
 C     Aliases for state vars
 
       theta = U(1)
@@ -233,6 +236,108 @@ C     Aliases for state vars
       Tempz = UX(2)
 
       if (theta > thetar) then
+        t1 = rhoair * cair
+        t2 = omega ** 2
+        t3 = rholiq * t2
+        t4 = Tfrz - Temp
+        t5 = t4 ** 2
+        t6 = 0.1D1 / rhoice
+        t12 = t2 * t5
+        t15 = t1 * (-t3 * t5 * t6 + 0.1D1) + rholiq * cice * t12 + rholi
+     $       q * cliq
+        t16 = t15 * theta
+        t17 = rholiq * Lfus
+        t18 = t16 + t1
+        t24 = 0.1D1 / t18
+        t30 = theta - thetar
+        t19 = t3 * t5 * theta
+        t33 = -t19 - thetar + 0.1D1
+        t20 = 0.1D1 / t33
+        t22 = ns - 0.1D1
+        t37 = (t30 * t20) ** t22
+        t48 = (Tfrz - T) ** 2
+        t53 = t33 ** 2
+        t26 = t19 * t6
+        t29 = t3 * t4
+        t38 = 0.2D1 * Tempz * t29 * t6 + t48 * thetaz
+        t40 = (-t26 - thetar + 0.1D1) * thetaz - t30 * t38
+        t41 = 0.1D1 / t53
+        t42 = t40 * t41
+        t56 = ns * t37 * t42
+        t43 = t17 * omega
+        t47 = 0.2D1 * t4 * t43 * theta + t1 + t16
+        t49 = t47 * t24
+        t50 = 0.1D1 + t12
+        t51 = 0.1D1 / t50
+        df(11) = -t49 * t51 * ksnow
+        t57 = df(11) * ns
+        t59 = t53 ** 2
+        t61 = t37 * t40 / t59
+        df(10) = -t57 * t61
+        df(9) = t57 * t42
+        t67 = df(9) * t37
+        t68 = t22 * t20
+        df(8) = 0.2D1 * t33 * df(10) - t67 * t68
+        t71 = t3 * t6
+        t73 = t71 * thetaz * t41
+        df(7) = -t37 * t57 * t73 - t3 * df(8)
+        t79 = -t37 * t38 * t41
+        t82 = t22 / t30
+        df(6) = t57 * t79 + t67 * t82
+        t85 = ksnow * t56
+        df(5) = -t47 * t51 * t85
+        t88 = t18 ** 2
+        t89 = 0.1D1 / t88
+        t92 = t24 * t51 * t85
+        df(4) = -t89 * df(5) - t92
+        t93 = df(4)
+        t95 = cice * theta
+        t97 = t50 ** 2
+        df(3) = t93 * rholiq * t95 + t49 / t97 * ksnow * t56
+        t103 = t71 * theta
+        t107 = df(7)
+        df(2) = -t1 * t103 * t93 + t107 * theta + t2 * df(3)
+        t109 = t37 * t30
+        t110 = t57 * t109
+        t112 = t6 * t41
+        t113 = Tempz * t3 * t112
+        df(1) = -0.2D1 * t43 * t92 * theta - 0.2D1 * t110 * t113 + 0.2D1
+     $       * t4 * df(2)
+        dfr0(11) = -t17 * t24 * ksnow
+        t123 = dfr0(11) * ns
+        dfr0(10) = -t123 * t61
+        dfr0(9) = t123 * t42
+        t129 = dfr0(9) * t37
+        dfr0(8) = -t129 * t68 + 0.2D1 * t33 * dfr0(10)
+        dfr0(7) = -t123 * t37 * t73 - t3 * dfr0(8)
+        dfr0(6) = t123 * t79 + t129 * t82
+        dfr0(5) = -t17 * ksnow * t56
+        dfr0(4) = -dfr0(5) * t89
+        t141 = dfr0(4)
+        dfr0(3) = t141 * rholiq * t95
+        t147 = dfr0(7)
+        dfr0(2) = -t1 * t103 * t141 + t147 * theta + t2 * dfr0(3)
+        t149 = t123 * t109
+        dfr0(1) = -0.2D1 * t113 * t149 + 0.2D1 * t4 * dfr0(2)
+        grd(1,1) = -0.2D1 * t4 * t43 * t92 + t107 * t5 + t15 * t93 +
+     $       df(6)
+        grd(1,2) = -df(1)
+        t164 = t37 * (-t30 * t48 - t26 - thetar + 0.1D1) * t41
+        grd(1,3) = t57 * t164
+        t165 = t29 * t112
+        grd(1,4) = -0.2D1 * t110 * t165
+        grd(2,1) = t141 * t15 + t147 * t5 + dfr0(6)
+        grd(2,2) = -dfr0(1)
+        grd(2,3) = t123 * t164
+        grd(2,4) = -0.2D1 * t149 * t165
+        cgret(1,1) = grd(1,1)
+        cgret(1,2) = grd(1,2)
+        cgret(1,3) = grd(1,3)
+        cgret(1,4) = grd(1,4)
+        cgret(2,1) = grd(2,1)
+        cgret(2,2) = grd(2,2)
+        cgret(2,3) = grd(2,3)
+        cgret(2,4) = grd(2,4)
       t1 = rhoair * cair
       t2 = omega ** 2
       t3 = rholiq * t2
@@ -400,9 +505,10 @@ c-----------------------------------------------------------------------
 c-----------------------------------------------------------------------
 C     Functions
       double precision smstep,dsmstep,inton,dinton
-      BVAL(1) = ksnow*(U(1)-thetar)**ns
-     $     - 0.1d0*inton(T, 30.d0, 3.d0*3600.d0,50.d0)
-     $     * (1-rholiq*omega**2*(Tfrz-U(2))**2 /rhoice-thetar)**ns
+      BVAL(1) = ksnow*(U(1)-thetar)**ns/(1-rholiq*omega**2*(Tfrz-U(2))
+     $     **2*U(1)/rhoice-thetar)**ns
+     $     - 0.1d0*inton(T, 30.d0, 3.d0 *3600.d0,50.d0)
+
 c$$$c$$$- 0.1*inton(T, 3600.d0, 3.d0*3600.d0, 2.d0)
 C     derivative condition on temperature?
 c$$$      BVAL(1) = U(1)- 0.3*inton(T, 30.d0, 3*3630.d0, 50.d0)
@@ -441,7 +547,7 @@ C     BVAL(1:NPDE) IS THE BOUNDARY CONTIDITION
 C     AT THE RIGHT BOUNDARY POINT.
 c-----------------------------------------------------------------------
 C     Careful with units of this!
-      BVAL(1) = UX(1)
+      BVAL(1) = U(1)
       BVAL(2) = UX(2)
 C
       RETURN
@@ -501,13 +607,20 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C     Functions
       double precision smstep,dsmstep,inton,dinton
-      DBDU(1,1) = ksnow*ns*(U(1)-thetar)**(ns-1)
+C-----------------------------------------------------------------------
+C     Local variables
+      double precision denom
+C-----------------------------------------------------------------------
+      denom = 1-rholiq*omega**2*(Tfrz-U(2))**2*U(1)/rhoice-thetar
+
+      DBDU(1,1) = ksnow*ns*((U(1)-thetar)**(ns-1)*denom**ns + rholiq
+     $     *omega**2*(Tfrz-U(2))**2*U(1)**(ns-1)*(U(1)-thetar))/denom
+     $     **(2*n)
 
 c$$$      DBDU(1,1) = 1.d0
 c$$$      DBDU(1,2) = 0.d0
-      DBDU(1,2) = 2.d0*0.1d0*ns*(1-rholiq*omega**2*(Tfrz-U(2))**2
-     $     /rhoice-thetar)**(ns-1)*rholiq*omega**2*(U(2)-Tfrz)/rhoice
-     $     *inton(T, 30.d0, 3.d0*3600.d0, 50.d0)
+      DBDU(1,2) = 2.d0*ns*(U(1)-thetar)**ns*rholiq*omega**2*(Tfrz-U(2))
+     $     *U(1)/rhoice/denom**(ns+1)
 c
       DBDUX(1,1) = 0.0D0
       DBDUX(1,2) = 0.0D0
@@ -518,8 +631,7 @@ c
       DBDUX(2,1) = 0.0D0
       DBDUX(2,2) = 1.0D0
 
-      DBDT(1) = - 0.1*ns*(1-rholiq*omega**2 *(Tfrz-U(2))**2 /rhoice
-     $     -thetar)**ns*dinton(T, 30.d0, 3.d0*3600.d0, 50.d0)
+      DBDT(1) = -0.1*dinton(T, 30.d0, 3.d0*3600.d0, 50.d0)
       DBDT(2) = 0.0D0
 
 C     This BC works somehow
@@ -582,10 +694,10 @@ C-----------------------------------------------------------------------
       common /colbeck/ rhoair,rholiq,rhoice,cair,cliq,cice,Lfus,omega
      $     ,Tfrz,thetar,ksnow,eps,ns
 C-----------------------------------------------------------------------
-      DBDU(1,1) = 0.0D0
+      DBDU(1,1) = 1.0D0
       DBDU(1,2) = 0.0D0
 
-      DBDUX(1,1) = 1.0D0
+      DBDUX(1,1) = 0.0D0
       DBDUX(1,2) = 0.0D0
 c
       DBDU(2,1) = 0.0D0

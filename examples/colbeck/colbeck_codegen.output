@@ -12,49 +12,40 @@
 # - thetaz and Tempz represent their derivatives wrt z
 # - Unfortunately, dqdz needs to be explicitly put into the RHS equations for the jacobian computation as I've done it.
 # - Similar story for Cp
-# ns := 1;
-> dqdz := ksnow*ns*((theta-thetar)/(1-rholiq*omega^2*(Tfrz-Temp)^2-thetar))^(ns-1)*((1-rholiq*omega^2*(Tfrz-Temp)^2-thetar)*thetaz/rhoice-(theta-thetar)*(2*rholiq*omega^2*(Tfrz-Temp)*Tempz/rhoice))/(1-rholiq*omega^2*(Tfrz-Temp)^2-thetar)^2;
-                 /theta - thetar\(ns - 1)
-dqdz := ksnow ns |--------------|
-                 \      %1      /
+> dqdz := (ksnow*ns*((theta-thetar)/(1-rholiq*omega^2*(Tfrz-Temp)^2*theta-thetar))^(ns-1)*((1-rholiq*omega^2*(Tfrz-Temp)^2*theta/rhoice-thetar)*thetaz-(theta-thetar)*((2*rholiq*omega^2*(Tfrz-Temp)*Tempz/rhoice)+(Tfrz-T)^2*thetaz))/(1-rholiq*omega^2*(Tfrz-Temp)^2*theta-thetar)^2);
+                                                                           /
+                 /                theta - thetar                 \(ns - 1) |
+dqdz := ksnow ns |-----------------------------------------------|         |
+                 |                2              2               |         \
+                 \1 - rholiq omega  (Tfrz - Temp)  theta - thetar/
 
-    /                                           2                    \
-    |%1 thetaz   2 (theta - thetar) rholiq omega  (Tfrz - Temp) Tempz|   /   2
-    |--------- - ----------------------------------------------------|  /  %1
-    \ rhoice                            rhoice                       / /
+    /                2              2               \
+    |    rholiq omega  (Tfrz - Temp)  theta         |
+    |1 - ---------------------------------- - thetar| thetaz -
+    \                  rhoice                       /
 
-                      2              2
-%1 := 1 - rholiq omega  (Tfrz - Temp)  - thetar
+                     /              2                                         \
+                     |2 rholiq omega  (Tfrz - Temp) Tempz             2       |
+    (theta - thetar) |----------------------------------- + (Tfrz - T)  thetaz|
+                     \              rhoice                                    /
 
-> 
-> dqdz1 := ksnow*((1-rholiq*omega^2*(Tfrz-Temp)^2-thetar)*thetaz/rhoice-(theta-thetar)*(2*rholiq*omega^2*(Tfrz-Temp)*Tempz/rhoice))/(1-rholiq*omega^2*(Tfrz-Temp)^2-thetar)^2;
-               /                 2              2
-               |(1 - rholiq omega  (Tfrz - Temp)  - thetar) thetaz
-dqdz1 := ksnow |--------------------------------------------------
-               \                      rhoice
-
-                                      2                    \
-       2 (theta - thetar) rholiq omega  (Tfrz - Temp) Tempz|   /
-     - ----------------------------------------------------|  /
-                              rhoice                       / /
-
-                     2              2          2
-    (1 - rholiq omega  (Tfrz - Temp)  - thetar)
+    \
+    |   /                  2              2                2
+    |  /  (1 - rholiq omega  (Tfrz - Temp)  theta - thetar)
+    / /
 
 > 
-> Cp = ((rhoair*cair*(1-rholiq*omega^2*(Tfrz-Temp)^2/rhoice) + rholiq*cice*omega^2*(Tfrz-Temp)^2 + rholiq*cliq) * theta + rhoair*cair):
+> Cp = ((rhoair*cair*(1-rholiq*omega^2*(Tfrz-Temp)^2/rhoice) + rholiq*cice*omega^2*(Tfrz-Temp)^2 + rholiq*cliq)*theta + rhoair*cair):
 > 
 #####################################
-# NOTE: I manually copied dqdz Cp into these RHS values... This is to avoid some silliness later in the codegen
+# NOTE: I manually copied dqdz and Cp into these RHS values... This is to avoid some silliness later in the codegen
 #######
 # RHS1 := (theta,Temp,thetaz,Tempz) -> -(Cp +2*rholiq*Lfus*omega*(Tfrz-Temp)*theta)/(Cp*(1+omega^2*(Tfrz-Temp)^2)) * dqdz;
 #
 # RHS2 := (theta,Temp,thetaz,Tempz) -> -rholiq*Lfus/Cp * dqdz;
 #####################################
 > 
-> 
-> 
-> RHS1 := (theta,Temp,thetaz,Tempz) -> -(((rhoair*cair*(1-rholiq*omega^2*(Tfrz-Temp)^2/rhoice) + rholiq*cice*omega^2*(Tfrz-Temp)^2 + rholiq*cliq) * theta + rhoair*cair) +2*rholiq*Lfus*omega*(Tfrz-Temp)*theta)/(((rhoair*cair*(1-rholiq*omega^2*(Tfrz-Temp)^2/rhoice) + rholiq*cipce*omega^2*(Tfrz-Temp)^2 + rholiq*cliq) * theta + rhoair*cair)*(1+omega^2*(Tfrz-Temp)^2)) * ksnow*ns*((theta-thetar)/(1-rholiq*omega^2*(Tfrz-Temp)^2-thetar))^(ns-1)*((1-rholiq*omega^2*(Tfrz-Temp)^2-thetar)*thetaz/rhoice-(theta-thetar)*(2*rholiq*omega^2*(Tfrz-Temp)*Tempz/rhoice))/(1-rholiq*omega^2*(Tfrz-Temp)^2-thetar)^2;
+> RHS1 := (theta,Temp,thetaz,Tempz) -> -(((rhoair*cair*(1-rholiq*omega^2*(Tfrz-Temp)^2/rhoice) + rholiq*cice*omega^2*(Tfrz-Temp)^2 + rholiq*cliq)*theta + rhoair*cair) +2*rholiq*Lfus*omega*(Tfrz-Temp)*theta)/(((rhoair*cair*(1-rholiq*omega^2*(Tfrz-Temp)^2/rhoice) + rholiq*cice*omega^2*(Tfrz-Temp)^2 + rholiq*cliq)*theta + rhoair*cair)*(1+omega^2*(Tfrz-Temp)^2)) * (ksnow*ns*((theta-thetar)/(1-rholiq*omega^2*(Tfrz-Temp)^2*theta-thetar))^(ns-1)*((1-rholiq*omega^2*(Tfrz-Temp)^2*theta/rhoice-thetar)*thetaz-(theta-thetar)*((2*rholiq*omega^2*(Tfrz-Temp)*Tempz/rhoice)+(Tfrz-T)^2*thetaz))/(1-rholiq*omega^2*(Tfrz-Temp)^2*theta-thetar)^2);
                                           //
                                           ||
 RHS1 := (theta, Temp, thetaz, Tempz) -> - ||
@@ -75,76 +66,75 @@ RHS1 := (theta, Temp, thetaz, Tempz) -> - ||
      + 2 rholiq Lfus omega (Tfrz - Temp) theta| ksnow ns
                                               /
 
-                                                        /
-    /             theta - thetar              \(ns - 1) |
-    |-----------------------------------------|         |
-    |                2              2         |         \
-    \1 - rholiq omega  (Tfrz - Temp)  - thetar/
+                                                              /
+    /                theta - thetar                 \(ns - 1) |
+    |-----------------------------------------------|         |
+    |                2              2               |         \
+    \1 - rholiq omega  (Tfrz - Temp)  theta - thetar/
 
-                     2              2
-    (1 - rholiq omega  (Tfrz - Temp)  - thetar) thetaz
-    --------------------------------------------------
-                          rhoice
+    /                2              2               \
+    |    rholiq omega  (Tfrz - Temp)  theta         |
+    |1 - ---------------------------------- - thetar| thetaz -
+    \                  rhoice                       /
 
-                                      2                    \     ///
-       2 (theta - thetar) rholiq omega  (Tfrz - Temp) Tempz|   / |||
-     - ----------------------------------------------------|  /  |||
-                              rhoice                       / /   \\\
+                     /              2                                         \
+                     |2 rholiq omega  (Tfrz - Temp) Tempz             2       |
+    (theta - thetar) |----------------------------------- + (Tfrz - T)  thetaz|
+                     \              rhoice                                    /
 
-                /                2              2\
-                |    rholiq omega  (Tfrz - Temp) |
-    rhoair cair |1 - ----------------------------|
-                \               rhoice           /
-
-                                                       \                    \
-                         2              2              |                    |
-     + rholiq cipce omega  (Tfrz - Temp)  + rholiq cliq| theta + rhoair cair|
-                                                       /                    /
-
-                                                                            \
-              2              2                   2              2          2|
-    (1 + omega  (Tfrz - Temp) ) (1 - rholiq omega  (Tfrz - Temp)  - thetar) |
-                                                                            /
-
-> 
-# RHS1 := (theta,Temp,thetaz,Tempz) -> -(((rhoair*cair*(1-rholiq*omega^2*(Tfrz-Temp)^2/rhoice) + rholiq*cice*omega^2*(Tfrz-Temp)^2 + rholiq*cliq) * theta + rhoair*cair) +2*rholiq*Lfus*omega*(Tfrz-Temp)*theta)/(((rhoair*cair*(1-rholiq*omega^2*(Tfrz-Temp)^2/rhoice) + rholiq*cipce*omega^2*(Tfrz-Temp)^2 + rholiq*cliq) * theta + rhoair*cair)*(1+omega^2*(Tfrz-Temp)^2)) * ksnow*((1-rholiq*omega^2*(Tfrz-Temp)^2-thetar)*thetaz/rhoice-(theta-thetar)*(2*rholiq*omega^2*(Tfrz-Temp)*Tempz/rhoice))/(1-rholiq*omega^2*(Tfrz-Temp)^2-thetar)^2;
-> 
-> RHS2 := (theta,Temp,thetaz,Tempz) -> -rholiq*Lfus/((rhoair*cair*(1-rholiq*omega^2*(Tfrz-Temp)^2/rhoice) + rholiq*cice*omega^2*(Tfrz-Temp)^2 + rholiq*cliq) * theta + rhoair*cair) * ksnow*ns*((theta-thetar)/(1-rholiq*omega^2*(Tfrz-Temp)^2-thetar))^(ns-1)*((1-rholiq*omega^2*(Tfrz-Temp)^2-thetar)*thetaz/rhoice-(theta-thetar)*(2*rholiq*omega^2*(Tfrz-Temp)*Tempz/rhoice))/(1-rholiq*omega^2*(Tfrz-Temp)^2-thetar)^2;
-RHS2 := (theta, Temp, thetaz, Tempz) -> - rholiq Lfus ksnow ns
-
-                                                        /
-    /             theta - thetar              \(ns - 1) |
-    |-----------------------------------------|         |
-    |                2              2         |         \
-    \1 - rholiq omega  (Tfrz - Temp)  - thetar/
-
-                     2              2
-    (1 - rholiq omega  (Tfrz - Temp)  - thetar) thetaz
-    --------------------------------------------------
-                          rhoice
-
-                                      2                    \     ///
-       2 (theta - thetar) rholiq omega  (Tfrz - Temp) Tempz|   / |||
-     - ----------------------------------------------------|  /  |||
-                              rhoice                       / /   \\\
-
-                /                2              2\
-                |    rholiq omega  (Tfrz - Temp) |
-    rhoair cair |1 - ----------------------------|
-                \               rhoice           /
+    \     ///            /                2              2\
+    |   / |||            |    rholiq omega  (Tfrz - Temp) |
+    |  /  |||rhoair cair |1 - ----------------------------|
+    / /   \\\            \               rhoice           /
 
                                                       \                    \
                         2              2              |                    |
      + rholiq cice omega  (Tfrz - Temp)  + rholiq cliq| theta + rhoair cair|
                                                       /                    /
 
-                                                \
-                     2              2          2|
-    (1 - rholiq omega  (Tfrz - Temp)  - thetar) |
-                                                /
+              2              2
+    (1 + omega  (Tfrz - Temp) )
+
+                                                      \
+                     2              2                2|
+    (1 - rholiq omega  (Tfrz - Temp)  theta - thetar) |
+                                                      /
 
 > 
-# RHS2 := (theta,Temp,thetaz,Tempz) -> -rholiq*Lfus/((rhoair*cair*(1-rholiq*omega^2*(Tfrz-Temp)^2/rhoice) + rholiq*cice*omega^2*(Tfrz-Temp)^2 + rholiq*cliq) * theta + rhoair*cair) * ksnow*((1-rholiq*omega^2*(Tfrz-Temp)^2-thetar)*thetaz/rhoice-(theta-thetar)*(2*rholiq*omega^2*(Tfrz-Temp)*Tempz/rhoice))/(1-rholiq*omega^2*(Tfrz-Temp)^2-thetar)^2;
+> RHS2 := (theta,Temp,thetaz,Tempz) -> -rholiq*Lfus/((rhoair*cair*(1-rholiq*omega^2*(Tfrz-Temp)^2/rhoice) + rholiq*cice*omega^2*(Tfrz-Temp)^2 + rholiq*cliq)*theta + rhoair*cair) * (ksnow*ns*((theta-thetar)/(1-rholiq*omega^2*(Tfrz-Temp)^2*theta-thetar))^(ns-1)*((1-rholiq*omega^2*(Tfrz-Temp)^2*theta/rhoice-thetar)*thetaz-(theta-thetar)*((2*rholiq*omega^2*(Tfrz-Temp)*Tempz/rhoice)+(Tfrz-T)^2*thetaz))/(1-rholiq*omega^2*(Tfrz-Temp)^2*theta-thetar)^2);
+RHS2 := (theta, Temp, thetaz, Tempz) -> - rholiq Lfus ksnow ns
+
+                                                              /
+    /                theta - thetar                 \(ns - 1) |
+    |-----------------------------------------------|         |
+    |                2              2               |         \
+    \1 - rholiq omega  (Tfrz - Temp)  theta - thetar/
+
+    /                2              2               \
+    |    rholiq omega  (Tfrz - Temp)  theta         |
+    |1 - ---------------------------------- - thetar| thetaz -
+    \                  rhoice                       /
+
+                     /              2                                         \
+                     |2 rholiq omega  (Tfrz - Temp) Tempz             2       |
+    (theta - thetar) |----------------------------------- + (Tfrz - T)  thetaz|
+                     \              rhoice                                    /
+
+    \     ///            /                2              2\
+    |   / |||            |    rholiq omega  (Tfrz - Temp) |
+    |  /  |||rhoair cair |1 - ----------------------------|
+    / /   \\\            \               rhoice           /
+
+                                                      \                    \
+                        2              2              |                    |
+     + rholiq cice omega  (Tfrz - Temp)  + rholiq cliq| theta + rhoair cair|
+                                                      /                    /
+
+                                                      \
+                     2              2                2|
+    (1 - rholiq omega  (Tfrz - Temp)  theta - thetar) |
+                                                      /
+
 > 
 # Generate code
 #
@@ -173,80 +163,70 @@ RHS2 := (theta, Temp, thetaz, Tempz) -> - rholiq Lfus ksnow ns
 
 > 
 > J := JACOBIAN([RHS1,RHS2]);
-memory used=4.0MB, alloc=40.3MB, time=0.17
 J := proc(theta, Temp, thetaz, Tempz)
-local df, dfr0, grd, t1, t10, t12, t14, t16, t17, t2, t3, t34, t36, t4, t40,
-t5, t51, t54, t6;
+local df, dfr0, grd, t1, t12, t16, t17, t2, t24, t3, t30, t31, t33, t37, t4,
+t48, t5, t53, t56, t6;
     t1 := rhoair*cair;
     t2 := omega^2;
     t3 := rholiq*t2;
     t4 := Tfrz - Temp;
     t5 := t4^2;
     t6 := 1/rhoice;
-    t10 := t1*(-t3*t5*t6 + 1);
     t12 := t2*t5;
-    t14 := rholiq*cliq;
-    t16 := (cice*rholiq*t12 + t10 + t14)*theta;
+    t16 := (t1*(-t3*t5*t6 + 1) + rholiq*cice*t12 + rholiq*cliq)*theta;
     t17 := rholiq*Lfus;
-    t34 := theta - thetar;
-    t36 := -t3*t5 - thetar + 1;
-    t40 := (t34/t36)^(ns - 1);
-    t51 := t36^2;
-    t54 := ns*t40*(-2*Tempz*rholiq*t2*t34*t4*t6 + t36*t6*thetaz)/t51;
-    df := array(1 .. 10);
-    dfr0 := array(1 .. 10);
-    df[10] := -(2*omega*t17*t4*theta + t1 + t16)*ksnow/(
-        ((cipce*rholiq*t12 + t10 + t14)*theta + t1)*(t12 + 1));
-    df[9] :=
-        -df[10]*ns*t40*(-2*Tempz*rholiq*t2*t34*t4*t6 + t36*t6*thetaz)/t51^2
-        ;
-    df[8] := df[10]*ns*(-2*Tempz*rholiq*t2*t34*t4*t6 + t36*t6*thetaz)/t51;
-    df[7] := df[10]*ns*t40*t6*thetaz/t51 + 2*df[9]*t36
-         - df[8]*(t34/t36)^(ns - 1)*(ns - 1)/t36;
-    df[6] := -2*df[10]*ns*t40*Tempz*rholiq*t2*t4*t6/t51
-         + df[8]*(t34/t36)^(ns - 1)*(ns - 1)/t34;
-    df[5] :=
-        -ksnow*t54/(((cipce*rholiq*t12 + t10 + t14)*theta + t1)*(t12 + 1));
-    df[4] := df[5]*cice*rholiq*theta + (2*omega*t17*t4*theta + t1 + t16)*
-        ksnow*t54*cipce*rholiq*theta/(
-        ((cipce*rholiq*t12 + t10 + t14)*theta + t1)^2*(t12 + 1)) +
-        (2*omega*t17*t4*theta + t1 + t16)*ksnow*t54/(
-        ((cipce*rholiq*t12 + t10 + t14)*theta + t1)*(t12 + 1)^2);
-    df[3] := df[5]*theta + (2*omega*t17*t4*theta + t1 + t16)*ksnow*t54*
-        theta/(((cipce*rholiq*t12 + t10 + t14)*theta + t1)^2*(t12 + 1));
-    df[2] := -t1*t3*t6*df[3] + t2*df[4] - t3*df[7];
-    df[1] := -2*df[10]*ns*t40*Tempz*rholiq*t2*t34*t6/t51 + 2*df[2]*t4 - 2*
-        omega*t17*theta*ksnow*t54/(
-        ((cipce*rholiq*t12 + t10 + t14)*theta + t1)*(t12 + 1));
-    dfr0[10] := -t17*ksnow/(t16 + t1);
-    dfr0[9] := -dfr0[10]*ns*t40*
-        (-2*Tempz*rholiq*t2*t34*t4*t6 + t36*t6*thetaz)/t51^2;
-    dfr0[8] :=
-        dfr0[10]*ns*(-2*Tempz*rholiq*t2*t34*t4*t6 + t36*t6*thetaz)/t51;
-    dfr0[7] := dfr0[10]*ns*t40*t6*thetaz/t51 + 2*dfr0[9]*t36
-         - dfr0[8]*(t34/t36)^(ns - 1)*(ns - 1)/t36;
-    dfr0[6] := -2*dfr0[10]*ns*t40*Tempz*rholiq*t2*t4*t6/t51
-         + dfr0[8]*(t34/t36)^(ns - 1)*(ns - 1)/t34;
-    dfr0[5] := t17*ksnow*t54/(t16 + t1)^2;
-    dfr0[4] := dfr0[5]*cice*rholiq*theta;
-    dfr0[3] := dfr0[5]*theta;
-    dfr0[2] := -t1*t3*t6*dfr0[3] + t2*dfr0[4] - t3*dfr0[7];
-    dfr0[1] := -2*dfr0[10]*ns*t40*Tempz*rholiq*t2*t34*t6/t51 + 2*dfr0[2]*t4
-        ;
+    t24 := 1/(t16 + t1);
+    t30 := theta - thetar;
+    t31 := t5*theta;
+    t33 := -t3*t31 - thetar + 1;
+    t37 := (t30/t33)^(ns - 1);
+    t48 := (Tfrz - T)^2;
+    t53 := t33^2;
+    t56 := ns*t37*((-t3*t31*t6 - thetar + 1)*thetaz
+         - t30*(2*Tempz*t3*t4*t6 + t48*thetaz))/t53;
+    df := array(1 .. 11);
+    dfr0 := array(1 .. 11);
+    df[11] := -(2*omega*t17*t4*theta + t1 + t16)*t24*ksnow/(1 + t12);
+    df[10] := -df[11]*ns*t37*((-t3*t31*t6 - thetar + 1)*thetaz
+         - t30*(2*Tempz*t3*t4*t6 + t48*thetaz))/t53^2;
+    df[9] := df[11]*ns*((-t3*t31*t6 - thetar + 1)*thetaz
+         - t30*(2*Tempz*t3*t4*t6 + t48*thetaz))/t53;
+    df[8] := 2*df[10]*t33 - df[9]*(t30/t33)^(ns - 1)*(ns - 1)/t33;
+    df[7] := -df[11]*ns*t37*t3*t6*thetaz/t53 - df[8]*t3;
+    df[6] := df[11]*ns*t37*(-2*Tempz*t3*t4*t6 - t48*thetaz)/t53
+         + df[9]*(t30/t33)^(ns - 1)*(ns - 1)/t30;
+    df[5] := -(2*omega*t17*t4*theta + t1 + t16)*ksnow*t56/(1 + t12);
+    df[4] := -df[5]/(t16 + t1)^2 - t24*ksnow*t56/(1 + t12);
+    df[3] := df[4]*rholiq*cice*theta
+         + (2*omega*t17*t4*theta + t1 + t16)*t24*ksnow*t56/(1 + t12)^2;
+    df[2] := -t1*t3*t6*theta*df[4] + t2*df[3] + theta*df[7];
+    df[1] := -2*df[11]*ns*t37*t30*Tempz*t3*t6/t53 + 2*df[2]*t4
+         - 2*omega*t17*theta*t24*ksnow*t56/(1 + t12);
+    dfr0[11] := -t17*t24*ksnow;
+    dfr0[10] := -dfr0[11]*ns*t37*((-t3*t31*t6 - thetar + 1)*thetaz
+         - t30*(2*Tempz*t3*t4*t6 + t48*thetaz))/t53^2;
+    dfr0[9] := dfr0[11]*ns*((-t3*t31*t6 - thetar + 1)*thetaz
+         - t30*(2*Tempz*t3*t4*t6 + t48*thetaz))/t53;
+    dfr0[8] := 2*dfr0[10]*t33 - dfr0[9]*(t30/t33)^(ns - 1)*(ns - 1)/t33;
+    dfr0[7] := -dfr0[11]*ns*t37*t3*t6*thetaz/t53 - dfr0[8]*t3;
+    dfr0[6] := dfr0[11]*ns*t37*(-2*Tempz*t3*t4*t6 - t48*thetaz)/t53
+         + dfr0[9]*(t30/t33)^(ns - 1)*(ns - 1)/t30;
+    dfr0[5] := -t17*ksnow*t56;
+    dfr0[4] := -dfr0[5]/(t16 + t1)^2;
+    dfr0[3] := dfr0[4]*rholiq*cice*theta;
+    dfr0[2] := -t1*t3*t6*theta*dfr0[4] + t2*dfr0[3] + theta*dfr0[7];
+    dfr0[1] := -2*dfr0[11]*ns*t37*t30*Tempz*t3*t6/t53 + 2*dfr0[2]*t4;
     grd := array(1 .. 2, 1 .. 4);
-    grd[1, 1] := -2*omega*t17*t4*ksnow*t54/(
-        ((cipce*rholiq*t12 + t10 + t14)*theta + t1)*(t12 + 1)) +
-        (2*omega*t17*t4*theta + t1 + t16)*ksnow*t54*
-        (cipce*rholiq*t12 + t10 + t14)/(
-        ((cipce*rholiq*t12 + t10 + t14)*theta + t1)^2*(t12 + 1)) + df[6]
-         + df[5]*(cice*rholiq*t12 + t10 + t14);
+    grd[1, 1] := -2*omega*t17*t4*t24*ksnow*t56/(1 + t12) + df[7]*t5 + df[6]
+         + df[4]*(t1*(-t3*t5*t6 + 1) + rholiq*cice*t12 + rholiq*cliq);
     grd[1, 2] := -df[1];
-    grd[1, 3] := df[10]*ns*t40*t36*t6/t51;
-    grd[1, 4] := -2*df[10]*ns*t40*rholiq*t2*t34*t4*t6/t51;
-    grd[2, 1] := dfr0[6] + dfr0[5]*(cice*rholiq*t12 + t10 + t14);
+    grd[1, 3] := df[11]*ns*t37*(-t3*t31*t6 - t30*t48 - thetar + 1)/t53;
+    grd[1, 4] := -2*df[11]*ns*t37*t30*t3*t4*t6/t53;
+    grd[2, 1] := dfr0[7]*t5 + dfr0[6]
+         + dfr0[4]*(t1*(-t3*t5*t6 + 1) + rholiq*cice*t12 + rholiq*cliq);
     grd[2, 2] := -dfr0[1];
-    grd[2, 3] := dfr0[10]*ns*t40*t36*t6/t51;
-    grd[2, 4] := -2*dfr0[10]*ns*t40*rholiq*t2*t34*t4*t6/t51;
+    grd[2, 3] := dfr0[11]*ns*t37*(-t3*t31*t6 - t30*t48 - thetar + 1)/t53;
+    grd[2, 4] := -2*dfr0[11]*ns*t37*t30*t3*t4*t6/t53;
     return grd
 end proc
 
@@ -258,26 +238,28 @@ Warning, the function names {U, UX} are not recognized in the target language
      #U(2)) ** 2 / rhoice) + rholiq * cice * omega ** 2 * (Tfrz - U(2)) 
      #** 2 + rholiq * cliq) * U(1) + rhoair * cair + 0.2D1 * rholiq * Lf
      #us * omega * (Tfrz - U(2)) * U(1)) / ((rhoair * cair * (0.1D1 - rh
-     #oliq * omega ** 2 * (Tfrz - U(2)) ** 2 / rhoice) + rholiq * cipce 
-     #* omega ** 2 * (Tfrz - U(2)) ** 2 + rholiq * cliq) * U(1) + rhoair
-     # * cair) / (0.1D1 + omega ** 2 * (Tfrz - U(2)) ** 2) * ksnow * ns 
-     #* ((U(1) - thetar) / (0.1D1 - rholiq * omega ** 2 * (Tfrz - U(2)) 
-     #** 2 - thetar)) ** (ns - 0.1D1) * ((0.1D1 - rholiq * omega ** 2 * 
-     #(Tfrz - U(2)) ** 2 - thetar) * UX(1) / rhoice - 0.2D1 * (U(1) - th
-     #etar) * rholiq * omega ** 2 * (Tfrz - U(2)) * UX(2) / rhoice) / (0
-     #.1D1 - rholiq * omega ** 2 * (Tfrz - U(2)) ** 2 - thetar) ** 2
+     #oliq * omega ** 2 * (Tfrz - U(2)) ** 2 / rhoice) + rholiq * cice *
+     # omega ** 2 * (Tfrz - U(2)) ** 2 + rholiq * cliq) * U(1) + rhoair 
+     #* cair) / (0.1D1 + omega ** 2 * (Tfrz - U(2)) ** 2) * ksnow * ns *
+     # ((U(1) - thetar) / (0.1D1 - rholiq * omega ** 2 * (Tfrz - U(2)) *
+     #* 2 * U(1) - thetar)) ** (ns - 0.1D1) * ((0.1D1 - rholiq * omega *
+     #* 2 * (Tfrz - U(2)) ** 2 * U(1) / rhoice - thetar) * UX(1) - (U(1)
+     # - thetar) * (0.2D1 * rholiq * omega ** 2 * (Tfrz - U(2)) * UX(2) 
+     #/ rhoice + (Tfrz - T) ** 2 * UX(1))) / (0.1D1 - rholiq * omega ** 
+     #2 * (Tfrz - U(2)) ** 2 * U(1) - thetar) ** 2
       cg(2) = -((rhoair * cair * (0.1D1 - rholiq * omega ** 2 * (Tfrz - 
      #U(2)) ** 2 / rhoice) + rholiq * cice * omega ** 2 * (Tfrz - U(2)) 
      #** 2 + rholiq * cliq) * U(1) + rhoair * cair + 0.2D1 * rholiq * Lf
      #us * omega * (Tfrz - U(2)) * U(1)) / ((rhoair * cair * (0.1D1 - rh
-     #oliq * omega ** 2 * (Tfrz - U(2)) ** 2 / rhoice) + rholiq * cipce 
-     #* omega ** 2 * (Tfrz - U(2)) ** 2 + rholiq * cliq) * U(1) + rhoair
-     # * cair) / (0.1D1 + omega ** 2 * (Tfrz - U(2)) ** 2) * ksnow * ns 
-     #* ((U(1) - thetar) / (0.1D1 - rholiq * omega ** 2 * (Tfrz - U(2)) 
-     #** 2 - thetar)) ** (ns - 0.1D1) * ((0.1D1 - rholiq * omega ** 2 * 
-     #(Tfrz - U(2)) ** 2 - thetar) * UX(1) / rhoice - 0.2D1 * (U(1) - th
-     #etar) * rholiq * omega ** 2 * (Tfrz - U(2)) * UX(2) / rhoice) / (0
-     #.1D1 - rholiq * omega ** 2 * (Tfrz - U(2)) ** 2 - thetar) ** 2
+     #oliq * omega ** 2 * (Tfrz - U(2)) ** 2 / rhoice) + rholiq * cice *
+     # omega ** 2 * (Tfrz - U(2)) ** 2 + rholiq * cliq) * U(1) + rhoair 
+     #* cair) / (0.1D1 + omega ** 2 * (Tfrz - U(2)) ** 2) * ksnow * ns *
+     # ((U(1) - thetar) / (0.1D1 - rholiq * omega ** 2 * (Tfrz - U(2)) *
+     #* 2 * U(1) - thetar)) ** (ns - 0.1D1) * ((0.1D1 - rholiq * omega *
+     #* 2 * (Tfrz - U(2)) ** 2 * U(1) / rhoice - thetar) * UX(1) - (U(1)
+     # - thetar) * (0.2D1 * rholiq * omega ** 2 * (Tfrz - U(2)) * UX(2) 
+     #/ rhoice + (Tfrz - T) ** 2 * UX(1))) / (0.1D1 - rholiq * omega ** 
+     #2 * (Tfrz - U(2)) ** 2 * U(1) - thetar) ** 2
 > Fortran(J,deducetypes=false,defaulttype=float,optimize=true);
 Warning, cannot resolve types, reassigning df's type
 Warning, cannot resolve types, reassigning dfr0's type
@@ -288,169 +270,164 @@ Warning, cannot resolve types, reassigning grd's type
         doubleprecision thetaz
         doubleprecision Tempz
         doubleprecision cgret(2,4)
-        doubleprecision df(10)
-        doubleprecision dfr0(10)
+        doubleprecision df(11)
+        doubleprecision dfr0(11)
         doubleprecision grd(2,4)
         doubleprecision t1
-        doubleprecision t10
-        doubleprecision t102
+        doubleprecision t103
         doubleprecision t107
-        doubleprecision t115
+        doubleprecision t109
+        doubleprecision t110
+        doubleprecision t112
+        doubleprecision t113
         doubleprecision t12
-        doubleprecision t122
-        doubleprecision t127
+        doubleprecision t123
         doubleprecision t129
-        doubleprecision t135
-        doubleprecision t137
-        doubleprecision t14
         doubleprecision t141
-        doubleprecision t144
+        doubleprecision t147
+        doubleprecision t149
         doubleprecision t15
         doubleprecision t16
-        doubleprecision t166
-        doubleprecision t167
+        doubleprecision t164
+        doubleprecision t165
         doubleprecision t17
-        doubleprecision t170
         doubleprecision t18
+        doubleprecision t19
         doubleprecision t2
         doubleprecision t20
+        doubleprecision t22
+        doubleprecision t24
+        doubleprecision t26
+        doubleprecision t29
         doubleprecision t3
         doubleprecision t30
-        doubleprecision t31
-        doubleprecision t32
         doubleprecision t33
-        doubleprecision t34
-        doubleprecision t36
-        doubleprecision t39
+        doubleprecision t37
+        doubleprecision t38
         doubleprecision t4
         doubleprecision t40
+        doubleprecision t41
+        doubleprecision t42
         doubleprecision t43
-        doubleprecision t45
-        doubleprecision t46
         doubleprecision t47
         doubleprecision t48
         doubleprecision t49
         doubleprecision t5
         doubleprecision t50
         doubleprecision t51
-        doubleprecision t54
-        doubleprecision t55
+        doubleprecision t53
+        doubleprecision t56
         doubleprecision t57
         doubleprecision t59
         doubleprecision t6
         doubleprecision t61
-        doubleprecision t63
-        doubleprecision t69
-        doubleprecision t7
-        doubleprecision t70
-        doubleprecision t72
+        doubleprecision t67
+        doubleprecision t68
+        doubleprecision t71
         doubleprecision t73
-        doubleprecision t75
-        doubleprecision t76
-        doubleprecision t80
-        doubleprecision t83
-        doubleprecision t84
+        doubleprecision t79
+        doubleprecision t82
         doubleprecision t85
-        doubleprecision t87
+        doubleprecision t88
         doubleprecision t89
-        doubleprecision t91
-        doubleprecision t96
+        doubleprecision t92
+        doubleprecision t93
+        doubleprecision t95
+        doubleprecision t97
         t1 = rhoair * cair
         t2 = omega ** 2
         t3 = rholiq * t2
         t4 = Tfrz - Temp
         t5 = t4 ** 2
         t6 = 0.1D1 / rhoice
-        t7 = t3 * t5
-        t10 = t1 * (-t6 * t7 + 0.1D1)
         t12 = t2 * t5
-        t14 = rholiq * cliq
-        t15 = cice * rholiq * t12 + t10 + t14
+        t15 = t1 * (-t3 * t5 * t6 + 0.1D1) + rholiq * cice * t12 + rholi
+     #q * cliq
         t16 = t15 * theta
         t17 = rholiq * Lfus
-        t34 = theta - thetar
-        t36 = -t7 - thetar + 0.1D1
-        t18 = 0.1D1 / t36
-        t20 = ns - 0.1D1
-        t40 = (t34 * t18) ** t20
-        t51 = t36 ** 2
-        t30 = -0.2D1 * Tempz * rholiq * t2 * t34 * t4 * t6 + t36 * t6 * 
-     #thetaz
-        t31 = 0.1D1 / t51
-        t32 = t30 * t31
-        t54 = ns * t40 * t32
-        t33 = t17 * omega
-        t39 = 0.2D1 * t33 * t4 * theta + t1 + t16
-        t43 = cipce * rholiq * t12 + t10 + t14
-        t45 = t43 * theta + t1
-        t46 = 0.1D1 / t45
-        t47 = t39 * t46
-        t48 = 0.1D1 + t12
-        t49 = 0.1D1 / t48
-        t50 = t49 * ksnow
-        df(10) = -t47 * t50
-        t55 = df(10) * ns
-        t57 = t51 ** 2
-        t59 = t40 * t30 / t57
-        df(9) = -t55 * t59
-        df(8) = t55 * t32
-        t61 = t55 * t40
-        t63 = t6 * thetaz * t31
-        t69 = df(8) * t40
-        t70 = t20 * t18
-        df(7) = 0.2D1 * t36 * df(9) + t61 * t63 - t69 * t70
-        t72 = t40 * Tempz
-        t73 = t55 * t72
-        t75 = t4 * t6 * t31
-        t76 = t3 * t75
-        t80 = t20 / t34
-        df(6) = t69 * t80 - 0.2D1 * t73 * t76
-        t83 = ksnow * t54
-        t84 = t46 * t49 * t83
-        df(5) = -t84
-        t85 = df(5)
-        t87 = rholiq * theta
-        t89 = t45 ** 2
-        t91 = t39 / t89
-        t96 = t48 ** 2
-        df(4) = t85 * cice * t87 + t91 * t50 * t54 * cipce * t87 + t47 /
-     # t96 * ksnow * t54
-        t102 = t91 * t49
-        df(3) = t102 * t83 * theta + t85 * theta
-        t107 = t3 * t6
-        df(2) = -t1 * t107 * df(3) + t2 * df(4) - t3 * df(7)
-        t115 = t3 * t34 * t6 * t31
-        df(1) = -0.2D1 * t33 * t84 * theta - 0.2D1 * t115 * t73 + 0.2D1 
-     #* t4 * df(2)
-        t122 = t16 + t1
-        dfr0(10) = -t17 / t122 * ksnow
-        t127 = dfr0(10) * ns
-        dfr0(9) = -t127 * t59
-        dfr0(8) = t127 * t32
-        t129 = t127 * t40
-        t135 = dfr0(8) * t40
-        dfr0(7) = t129 * t63 - t135 * t70 + 0.2D1 * t36 * dfr0(9)
-        t137 = t127 * t72
-        dfr0(6) = t135 * t80 - 0.2D1 * t137 * t76
-        t141 = t122 ** 2
-        dfr0(5) = t17 / t141 * t83
-        t144 = dfr0(5)
-        dfr0(4) = t144 * cice * t87
-        dfr0(3) = t144 * theta
-        dfr0(2) = -t1 * t107 * dfr0(3) + t2 * dfr0(4) - t3 * dfr0(7)
-        dfr0(1) = -0.2D1 * t115 * t137 + 0.2D1 * t4 * dfr0(2)
-        grd(1,1) = t102 * t43 * t83 - 0.2D1 * t33 * t4 * t84 + t15 * t85
-     # + df(6)
+        t18 = t16 + t1
+        t24 = 0.1D1 / t18
+        t30 = theta - thetar
+        t19 = t3 * t5 * theta
+        t33 = -t19 - thetar + 0.1D1
+        t20 = 0.1D1 / t33
+        t22 = ns - 0.1D1
+        t37 = (t30 * t20) ** t22
+        t48 = (Tfrz - T) ** 2
+        t53 = t33 ** 2
+        t26 = t19 * t6
+        t29 = t3 * t4
+        t38 = 0.2D1 * Tempz * t29 * t6 + t48 * thetaz
+        t40 = (-t26 - thetar + 0.1D1) * thetaz - t30 * t38
+        t41 = 0.1D1 / t53
+        t42 = t40 * t41
+        t56 = ns * t37 * t42
+        t43 = t17 * omega
+        t47 = 0.2D1 * t4 * t43 * theta + t1 + t16
+        t49 = t47 * t24
+        t50 = 0.1D1 + t12
+        t51 = 0.1D1 / t50
+        df(11) = -t49 * t51 * ksnow
+        t57 = df(11) * ns
+        t59 = t53 ** 2
+        t61 = t37 * t40 / t59
+        df(10) = -t57 * t61
+        df(9) = t57 * t42
+        t67 = df(9) * t37
+        t68 = t22 * t20
+        df(8) = 0.2D1 * t33 * df(10) - t67 * t68
+        t71 = t3 * t6
+        t73 = t71 * thetaz * t41
+        df(7) = -t37 * t57 * t73 - t3 * df(8)
+        t79 = -t37 * t38 * t41
+        t82 = t22 / t30
+        df(6) = t57 * t79 + t67 * t82
+        t85 = ksnow * t56
+        df(5) = -t47 * t51 * t85
+        t88 = t18 ** 2
+        t89 = 0.1D1 / t88
+        t92 = t24 * t51 * t85
+        df(4) = -t89 * df(5) - t92
+        t93 = df(4)
+        t95 = cice * theta
+        t97 = t50 ** 2
+        df(3) = t93 * rholiq * t95 + t49 / t97 * ksnow * t56
+        t103 = t71 * theta
+        t107 = df(7)
+        df(2) = -t1 * t103 * t93 + t107 * theta + t2 * df(3)
+        t109 = t37 * t30
+        t110 = t57 * t109
+        t112 = t6 * t41
+        t113 = Tempz * t3 * t112
+        df(1) = -0.2D1 * t43 * t92 * theta - 0.2D1 * t110 * t113 + 0.2D1
+     # * t4 * df(2)
+        dfr0(11) = -t17 * t24 * ksnow
+        t123 = dfr0(11) * ns
+        dfr0(10) = -t123 * t61
+        dfr0(9) = t123 * t42
+        t129 = dfr0(9) * t37
+        dfr0(8) = -t129 * t68 + 0.2D1 * t33 * dfr0(10)
+        dfr0(7) = -t123 * t37 * t73 - t3 * dfr0(8)
+        dfr0(6) = t123 * t79 + t129 * t82
+        dfr0(5) = -t17 * ksnow * t56
+        dfr0(4) = -dfr0(5) * t89
+        t141 = dfr0(4)
+        dfr0(3) = t141 * rholiq * t95
+        t147 = dfr0(7)
+        dfr0(2) = -t1 * t103 * t141 + t147 * theta + t2 * dfr0(3)
+        t149 = t123 * t109
+        dfr0(1) = -0.2D1 * t113 * t149 + 0.2D1 * t4 * dfr0(2)
+        grd(1,1) = -0.2D1 * t4 * t43 * t92 + t107 * t5 + t15 * t93 + df(
+     #6)
         grd(1,2) = -df(1)
-        t166 = t36 * t6 * t31
-        grd(1,3) = t61 * t166
-        t167 = t40 * rholiq
-        t170 = t2 * t34 * t75
-        grd(1,4) = -0.2D1 * t55 * t167 * t170
-        grd(2,1) = t144 * t15 + dfr0(6)
+        t164 = t37 * (-t30 * t48 - t26 - thetar + 0.1D1) * t41
+        grd(1,3) = t57 * t164
+        t165 = t29 * t112
+        grd(1,4) = -0.2D1 * t110 * t165
+        grd(2,1) = t141 * t15 + t147 * t5 + dfr0(6)
         grd(2,2) = -dfr0(1)
-        grd(2,3) = t129 * t166
-        grd(2,4) = -0.2D1 * t127 * t167 * t170
+        grd(2,3) = t123 * t164
+        grd(2,4) = -0.2D1 * t149 * t165
         cgret(1,1) = grd(1,1)
         cgret(1,2) = grd(1,2)
         cgret(1,3) = grd(1,3)
@@ -461,4 +438,4 @@ Warning, cannot resolve types, reassigning grd's type
         cgret(2,4) = grd(2,4)
       end
 > quit
-memory used=23.2MB, alloc=40.3MB, time=0.49
+memory used=23.7MB, alloc=40.3MB, time=0.45

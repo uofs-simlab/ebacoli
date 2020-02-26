@@ -7,30 +7,21 @@ restart;
 # - thetaz and Tempz represent their derivatives wrt z
 # - Unfortunately, dqdz needs to be explicitly put into the RHS equations for the jacobian computation as I've done it.
 # - Similar story for Cp
-# ns := 1;
-dqdz := ksnow*ns*((theta-thetar)/(1-rholiq*omega^2*(Tfrz-Temp)^2-thetar))^(ns-1)*((1-rholiq*omega^2*(Tfrz-Temp)^2-thetar)*thetaz/rhoice-(theta-thetar)*(2*rholiq*omega^2*(Tfrz-Temp)*Tempz/rhoice))/(1-rholiq*omega^2*(Tfrz-Temp)^2-thetar)^2;
+dqdz := (ksnow*ns*((theta-thetar)/(1-rholiq*omega^2*(Tfrz-Temp)^2*theta-thetar))^(ns-1)*((1-rholiq*omega^2*(Tfrz-Temp)^2*theta/rhoice-thetar)*thetaz-(theta-thetar)*((2*rholiq*omega^2*(Tfrz-Temp)*Tempz/rhoice)+(Tfrz-T)^2*thetaz))/(1-rholiq*omega^2*(Tfrz-Temp)^2*theta-thetar)^2);
 
-dqdz1 := ksnow*((1-rholiq*omega^2*(Tfrz-Temp)^2-thetar)*thetaz/rhoice-(theta-thetar)*(2*rholiq*omega^2*(Tfrz-Temp)*Tempz/rhoice))/(1-rholiq*omega^2*(Tfrz-Temp)^2-thetar)^2;
-
-Cp = ((rhoair*cair*(1-rholiq*omega^2*(Tfrz-Temp)^2/rhoice) + rholiq*cice*omega^2*(Tfrz-Temp)^2 + rholiq*cliq) * theta + rhoair*cair):
+Cp = ((rhoair*cair*(1-rholiq*omega^2*(Tfrz-Temp)^2/rhoice) + rholiq*cice*omega^2*(Tfrz-Temp)^2 + rholiq*cliq)*theta + rhoair*cair):
 
 #####################################
-# NOTE: I manually copied dqdz Cp into these RHS values... This is to avoid some silliness later in the codegen
+# NOTE: I manually copied dqdz and Cp into these RHS values... This is to avoid some silliness later in the codegen
 #######
 # RHS1 := (theta,Temp,thetaz,Tempz) -> -(Cp +2*rholiq*Lfus*omega*(Tfrz-Temp)*theta)/(Cp*(1+omega^2*(Tfrz-Temp)^2)) * dqdz;
 #
 # RHS2 := (theta,Temp,thetaz,Tempz) -> -rholiq*Lfus/Cp * dqdz;
 #####################################
 
+RHS1 := (theta,Temp,thetaz,Tempz) -> -(((rhoair*cair*(1-rholiq*omega^2*(Tfrz-Temp)^2/rhoice) + rholiq*cice*omega^2*(Tfrz-Temp)^2 + rholiq*cliq)*theta + rhoair*cair) +2*rholiq*Lfus*omega*(Tfrz-Temp)*theta)/(((rhoair*cair*(1-rholiq*omega^2*(Tfrz-Temp)^2/rhoice) + rholiq*cice*omega^2*(Tfrz-Temp)^2 + rholiq*cliq)*theta + rhoair*cair)*(1+omega^2*(Tfrz-Temp)^2)) * (ksnow*ns*((theta-thetar)/(1-rholiq*omega^2*(Tfrz-Temp)^2*theta-thetar))^(ns-1)*((1-rholiq*omega^2*(Tfrz-Temp)^2*theta/rhoice-thetar)*thetaz-(theta-thetar)*((2*rholiq*omega^2*(Tfrz-Temp)*Tempz/rhoice)+(Tfrz-T)^2*thetaz))/(1-rholiq*omega^2*(Tfrz-Temp)^2*theta-thetar)^2);
 
-
-RHS1 := (theta,Temp,thetaz,Tempz) -> -(((rhoair*cair*(1-rholiq*omega^2*(Tfrz-Temp)^2/rhoice) + rholiq*cice*omega^2*(Tfrz-Temp)^2 + rholiq*cliq) * theta + rhoair*cair) +2*rholiq*Lfus*omega*(Tfrz-Temp)*theta)/(((rhoair*cair*(1-rholiq*omega^2*(Tfrz-Temp)^2/rhoice) + rholiq*cipce*omega^2*(Tfrz-Temp)^2 + rholiq*cliq) * theta + rhoair*cair)*(1+omega^2*(Tfrz-Temp)^2)) * ksnow*ns*((theta-thetar)/(1-rholiq*omega^2*(Tfrz-Temp)^2-thetar))^(ns-1)*((1-rholiq*omega^2*(Tfrz-Temp)^2-thetar)*thetaz/rhoice-(theta-thetar)*(2*rholiq*omega^2*(Tfrz-Temp)*Tempz/rhoice))/(1-rholiq*omega^2*(Tfrz-Temp)^2-thetar)^2;
-
-# RHS1 := (theta,Temp,thetaz,Tempz) -> -(((rhoair*cair*(1-rholiq*omega^2*(Tfrz-Temp)^2/rhoice) + rholiq*cice*omega^2*(Tfrz-Temp)^2 + rholiq*cliq) * theta + rhoair*cair) +2*rholiq*Lfus*omega*(Tfrz-Temp)*theta)/(((rhoair*cair*(1-rholiq*omega^2*(Tfrz-Temp)^2/rhoice) + rholiq*cipce*omega^2*(Tfrz-Temp)^2 + rholiq*cliq) * theta + rhoair*cair)*(1+omega^2*(Tfrz-Temp)^2)) * ksnow*((1-rholiq*omega^2*(Tfrz-Temp)^2-thetar)*thetaz/rhoice-(theta-thetar)*(2*rholiq*omega^2*(Tfrz-Temp)*Tempz/rhoice))/(1-rholiq*omega^2*(Tfrz-Temp)^2-thetar)^2;
-
-RHS2 := (theta,Temp,thetaz,Tempz) -> -rholiq*Lfus/((rhoair*cair*(1-rholiq*omega^2*(Tfrz-Temp)^2/rhoice) + rholiq*cice*omega^2*(Tfrz-Temp)^2 + rholiq*cliq) * theta + rhoair*cair) * ksnow*ns*((theta-thetar)/(1-rholiq*omega^2*(Tfrz-Temp)^2-thetar))^(ns-1)*((1-rholiq*omega^2*(Tfrz-Temp)^2-thetar)*thetaz/rhoice-(theta-thetar)*(2*rholiq*omega^2*(Tfrz-Temp)*Tempz/rhoice))/(1-rholiq*omega^2*(Tfrz-Temp)^2-thetar)^2;
-
-# RHS2 := (theta,Temp,thetaz,Tempz) -> -rholiq*Lfus/((rhoair*cair*(1-rholiq*omega^2*(Tfrz-Temp)^2/rhoice) + rholiq*cice*omega^2*(Tfrz-Temp)^2 + rholiq*cliq) * theta + rhoair*cair) * ksnow*((1-rholiq*omega^2*(Tfrz-Temp)^2-thetar)*thetaz/rhoice-(theta-thetar)*(2*rholiq*omega^2*(Tfrz-Temp)*Tempz/rhoice))/(1-rholiq*omega^2*(Tfrz-Temp)^2-thetar)^2;
+RHS2 := (theta,Temp,thetaz,Tempz) -> -rholiq*Lfus/((rhoair*cair*(1-rholiq*omega^2*(Tfrz-Temp)^2/rhoice) + rholiq*cice*omega^2*(Tfrz-Temp)^2 + rholiq*cliq)*theta + rhoair*cair) * (ksnow*ns*((theta-thetar)/(1-rholiq*omega^2*(Tfrz-Temp)^2*theta-thetar))^(ns-1)*((1-rholiq*omega^2*(Tfrz-Temp)^2*theta/rhoice-thetar)*thetaz-(theta-thetar)*((2*rholiq*omega^2*(Tfrz-Temp)*Tempz/rhoice)+(Tfrz-T)^2*thetaz))/(1-rholiq*omega^2*(Tfrz-Temp)^2*theta-thetar)^2);
 
 # Generate code
 #
