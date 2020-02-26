@@ -7,3 +7,5 @@ add_subdirectory(par-ode-ellip)
 add_subdirectory(TOMS)
 
 add_subdirectory(movie)
+
+add_subdirectory(colbeck)
