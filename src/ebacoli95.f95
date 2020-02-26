@@ -208,6 +208,9 @@ module ebacoli95_mod
         real(dp)          :: prev_time_step_size
     !                        The size of the most recent time step
     !                        taken by DASSL.
+        real(dp)          :: time
+    !                        The time at the end of the most recent time step
+    !                        taken by DASSL.
     end type
 
     public :: ebacoli95_init
@@ -797,6 +800,7 @@ module ebacoli95_mod
             sol%min_len_rpar            = sol%ipar(irpstp)
             sol%prev_bdf_order          = sol%ipar(iiwork-1+ipbdf)
             sol%prev_time_step_size     = sol%rpar(sol%ipar(irwork)-1+ihprv)
+            sol%time                    = outt
 
         end subroutine
 
