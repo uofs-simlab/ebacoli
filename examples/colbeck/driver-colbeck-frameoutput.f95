@@ -101,11 +101,11 @@ program colbeck_driver
     write(6,*)
 
     ! Set output time
-    tstop = 100
+    tstop = 1000.d0
     ntout = 100
 
     ! Set tolerance
-    atol = 1d-3
+    atol = 1d-5
     rtol = atol
 
     ! Set kcol (order of expansion is p = kcol+1)

@@ -505,11 +505,13 @@ c-----------------------------------------------------------------------
 c-----------------------------------------------------------------------
 C     Functions
       double precision smstep,dsmstep,inton,dinton
-      BVAL(1) = ksnow*(U(1)-thetar)**ns/(1-rholiq*omega**2*(Tfrz-U(2))
-     $     **2*U(1)/rhoice-thetar)**ns
-     $     - 0.1d0*inton(T, 30.d0, 3.d0 *3600.d0,50.d0)
+c$$$      BVAL(1) = ksnow*(U(1)-thetar)/(1-rholiq*omega**2*(Tfrz-U(2))
+c$$$     $     **2*U(1)/rhoice-thetar)
+c$$$     $     - 0.1d0*inton(T, 30.d0, 3.d0 *3600.d0,50.d0)
 
-c$$$c$$$- 0.1*inton(T, 3600.d0, 3.d0*3600.d0, 2.d0)
+      BVAL(1) = U(1)-thetar - (1.d0-rholiq*omega**2*(Tfrz-U(2))**2*U(1)
+     $     /rhoice-thetar)*(0.1*inton(T,30.d0,3.d0*3600.d0,50.d0)/ksnow)
+     $     **(1.d0/ns)
 C     derivative condition on temperature?
 c$$$      BVAL(1) = U(1)- 0.3*inton(T, 30.d0, 3*3630.d0, 50.d0)
       BVAL(2) = UX(2)
@@ -609,18 +611,24 @@ C     Functions
       double precision smstep,dsmstep,inton,dinton
 C-----------------------------------------------------------------------
 C     Local variables
-      double precision denom
+      double precision combo1,combo2
 C-----------------------------------------------------------------------
-      denom = 1-rholiq*omega**2*(Tfrz-U(2))**2*U(1)/rhoice-thetar
+      combo1 = rholiq*omega**2*(Tfrz-U(2))**2/rhoice
+      combo2 = 0.1*inton(T,30.d0,3.d0*3600,50.d0)/ksnow
 
-      DBDU(1,1) = ksnow*ns*((U(1)-thetar)**(ns-1)*denom**ns + rholiq
-     $     *omega**2*(Tfrz-U(2))**2*U(1)**(ns-1)*(U(1)-thetar))/denom
-     $     **(2*n)
+c$$$      DBDU(1,1) = ksnow*(*denom**ns + rholiq
+c$$$     $     *omega**2*(Tfrz-U(2))**2*U(1)**(ns-1)*(U(1)-thetar))/denom
+c$$$     $     **(2*n)
+
+      DBDU(1,1) = 1.d0 + combo1*combo2**(1.d0/ns)
 
 c$$$      DBDU(1,1) = 1.d0
 c$$$      DBDU(1,2) = 0.d0
-      DBDU(1,2) = 2.d0*ns*(U(1)-thetar)**ns*rholiq*omega**2*(Tfrz-U(2))
-     $     *U(1)/rhoice/denom**(ns+1)
+c$$$      DBDU(1,2) = 2.d0*ns*(U(1)-thetar)**ns*rholiq*omega**2*(Tfrz-U(2))
+c$$$     $     *U(1)/rhoice/denom**(ns+1)
+      DBDU(1,2) = -2.D0*rholiq*omega**2*(Tfrz-U(2))/rhoice*U(1)*combo2
+     $     **(1.d0/ns)
+
 c
       DBDUX(1,1) = 0.0D0
       DBDUX(1,2) = 0.0D0
@@ -631,7 +639,11 @@ c
       DBDUX(2,1) = 0.0D0
       DBDUX(2,2) = 1.0D0
 
-      DBDT(1) = -0.1*dinton(T, 30.d0, 3.d0*3600.d0, 50.d0)
+c$$$      DBDT(1) = -0.1*dinton(T, 30.d0, 3.d0*3600.d0, 50.d0)
+
+      DBDT(1) = - (1.d0 - combo1*U(1) - thetar)*combo2**(1.d0/ns-1.d0)
+     $     *(0.1*dinton(T,30.d0,3.d0*3600.d0,50.d0)/ns/ksnow)
+
       DBDT(2) = 0.0D0
 
 C     This BC works somehow
