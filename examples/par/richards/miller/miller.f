@@ -963,39 +963,52 @@ C     2nd derivative of hydraulic conductivity K''(psi)
 C     Volumetric water content theta(psi)
       double precision ss,phi,thetas,thetar,alpha,n,m,ks
       common /richards/ ss,phi,thetas,thetar,alpha,n,m,ks
-      volcon = (thetas - thetar) / (0.1D1 + (alpha * dabs(psi)) ** n) *
-     $     * m + thetar
-        return
+      if (psi .lt. 0) then
+         volcon = (thetas - thetar) / (0.1D1 + (alpha * dabs(psi)) ** n)
+     $        ** m + thetar
+      else
+         volcon = ks
+      endif
+      return
       end
       doubleprecision function dvolco (psi)
       doubleprecision psi
 C     Derivative of volumetric water content theta'(psi)
       double precision ss,phi,thetas,thetar,alpha,n,m,ks
       common /richards/ ss,phi,thetas,thetar,alpha,n,m,ks
-      dvolco = -(thetas - thetar) / (0.1D1 + (alpha * dabs(psi)) ** n)
-     $     ** m * m * (alpha * dabs(psi)) ** n * n * dabs(psi) / psi /
-     $     dabs(psi) / (0.1D1 + (alpha * dabs(psi)) ** n)
-        return
+      if (psi .lt. 0) then
+         dvolco = -(thetas - thetar) / (0.1D1 + (alpha * dabs(psi)) **
+     $        n)** m * m * (alpha * dabs(psi)) ** n * n * dabs(psi) /
+     $        psi /dabs(psi) / (0.1D1 + (alpha * dabs(psi)) ** n)
+      else
+         dvolco = 0.d0
+      endif
+      return
       end
       doubleprecision function ddvolc (psi)
       doubleprecision psi
 C     2nd derivative of Volumetric water content theta''(psi)
       double precision ss,phi,thetas,thetar,alpha,n,m,ks
       common /richards/ ss,phi,thetas,thetar,alpha,n,m,ks
-      ddvolc = (thetas - thetar) / (0.1D1 + (alpha * dabs(psi)) ** n) *
-     $     * m * m ** 2 * ((alpha * dabs(psi)) ** n) ** 2 * n ** 2 *
-     $     dabs(psi) / psi ** 2 / dabs(psi) ** 2 / (0.1D1 + (alpha *
-     $     dabs(psi)) ** n) ** 2 - (thetas - thetar) / (0.1D1 + (alpha *
-     $     dabs(psi)) ** n) ** m * m * (alpha * dabs(psi)) ** n * n ** 2
-     $     * dabs(psi) / psi ** 2 / dabs(ps i) ** 2 / (0.1D1 + (alpha *
-     $     dabs(psi)) ** n) - (thetas - thetar) / (0.1D1 + (alpha *
-     $     dabs(psi)) ** n) ** m * m * (alpha * dabs(psi)) ** n * n *
-     $     0.d0 / dabs(psi) / (0.1D1 + (alpha * dabs(psi)) * * n) +
-     $     (thetas - thetar) / (0.1D1 + (alpha * dabs(psi)) ** n) ** m *
-     $     m * (alpha * dabs(psi)) ** n * n * dabs(psi) / psi ** 2 /
-     $     dabs(psi) ** 2 / (0.1D1 + (alpha * dabs(psi)) ** n) + (thetas
-     $     - thetar) / (0 .1D1 + (alpha * dabs(psi)) ** n) ** m * m *
-     $     ((alpha * dabs(psi)) ** n) ** 2 * n ** 2 * dabs(psi) / psi **
-     $     2 / dabs(psi) ** 2 / (0.1D1 + (alpha * dabs(psi)) ** n) ** 2
-        return
+      if (psi .lt. 0) then
+         ddvolc = (thetas - thetar) / (0.1D1 + (alpha * dabs(psi)) ** n)
+     $        ** m * m ** 2 * ((alpha * dabs(psi)) ** n) ** 2 * n ** 2
+     $        *dabs(psi) / psi ** 2 / dabs(psi) ** 2 / (0.1D1 + (alpha
+     $        *dabs(psi)) ** n) ** 2 - (thetas - thetar) / (0.1D1 +
+     $        (alpha *dabs(psi)) ** n) ** m * m * (alpha * dabs(psi)) **
+     $        n * n ** 2* dabs(psi) / psi ** 2 / dabs(ps i) ** 2 /
+     $        (0.1D1 + (alpha *dabs(psi)) ** n) - (thetas - thetar) /
+     $        (0.1D1 + (alpha *dabs(psi)) ** n) ** m * m * (alpha *
+     $        dabs(psi)) ** n * n *0.d0 / dabs(psi) / (0.1D1 + (alpha *
+     $        dabs(psi)) * * n) +(thetas - thetar) / (0.1D1 + (alpha *
+     $        dabs(psi)) ** n) ** m *m * (alpha * dabs(psi)) ** n * n *
+     $        dabs(psi) / psi ** 2 /dabs(psi) ** 2 / (0.1D1 + (alpha *
+     $        dabs(psi)) ** n) + (thetas- thetar) / (0 .1D1 + (alpha *
+     $        dabs(psi)) ** n) ** m * m *((alpha * dabs(psi)) ** n) ** 2
+     $        * n ** 2 * dabs(psi) / psi **2 / dabs(psi) ** 2 / (0.1D1 +
+     $        (alpha * dabs(psi)) ** n) ** 2
+      else
+         ddvolc = 0.d0
+      endif
+      return
       end

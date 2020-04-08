@@ -61,14 +61,14 @@ program richards_driver
     double precision ss,phi,thetas,thetar,alpha,n,m,ks
     common /richards/ ss,phi,thetas,thetar,alpha,n,m,ks
 
-    phi = 1.d0 ! not specified in laugh draft paper
     thetar = 0.093d0
     thetas = 0.301d0
-    alpha = 0.0547d0
+    phi = thetas
+    alpha = 5.47d0
     n = 4.264d0
     m = 1.d0 - 1.d0/n
-    ks = 5.83d-5
-    ss = 1.d-6
+    ks = 5.833d-5
+    ss = 1.d0
 
     !-------------------------------------------------------------------
     ! Write out value of npde to allow user to confirm that its value
@@ -79,7 +79,7 @@ program richards_driver
     write(6,*)
 
     ! Set output time
-    tstop = 1.d2 !0.18d0*24.d0*3600.d0
+    tstop = 1.d3 !0.18d0*24.d0*3600.d0
     ntout = 20
 
     ! Set tolerance
@@ -89,7 +89,7 @@ program richards_driver
 
     ! Set kcol (order of expansion is p = kcol+1)
     ! kcol=4 is default
-    kcol = 4
+    kcol = 3
 
     ! Initialize a grid to pass to ebacoli
     xin(1) = xa
