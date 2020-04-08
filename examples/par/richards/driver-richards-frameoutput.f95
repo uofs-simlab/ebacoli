@@ -61,9 +61,9 @@ program richards_driver
     double precision ss,phi,thetas,thetar,alpha,n,m,ks
     common /richards/ ss,phi,thetas,thetar,alpha,n,m,ks
 
-    phi = 1.d0 ! not specified in laugh draft paper
     thetar = 0.102d0
     thetas = 0.368d0
+    phi = thetas
     alpha = 3.35d0
     n = 2.d0
     m = 1.d0 - 1.d0/n
