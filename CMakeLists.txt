@@ -1,15 +1,50 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.0)
 
-project(eBACOLI)
+project(EBACOLI)
 enable_language(Fortran)
 
-# Be able to find the module file produced in building the library
+# define library version
+set(EBACOLI_VERSION_MAJOR 0 CACHE STRING "major version of ebacoli" FORCE)
+set(EBACOLI_VERSION_MINOR 1 CACHE STRING "minor version of ebacoli" FORCE)
+set(EBACOLI_VERSION ${EBACOLI_VERSION_MAJOR}.${EBACOLI_VERSION_MINOR} CACHE STRING "version of ebacoli" FORCE)
+
+# set a debug postfix
+set(CMAKE_DEBUG_POSTFIX "-dbg")
+
+# Module location at compile time
 set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/modules)
+
+# installation destinations
+if(UNIX OR VXWORKS)
+    include(GNUInstallDirs)
+
+    set(EBACOLI_INC_INSTALL_DIR "${CMAKE_INSTALL_INCLUDEDIR}/ebacoli")
+    set(EBACOLI_RUNTIME_INSTALL_DIR "${CMAKE_INSTALL_BINDIR}")
+    set(EBACOLI_LIBRARY_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}")
+    set(EBACOLI_ARCHIVE_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}")
+    set(EBACOLI_FRAMEWORK_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}")
+
+    set(EBACOLI_CMAKE_CONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/ebacoli/cmake")
+    set(EBACOLI_ADDITIONAL_FILES_INSTALL_DIR "${CMAKE_INSTALL_DATADIR}/ebacoli")
+else()
+    message(FATAL_ERROR "Could not set install folders for this platform!")
+endif()
+
+# # Be able to find the module file produced in building the library
+# set(CMAKE_Fortran_MODULE_DIRECTORY ${EBACOLI_INC_INSTALL_DIR}/modules)
 
 # Option to disable compiling pieces beyond the libary
 option(EBACOLI_BUILD_EXAMPLES "Build the example codes" ON)
 option(EBACOLI_BUILD_TESTS "Build the test codes" ON)
 
+# Avoid verbose "Up-to-date" status information during installation:
+#
+MACRO(SET_IF_EMPTY _variable)
+  IF("${${_variable}}" STREQUAL "")
+    SET(${_variable} ${ARGN})
+  ENDIF()
+ENDMACRO()
+SET_IF_EMPTY(CMAKE_INSTALL_MESSAGE "LAZY")
 
 ############################################################################
 # Useful macros and functions for creating and linking new executables
@@ -39,7 +74,6 @@ macro(create_macro_ebacoli_executable driver_file system_file nu nv nw)
     "-DMAC_NW=${nw}")
   target_link_libraries(${driver_file}-${system_file} ebacoli)
 endmacro(create_macro_ebacoli_executable)
-
 ############################################################################
 
 # subdirectories
@@ -51,3 +85,8 @@ if(EBACOLI_BUILD_TESTS)
   enable_testing()
   add_subdirectory(tests)
 endif()
+
+install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE" "${CMAKE_CURRENT_SOURCE_DIR}/README.md" DESTINATION ${EBACOLI_ADDITIONAL_FILES_INSTALL_DIR})
+
+install(EXPORT ebacoliTargets DESTINATION ${EBACOLI_CMAKE_CONFIG_INSTALL_DIR}
+                                       FILE ebacoli-config.cmake)
