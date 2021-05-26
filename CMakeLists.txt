@@ -6,7 +6,9 @@ enable_language(Fortran)
 # Be able to find the module file produced in building the library
 set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/modules)
 
-enable_testing()
+# Option to disable compiling pieces beyond the libary
+option(BUILD_EXAMPLES "Build the example codes" ON)
+option(BUILD_TESTS "Build the test codes" ON)
 
 ############################################################################
 # Useful macros and functions for creating and linking new executables
@@ -40,6 +42,12 @@ endmacro(create_macro_ebacoli_executable)
 ############################################################################
 # subdirectories
 add_subdirectory(src)
-add_subdirectory(examples)
 
-add_subdirectory(tests)
+if(BUILD_EXAMPLES)
+  add_subdirectory(examples)
+endif()
+
+if(BUILD_TESTS)
+  enable_testing()
+  add_subdirectory(tests)
+endif()
