@@ -22,8 +22,12 @@ if(NOT DEFINED EBACOLI_LIB_COMPILE)
   find_package(ebacoli 0.1 REQUIRED
     HINTS ${EBACOLI_DIR} ${ebacoli_DIR} ${eBACOLI_DIR} ../ ../../ $ENV{EBACOLI_DIR} $ENV{ebacoli_DIR} $ENV{eBACOLI_DIR}
     )
+  # define these which would otherwise be defined in the library build
   PROJECT(${TARGET})
   enable_language(Fortran)
+else()
+  # specify an install target if built as part of the library
+  install(PROGRAMS "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_EXE}" DESTINATION ${EBACOLI_RUNTIME_INSTALL_DIR})
 endif()
 
 add_executable(${TARGET_EXE} ${TARGET_SRC})

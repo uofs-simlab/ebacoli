@@ -80,6 +80,8 @@ set(EBACOLI_LIB_COMPILE "")
 add_subdirectory(src)
 if(EBACOLI_BUILD_EXAMPLES)
   add_subdirectory(examples)
+  message(STATUS "ebacoli example binaries to be installed at:
+     ${CMAKE_INSTALL_PREFIX}/${EBACOLI_RUNTIME_INSTALL_DIR}")
 endif()
 if(EBACOLI_BUILD_TESTS)
   enable_testing()
