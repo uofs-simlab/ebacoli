@@ -73,6 +73,9 @@ macro(create_macro_ebacoli_executable driver_file system_file nu nv nw)
 endmacro(create_macro_ebacoli_executable)
 ############################################################################
 
+# create a dummy variable for source build
+set(EBACOLI_LIB_COMPILE "")
+
 # subdirectories
 add_subdirectory(src)
 if(EBACOLI_BUILD_EXAMPLES)
