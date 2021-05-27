@@ -1369,7 +1369,8 @@ C     LOAD Y AND H*YPRIME INTO PHI(*,1) AND PHI(*,2)
       ITEMP = LPHI + NEQ
       DO 370 I = 1,NEQ
          RWORK(LPHI + I - 1) = Y(I)
-370      RWORK(ITEMP + I - 1) = H*YPRIME(I)
+         RWORK(ITEMP + I - 1) = H*YPRIME(I)
+ 370  CONTINUE
 C
 390   GO TO 500
 C
@@ -1504,7 +1505,8 @@ C     MULTIPLY RTOL AND ATOL BY R AND RETURN
            GO TO 527
 523   DO 524 I=1,NEQ
            RTOL(I)=R*RTOL(I)
-524        ATOL(I)=R*ATOL(I)
+           ATOL(I)=R*ATOL(I)
+ 524  CONTINUE
       IDID=-2
       GO TO 527
 525   CONTINUE
@@ -1923,7 +1925,8 @@ C
 C     SAVE Y AND YPRIME IN PHI
       DO 100 I=1,NEQ
          PHI(I,1)=Y(I)
-100      PHI(I,2)=YPRIME(I)
+         PHI(I,2)=YPRIME(I)
+ 100  CONTINUE
 C
 C
 C----------------------------------------------------
@@ -1937,7 +1940,8 @@ C     SET UP FOR START OF CORRECTOR ITERATION
 C
 C     PREDICT SOLUTION AND DERIVATIVE
       DO 250 I=1,NEQ
-250     Y(I)=Y(I)+H*YPRIME(I)
+        Y(I)=Y(I)+H*YPRIME(I)
+ 250  CONTINUE
 C
       JCALC=-1
       M=0
@@ -1976,7 +1980,8 @@ C
 C     MULTIPLY RESIDUAL BY DAMPING FACTOR
 310   CONTINUE
       DO 320 I=1,NEQ
-320      DELTA(I)=DELTA(I)*DAMP
+         DELTA(I)=DELTA(I)*DAMP
+ 320  CONTINUE
 C
 C     COMPUTE A NEW ITERATE (BACK SUBSTITUTION)
 C     STORE THE CORRECTION IN DELTA
@@ -1988,7 +1993,8 @@ C
 C     UPDATE Y AND YPRIME
       DO 330 I=1,NEQ
          Y(I)=Y(I)-DELTA(I)
-330      YPRIME(I)=YPRIME(I)-CJ*DELTA(I)
+         YPRIME(I)=YPRIME(I)-CJ*DELTA(I)
+ 330  CONTINUE
 C
 C     TEST FOR CONVERGENCE OF THE ITERATION.
 C
@@ -2024,14 +2030,16 @@ C     THE ITERATION HAS CONVERGED.
 C     CHECK NONNEGATIVITY CONSTRAINTS
 400   IF (NONNEG.EQ.0) GO TO 450
       DO 410 I=1,NEQ
-410      DELTA(I)=MIN(Y(I),0.0D0)
+         DELTA(I)=MIN(Y(I),0.0D0)
+ 410  CONTINUE
 C
       DELNRM=DDANRM(NEQ,DELTA,WT,RPAR,IPAR)
       IF (DELNRM.GT.0.33D0) GO TO 430
 C
       DO 420 I=1,NEQ
          Y(I)=Y(I)-DELTA(I)
-420      YPRIME(I)=YPRIME(I)-CJ*DELTA(I)
+         YPRIME(I)=YPRIME(I)-CJ*DELTA(I)
+ 420  CONTINUE
       GO TO 450
 C
 C
@@ -2048,7 +2056,8 @@ C     DO ERROR TEST.
 C-----------------------------------------------------
 C
       DO 510 I=1,NEQ
-510      E(I)=Y(I)-PHI(I,1)
+         E(I)=Y(I)-PHI(I,1)
+ 510  CONTINUE
       ERR=DDANRM(NEQ,E,WT,RPAR,IPAR)
 C
       IF (ERR.LE.1.0D0) RETURN
@@ -2067,7 +2076,8 @@ C
       X = XOLD
       DO 610 I=1,NEQ
          Y(I)=PHI(I,1)
-610      YPRIME(I)=PHI(I,2)
+         YPRIME(I)=PHI(I,2)
+ 610  CONTINUE
 C
       IF (CONVGD) GO TO 640
       IF (IER.EQ.0) GO TO 620
@@ -2244,7 +2254,8 @@ C
 C     DENSE USER-SUPPLIED MATRIX
 100   LENPD=NEQ*NEQ
       DO 110 I=1,LENPD
-110      WM(NPDM1+I)=0.0D0
+         WM(NPDM1+I)=0.0D0
+ 110  CONTINUE
       CALL JAC(X,Y,YPRIME,WM(NPD),CJ,RPAR,IPAR,
 c-----------------------------------------------------------------------
      *         derivf, bndxa, difbxa, bndxb, difbxb)
@@ -2271,7 +2282,8 @@ c-----------------------------------------------------------------------
          IF (IRES .LT. 0) RETURN
          DELINV=1.0D0/DEL
          DO 220 L=1,NEQ
-220      WM(NROW+L)=(E(L)-DELTA(L))*DELINV
+           WM(NROW+L)=(E(L)-DELTA(L))*DELINV
+ 220     CONTINUE
       NROW=NROW+NEQ
       Y(I)=YSAVE
       YPRIME(I)=YPSAVE
@@ -2436,7 +2448,8 @@ C
 C     BANDED USER-SUPPLIED MATRIX
 400   LENPD=(2*IWM(LML)+IWM(LMU)+1)*NEQ
       DO 410 I=1,LENPD
-410      WM(NPDM1+I)=0.0D0
+         WM(NPDM1+I)=0.0D0
+ 410  CONTINUE
       CALL JAC(X,Y,YPRIME,WM(NPD),CJ,RPAR,IPAR,
 c-----------------------------------------------------------------------
      *         derivf, bndxa, difbxa, bndxb, difbxb)
@@ -2464,7 +2477,8 @@ C     BANDED FINITE-DIFFERENCE-GENERATED MATRIX
           DEL=SIGN(DEL,H*YPRIME(N))
           DEL=(Y(N)+DEL)-Y(N)
           Y(N)=Y(N)+DEL
-510       YPRIME(N)=YPRIME(N)+CJ*DEL
+          YPRIME(N)=YPRIME(N)+CJ*DEL
+ 510     CONTINUE
       CALL RES(X,Y,YPRIME,E,IRES,RPAR,IPAR,
 c-----------------------------------------------------------------------
      *         f, bndxa, bndxb)
@@ -2482,7 +2496,8 @@ c-----------------------------------------------------------------------
           I2=MIN(NEQ,(N+IWM(LML)))
           II=N*MEB1-IWM(LML)+NPDM1
           DO 520 I=I1,I2
-520         WM(II+I)=(E(I)-DELTA(I))*DELINV
+            WM(II+I)=(E(I)-DELTA(I))*DELINV
+ 520     CONTINUE
 530      CONTINUE
 540   CONTINUE
 C
@@ -2937,7 +2952,8 @@ C     CHANGE PHI TO PHI STAR
       IF(KP1 .LT. NSP1) GO TO 280
       DO 270 J=NSP1,KP1
          DO 260 I=1,NEQ
-260         PHI(I,J)=BETA(J)*PHI(I,J)
+            PHI(I,J)=BETA(J)*PHI(I,J)
+ 260     CONTINUE
 270      CONTINUE
 280   CONTINUE
 C
@@ -2958,11 +2974,13 @@ C     FIRST,PREDICT THE SOLUTION AND DERIVATIVE
 300   CONTINUE
       DO 310 I=1,NEQ
          Y(I)=PHI(I,1)
-310      YPRIME(I)=0.0D0
+         YPRIME(I)=0.0D0
+ 310  CONTINUE
       DO 330 J=2,KP1
          DO 320 I=1,NEQ
             Y(I)=Y(I)+PHI(I,J)
-320         YPRIME(I)=YPRIME(I)+GAMMA(J)*PHI(I,J)
+            YPRIME(I)=YPRIME(I)+GAMMA(J)*PHI(I,J)
+ 320     CONTINUE
 330   CONTINUE
       PNORM = DDANRM (NEQ,Y,WT,RPAR,IPAR)
 C
@@ -3007,7 +3025,8 @@ C
 C     INITIALIZE THE ERROR ACCUMULATION VECTOR E.
 340   CONTINUE
       DO 345 I=1,NEQ
-345      E(I)=0.0D0
+         E(I)=0.0D0
+ 345  CONTINUE
 C
 C
 C     CORRECTOR LOOP.
@@ -3016,7 +3035,8 @@ C
 C     MULTIPLY RESIDUAL BY TEMP1 TO ACCELERATE CONVERGENCE
       TEMP1 = 2.0D0/(1.0D0 + CJ/CJOLD)
       DO 355 I = 1,NEQ
-355     DELTA(I) = DELTA(I) * TEMP1
+        DELTA(I) = DELTA(I) * TEMP1
+ 355  CONTINUE
 C
 C     COMPUTE A NEW ITERATE (BACK-SUBSTITUTION).
 C     STORE THE CORRECTION IN DELTA.
@@ -3029,7 +3049,8 @@ C     UPDATE Y,E,AND YPRIME
       DO 360 I=1,NEQ
          Y(I)=Y(I)-DELTA(I)
          E(I)=E(I)-DELTA(I)
-360      YPRIME(I)=YPRIME(I)-CJ*DELTA(I)
+         YPRIME(I)=YPRIME(I)-CJ*DELTA(I)
+ 360  CONTINUE
 C
 C     TEST FOR CONVERGENCE OF THE ITERATION
       DELNRM=DDANRM(NEQ,DELTA,WT,RPAR,IPAR)
@@ -3077,11 +3098,13 @@ C     TO DO IT IS SMALL ENOUGH.  IF THE CHANGE IS TOO LARGE, THEN
 C     CONSIDER THE CORRECTOR ITERATION TO HAVE FAILED.
 375   IF(NONNEG .EQ. 0) GO TO 390
       DO 377 I = 1,NEQ
-377      DELTA(I) = MIN(Y(I),0.0D0)
+         DELTA(I) = MIN(Y(I),0.0D0)
+ 377  CONTINUE
       DELNRM = DDANRM(NEQ,DELTA,WT,RPAR,IPAR)
       IF(DELNRM .GT. 0.33D0) GO TO 380
       DO 378 I = 1,NEQ
-378      E(I) = E(I) - DELTA(I)
+         E(I) = E(I) - DELTA(I)
+ 378  CONTINUE
       GO TO 390
 C
 C
@@ -3112,7 +3135,8 @@ C     ESTIMATE ERRORS AT ORDERS K,K-1,K-2
       KNEW=K
       IF(K .EQ. 1)GO TO 430
       DO 405 I = 1,NEQ
-405     DELTA(I) = PHI(I,KP1) + E(I)
+        DELTA(I) = PHI(I,KP1) + E(I)
+ 405  CONTINUE
       ERKM1=SIGMA(K)*DDANRM(NEQ,DELTA,WT,RPAR,IPAR)
       TERKM1 = K*ERKM1
       IF(K .GT. 2)GO TO 410
@@ -3120,7 +3144,8 @@ C     ESTIMATE ERRORS AT ORDERS K,K-1,K-2
       GO TO 430
 410   CONTINUE
       DO 415 I = 1,NEQ
-415     DELTA(I) = PHI(I,K) + DELTA(I)
+        DELTA(I) = PHI(I,K) + DELTA(I)
+ 415  CONTINUE
       ERKM2=SIGMA(K-1)*DDANRM(NEQ,DELTA,WT,RPAR,IPAR)
       TERKM2 = (K-1)*ERKM2
       IF(MAX(TERKM1,TERKM2).GT.TERK)GO TO 430
@@ -3165,7 +3190,8 @@ C        ORDER RAISED IN PREVIOUS STEP
       IF(K.EQ.IWM(LMXORD)) GO TO 550
       IF(KP1.GE.NS.OR.KDIFF.EQ.1)GO TO 550
       DO 510 I=1,NEQ
-510      DELTA(I)=E(I)-PHI(I,KP2)
+         DELTA(I)=E(I)-PHI(I,KP2)
+ 510  CONTINUE
       ERKP1 = (1.0D0/(K+2))*DDANRM(NEQ,DELTA,WT,RPAR,IPAR)
       TERKP1 = (K+2)*ERKP1
       IF(K.GT.1)GO TO 520
@@ -3210,10 +3236,12 @@ C     UPDATE DIFFERENCES FOR NEXT STEP
 575   CONTINUE
       IF(KOLD.EQ.IWM(LMXORD))GO TO 585
       DO 580 I=1,NEQ
-580      PHI(I,KP2)=E(I)
+         PHI(I,KP2)=E(I)
+ 580  CONTINUE
 585   CONTINUE
       DO 590 I=1,NEQ
-590      PHI(I,KP1)=PHI(I,KP1)+E(I)
+         PHI(I,KP1)=PHI(I,KP1)+E(I)
+ 590  CONTINUE
       DO 595 J1=2,KP1
          J=KP1-J1+1
          DO 595 I=1,NEQ
@@ -3240,11 +3268,13 @@ C     RESTORE X,PHI,PSI
       DO 620 J=NSP1,KP1
          TEMP1=1.0D0/BETA(J)
          DO 610 I=1,NEQ
-610         PHI(I,J)=TEMP1*PHI(I,J)
+            PHI(I,J)=TEMP1*PHI(I,J)
+ 610     CONTINUE
 620      CONTINUE
 630   CONTINUE
       DO 640 I=2,KP1
-640      PSI(I-1)=PSI(I)-H
+         PSI(I-1)=PSI(I)-H
+ 640  CONTINUE
 C
 C
 C     TEST WHETHER FAILURE IS DUE TO CORRECTOR ITERATION
@@ -3388,7 +3418,8 @@ C***FIRST EXECUTABLE STATEMENT  DDATRP
       TEMP1=XOUT-X
       DO 10 I=1,NEQ
          YOUT(I)=PHI(I,1)
-10       YPOUT(I)=0.0D0
+         YPOUT(I)=0.0D0
+ 10   CONTINUE
       C=1.0D0
       D=0.0D0
       GAMMA=TEMP1/PSI(1)
@@ -3398,7 +3429,8 @@ C***FIRST EXECUTABLE STATEMENT  DDATRP
          GAMMA=(TEMP1+PSI(J-1))/PSI(J)
          DO 20 I=1,NEQ
             YOUT(I)=YOUT(I)+C*PHI(I,J)
-20          YPOUT(I)=YPOUT(I)+D*PHI(I,J)
+            YPOUT(I)=YPOUT(I)+D*PHI(I,J)
+ 20      CONTINUE
 30       CONTINUE
       RETURN
 C
@@ -5587,7 +5619,8 @@ C
       IF (N .EQ. 1) GO TO 1001
 C
       DO 100 I = 2, N
-  100 E(I-1) = E(I)
+         E(I-1) = E(I)
+ 100  CONTINUE
 C
       E(N) = 0.0D0
 C
@@ -5718,7 +5751,8 @@ C
       IF (N .EQ. 1) GO TO 1001
 C
       DO 100 I = 2, N
-  100 E(I-1) = E(I)
+         E(I-1) = E(I)
+ 100  CONTINUE
 C
       E(N) = 0.0D0
 C
