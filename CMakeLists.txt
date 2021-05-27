@@ -90,3 +90,6 @@ install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE" "${CMAKE_CURRENT_SOURCE_DIR}
 
 install(EXPORT ebacoliTargets DESTINATION ${EBACOLI_CMAKE_CONFIG_INSTALL_DIR}
                                        FILE ebacoli-config.cmake)
+
+# install the python tools
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/lib/python DESTINATION ${EBACOLI_LIBRARY_INSTALL_DIR})
