@@ -3244,8 +3244,10 @@ C     UPDATE DIFFERENCES FOR NEXT STEP
  590  CONTINUE
       DO 595 J1=2,KP1
          J=KP1-J1+1
-         DO 595 I=1,NEQ
-595      PHI(I,J)=PHI(I,J)+PHI(I,J+1)
+         DO 597 I=1,NEQ
+            PHI(I,J)=PHI(I,J)+PHI(I,J+1)
+ 597     CONTINUE
+ 595  CONTINUE
       RETURN
 C
 C
@@ -4336,14 +4338,15 @@ C-----------------------------------------------------------------------
         IF (DIFF .NE. ZERO) THEN
           A(1,1) = A(1,1)/DIFF*FKMD
         ENDIF
-        DO 110 I=1,K
+        DO 115 I=1,K
           V = ZERO
           JLOW = MAX(I,M)
           DO 100 J=JLOW,K
             V = A(I,J)*VNIKX(J,M) + V
   100     CONTINUE
           VNIKX(I,M) = V
-  110   CONTINUE
+ 115   CONTINUE
+ 110  CONTINUE
   120 RETURN
       END
       SUBROUTINE BSPLVN ( XT, JHIGH, INDEX, X, ILEFT, VNIKX )
