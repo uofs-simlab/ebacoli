@@ -30,9 +30,6 @@ else()
     message(FATAL_ERROR "Could not set install folders for this platform!")
 endif()
 
-# # Be able to find the module file produced in building the library
-# set(CMAKE_Fortran_MODULE_DIRECTORY ${EBACOLI_INC_INSTALL_DIR}/modules)
-
 # Option to disable compiling pieces beyond the libary
 option(EBACOLI_BUILD_EXAMPLES "Build the example codes" ON)
 option(EBACOLI_BUILD_TESTS "Build the test codes" ON)

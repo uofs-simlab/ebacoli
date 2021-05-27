@@ -10,8 +10,13 @@ set(src
 )
 
 add_library(ebacoli ${src})
+target_include_directories(ebacoli PUBLIC $<BUILD_INTERFACE:${EBACOLI_SOURCE_DIR}/include/> # for client in subdirectory
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # for generated files in build mode
+  $<INSTALL_INTERFACE:${EBACOLI_INC_INSTALL_DIR}> # for client in install mode
+)
+
 target_compile_definitions(ebacoli PUBLIC
-                            EBACOLI_VERSION_MAJOR=${EBCOLI_VERSION_MAJOR}
+                            EBACOLI_VERSION_MAJOR=${EBACOLI_VERSION_MAJOR}
                             EBACOLI_VERSION_MINOR=${EBACOLI_VERSION_MINOR})
 
 set_target_properties(ebacoli PROPERTIES
@@ -32,3 +37,4 @@ install(TARGETS ebacoli EXPORT ebacoliTargets
         FRAMEWORK     DESTINATION ${EBACOLI_FRAMEWORK_INSTALL_DIR})
 
 install(DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY}/ DESTINATION ${EBACOLI_INC_INSTALL_DIR})
+install(FILES ${version_file} DESTINATION ${EBACOLI_CMAKE_CONFIG_INSTALL_DIR})
