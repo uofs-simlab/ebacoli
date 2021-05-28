@@ -31,8 +31,8 @@ else()
 endif()
 
 # Option to disable compiling pieces beyond the libary
-option(EBACOLI_BUILD_EXAMPLES "Build the example codes" ON)
-option(EBACOLI_BUILD_TESTS "Build the test codes" ON)
+option(EBACOLI_BUILD_EXAMPLES "Build the example codes" OFF)
+option(EBACOLI_BUILD_TESTS "Build the test codes" OFF)
 
 # Avoid verbose "Up-to-date" status information during installation:
 #
