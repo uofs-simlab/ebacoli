@@ -42,7 +42,7 @@ How
 
 The solution to this problem is adapted from BACOLI.
 
-BACOLI is a method of lines algorithm which uses B-spline collocation to discretize the spatial domain \[a,b\]. BACOLI uses a secondary interpolant of one degree higher or lower to estimate the error of the current solution, and refine either the spatial or temporal grid (or both) accordingly.
+BACOLI is a method of lines algorithm which uses B-spline collocation to discretize the spatial domain \[a,b\]. BACOLI uses a secondary interpolant of one degree higher or lower to estimate the error of the current solution, and refine either the spatial or temporal grid (or both) accordingly. More detailed description of the algorithm can be found in [1].
 
 The output is a vector of B-spline coefficients which can be used to calculate the approximate solution u(t,x) and its spatial derivatives at (tout,x) where a &lt;= x &lt;= b and t0 &lt; tout.
 
@@ -52,16 +52,36 @@ Building
 To build:
 ```
 mkdir build && cd build
-cmake ..
-make
+cmake -DCMAKE_INSTALL_PREFIX=~/.local ..
+make install
 ```
 
 `Debug` or `Release` builds can be selected by providing the `-DCMAKE_BUILD_TYPE=<Release|Debug>` flag to `cmake`.
 
-To solve a specific problem, 2 additional things need to be linked to the library:
+Example problems can be found in the [examples](./examples) directory. They are organized by the type of problem they solve (parabolic, parabolic + ODE, parabolic + ODE + elliptic). 2 additional pieces are typically needed to solve a problem:
 
 1.  A driver file (Fortran95) to act as the main program (ie., [driver-toy2-simple.f95](./examples/extended/driver-toy2-simple.f95))
 2.  A system file (Fortran77) to specify the above systems of equations (ie., [toy2.f](./examples/extended/toy2.f))
+
+Building examples
+---
+
+Example codes can be built (and installed) when compiling the library by specifying the option `-DEBACOLI_BUILD_EXAMPLES=ON`.
+
+Alternatively, example codes can each be built individually in their local directories. This requires the environment variable `EBACOLI_DIR` to be set (or specified as input to `cmake`. For example, the code in [examples/par/richards-celia](./examples/par/richards-celia) can be built with
+
+```
+export EBACOLI_DIR=~/.local/lib/ebacoli
+cmake .
+make
+```
+
+Running and post-processing information for examples should be found in their respective README.md files.
+
+Building tests
+---
+
+Similar to the examples, test codes (problems with exact solutions) can either be built when compiling the library by specifying `-DEBACOLI_BUILD_TESTS=ON`, or individually in their local directories.
 
 Viewing solutions
 ===
@@ -75,4 +95,9 @@ Example for how to structure the driver and post-processing to generate video fr
 Visual results
 ---
 
-Movies of various solutions found in [./media](./media).
+Movies of various solutions are found in [./media](./media).
+
+Citations
+===
+
+1. [Kevin R. Green and Raymond J. Spiteri. 2019. Extended BACOLI: Solving One-Dimensional Multiscale Parabolic PDE Systems With Error Control. ACM Trans. Math. Softw. 45, 1, Article 8 (March 2019)](https://doi.org/10.1145/3301320)
