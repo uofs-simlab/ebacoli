@@ -56,6 +56,17 @@ program simple_example_driver
 
     external f, bndxa, bndxb, uinit, derivf, difbxa, difbxb
 
+    ! parameters
+    double precision    vrest, vthres, vpeak, KK, LL, BB, chi
+    common /fhn/        vrest, vthres, vpeak, KK, LL, BB, chi
+    vrest  = -85.D0
+    vthres = -70.D0
+    vpeak  = 40.D0
+    KK     = 4.D-4
+    LL     = 0.63D0
+    BB     = 0.013D0
+    chi    = 1400.D0
+
     ! Write out value of npde to allow user to confirm that its value
     ! is appropriate for the problem to be solved.
 
