@@ -1,10 +1,14 @@
-############################################################################
-# FitzHugh--Nagumo Monodomain example
+##
+# "modified" FHN monodomain example
+# - reference solution for 1D Monodomain with modified FHN cell model
+# - smooth, continuous IC
+# - no stimulus current
+##
 
 set(TARGET FHN_monodomain)
 
 set(TARGET_SRC
-  driver-FHN_monodomain-trimesh.f95
+  driver-FHN_monodomain-simple.f95
   FHN_monodomain.f
   )
 
