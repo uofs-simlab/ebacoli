@@ -45,14 +45,14 @@ c-----------------------------------------------------------------------
 c Loop indices:
         integer                 i
 C-----------------------------------------------------------------------
-        double precision    vrest, vthres, vpeak, KK, LL, BB, chi
-        common /fhn/        vrest, vthres, vpeak, KK, LL, BB, chi
+        double precision   vrest, vthres, vpeak, KK, LL, BB, chi, sigmai
+        common /fhn/       vrest, vthres, vpeak, KK, LL, BB, chi, sigmai
 C
 C     ASSIGN FVAL(1:NPDE) ACCORDING TO THE RIGHT HAND SIDE OF THE PDE
 C     IN TERMS OF U(1:NPDE), UX(1:NPDE), UXX(1:NPDE).
 C
 c     The parabolic equation
-      FVAL(1)= (1.75D0/chi) * UXX(1) +
+      FVAL(1)= (sigmai/chi) * UXX(1) +
      &     K * (U(1) - vrest)*
      &     ( U(2) + (U(1)-vthres)*(U(1)-vpeak) )
 
@@ -121,17 +121,17 @@ c-----------------------------------------------------------------------
 c Loop indices:
         integer                 i, j
 C-----------------------------------------------------------------------
-        double precision    vrest, vthres, vpeak, KK, LL, BB, chi
-        common /fhn/        vrest, vthres, vpeak, KK, LL, BB, chi
+        double precision   vrest, vthres, vpeak, KK, LL, BB, chi, sigmai
+        common /fhn/       vrest, vthres, vpeak, KK, LL, BB, chi, sigmai
 C
 C     ASSIGN DFDU(1:NPDE,1:NPDE), DFDUX(1:NPDE,1:NPDE), AND
 C     DFDUXX(1:NPDE,1:NPDE) ACCORDING TO THE RIGHT HAND SIDE OF THE PDE
 C     IN TERMS OF U(1:NPDE), UX(1:NPDE), UXX(1:NPDE).
 C
-      DFDU(1,1) = K *
-     & ( U(2) + (U(1)-vthres)*(U(1)-vpeak) +
+      DFDU(1,1) = K * (
+     & U(2) + (U(1)-vthres)*(U(1)-vpeak) +
      & (U(1)-vrest)*(2.D0*U(1)-vthres-vpeak) )
-      DFDU(1,2) = K* (U(1) - vrest)
+      DFDU(1,2) = K * (U(1) - vrest)
 
       DFDU(2,1) = L
       DFDU(2,2) = -B
@@ -142,7 +142,7 @@ c
       DFDUX(2,1) = 0.D0
       DFDUX(2,2) = 0.D0
 c
-      DFDUXX(1,1) = (1.75D0/chi)
+      DFDUXX(1,1) = (sigmai/chi)
       DFDUXX(1,2) = 0.d0
 
       DFDUXX(2,1) = 0.d0
@@ -382,8 +382,8 @@ c-----------------------------------------------------------------------
 c Loop indices:
       integer                 i
 C-----------------------------------------------------------------------
-        double precision    vrest, vthres, vpeak, KK, LL, BB, chi
-        common /fhn/        vrest, vthres, vpeak, KK, LL, BB, chi
+        double precision   vrest, vthres, vpeak, KK, LL, BB, chi, sigmai
+        common /fhn/       vrest, vthres, vpeak, KK, LL, BB, chi, sigmai
 C
 C     ASSIGN U(1:NPDE) THE INITIAL VALUES OF U(T0,X).
 C
@@ -405,7 +405,7 @@ c$$$         U(1) = -54.05718097492029463610D0
 c$$$         U(2) =  1499.536614292324183019D0+1.D0
 c$$$      ENDIF
 
-      U(1) = vrest + 10.D0 * (1.D0-DSIN(x))
+      U(1) = vrest + 100.D0 * (1.D0-DSIN(x))
       U(2) = 0.0D0
       RETURN
       END

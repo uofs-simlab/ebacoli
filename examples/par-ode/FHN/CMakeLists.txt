@@ -8,7 +8,7 @@
 set(TARGET FHN_monodomain)
 
 set(TARGET_SRC
-  driver-FHN_monodomain-simple.f95
+  driver-FHN_monodomain-frameoutput.f95
   FHN_monodomain.f
   )
 
