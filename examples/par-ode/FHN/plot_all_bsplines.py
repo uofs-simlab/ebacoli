@@ -11,12 +11,12 @@ from nice_plots_header import *
 ############################################################################
 
 # Customization for this figure
-fig_bot = -80
-fig_top = 20
+fig_bot = -100
+fig_top = 50
 leg_loc = "lower left"
 
 nint_text_loc = [0.5,-75]
-p_text_loc = [0.85,10]
+p_text_loc = [0.8,35]
 
 u_to_plot = range(1)
 u_labels  = ["$V$"]

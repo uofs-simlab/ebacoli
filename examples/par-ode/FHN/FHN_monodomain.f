@@ -52,12 +52,12 @@ C     ASSIGN FVAL(1:NPDE) ACCORDING TO THE RIGHT HAND SIDE OF THE PDE
 C     IN TERMS OF U(1:NPDE), UX(1:NPDE), UXX(1:NPDE).
 C
 c     The parabolic equation
-      FVAL(1)= (sigmai/chi) * UXX(1) +
-     &     K * (U(1) - vrest)*
+      FVAL(1)= (sigmai/chi) * UXX(1) -
+     &     KK * (U(1) - vrest)*
      &     ( U(2) + (U(1)-vthres)*(U(1)-vpeak) )
 
 c     The cell model equation
-      FVAL(2) = L * (U(1) - vrest) - B*U(2)
+      FVAL(2) = LL * (U(1) - vrest) - BB*U(2)
 C
       RETURN
       END
@@ -128,13 +128,13 @@ C     ASSIGN DFDU(1:NPDE,1:NPDE), DFDUX(1:NPDE,1:NPDE), AND
 C     DFDUXX(1:NPDE,1:NPDE) ACCORDING TO THE RIGHT HAND SIDE OF THE PDE
 C     IN TERMS OF U(1:NPDE), UX(1:NPDE), UXX(1:NPDE).
 C
-      DFDU(1,1) = K * (
+      DFDU(1,1) = -KK * (
      & U(2) + (U(1)-vthres)*(U(1)-vpeak) +
      & (U(1)-vrest)*(2.D0*U(1)-vthres-vpeak) )
-      DFDU(1,2) = K * (U(1) - vrest)
+      DFDU(1,2) = -KK * (U(1) - vrest)
 
-      DFDU(2,1) = L
-      DFDU(2,2) = -B
+      DFDU(2,1) = LL
+      DFDU(2,2) = -BB
 c
       DFDUX(1,1) = 0.D0
       DFDUX(1,2) = 0.D0
