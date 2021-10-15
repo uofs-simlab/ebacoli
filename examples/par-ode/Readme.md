@@ -9,8 +9,10 @@ Brief description of extended examples found in this directory.
 
 [./FHN](./FHN):
 
--   modified FitzHugh--Nagumo cell model from Elham's thesis (results in Table 4.3)
+-   Modified FitzHugh--Nagumo cell model
 -   NPDE=2, NU=1
+-   Initial conditions are smooth, and consistent with BC
+-   Propagating pulse solution
 
 [./FHN2](./FHN2):
 
