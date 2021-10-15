@@ -13,10 +13,10 @@ from nice_plots_header import *
 # Customization for this figure
 fig_bot = -100
 fig_top = 50
-leg_loc = "lower left"
+leg_loc = "right"
 
-nint_text_loc = [0.5,-75]
-p_text_loc = [0.8,35]
+nint_text_loc = [0.85,-60]
+p_text_loc = [0.85,25]
 
 u_to_plot = range(1)
 u_labels  = ["$V$"]
@@ -78,20 +78,22 @@ if __name__=="__main__":
         plt.gcf().canvas.draw()
         ax = plt.gca()
         labels = ax.get_xticklabels()
+        # first = labels[0]
+        # last = labels[-1]
         print(labels[0],labels[-1])
         print(len(labels))
         for i in range(1,len(labels)-1):
             labels[i] = ""
-        labels[0] = "0"
-        labels[-1] = "1"
+        # labels[0] = "0"
+        # labels[-1] = "10"
         print(labels[0],labels[-1])
         ax.set_xticklabels(labels)
 
         ########################################################################
         ## Annotating and additional formatting here
         ########################################################################
-        plt.text(p_text_loc[0], p_text_loc[1], r'$p=%d$' % ed.p)
-        plt.text(nint_text_loc[0], nint_text_loc[1], r'$N=%d$' % ed.nint)
+        plt.text(p_text_loc[0], p_text_loc[1], r'$p=%d$' % ed.p, horizontalalignment="right")
+        plt.text(nint_text_loc[0], nint_text_loc[1], r'$N=%d$' % ed.nint, horizontalalignment="right")
 
         axes = plt.gca()
         axes.set_ylim([fig_bot,fig_top])

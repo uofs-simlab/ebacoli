@@ -45,8 +45,8 @@ program richards_driver
     ! Specify the two sections of the input mesh:
     ! - 1 from xa to xsplit, nint1 number of intervals
     ! - 2 from xsplit to xb, nint2 number of intervals
-    real(dp), parameter    :: xsplit = 0.5d0
-    integer,  parameter    :: nint1 = 20, nint2 = 20
+    real(dp), parameter    :: xsplit = 0.1d0
+    integer,  parameter    :: nint1 = 10, nint2 = 10
     integer,  parameter    :: nin = nint1+nint2+1
     real(dp), parameter    :: h1 = (xsplit-xa)/nint1, h2 = (xb-xsplit)/nint2
     real(dp)               :: xin(nin)
@@ -62,6 +62,8 @@ program richards_driver
     ! parameters
     double precision    vrest, vthres, vpeak, KK, LL, BB, chi, sigmai
     common /fhn/        vrest, vthres, vpeak, KK, LL, BB, chi, sigmai
+    double precision    split
+    common /ic/    split
     vrest  = -85.D0
     vthres = -70.D0
     vpeak  = 40.D0
@@ -70,6 +72,7 @@ program richards_driver
     BB     = 0.013D0
     chi    = 1400.D0
     sigmai = 1.75D0
+    split = xsplit
 
     !-------------------------------------------------------------------
     ! Write out value of npde to allow user to confirm that its value
@@ -80,17 +83,17 @@ program richards_driver
     write(6,*)
 
     ! Set output time
-    tstop = 5
-    ntout = 20
+    tstop = 10
+    ntout = 1000
 
     ! Set tolerance
-    atol = 1d-9
+    atol = 1d-5
     rtol = atol
     !    atol(4) = 1d-1
 
     ! Set kcol (order of expansion is p = kcol+1)
     ! kcol=4 is default
-    kcol = 9
+    kcol = 8
 
     ! Initialize a grid to pass to ebacoli
     xin(1) = xa

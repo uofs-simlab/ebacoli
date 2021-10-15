@@ -384,29 +384,22 @@ c Loop indices:
 C-----------------------------------------------------------------------
         double precision   vrest, vthres, vpeak, KK, LL, BB, chi, sigmai
         common /fhn/       vrest, vthres, vpeak, KK, LL, BB, chi, sigmai
-C
+
+        double precision split
+        common /ic/      split
+
+        double precision PI
+        PI=4.D0*DATAN(1.D0)
+
 C     ASSIGN U(1:NPDE) THE INITIAL VALUES OF U(T0,X).
 C
-c      IF ( x .le. 3.5D0 ) THEN
-c         U(1) = 2.D0
-c      ELSE
-c         U(1) = -1.2879118919372559D0
-c      ENDIF
-c      U(2) = -0.5758181214332581D0
+        IF ( x .le. split ) THEN
+           U(1) = vrest + 100.D0 * DCOS(PI*x/split/2.d0)**2
+        ELSE
+           U(1) = vrest
+        ENDIF
+        U(2) = 0.0D0
 C
-
-c$$$      IF ( x .le. -1.5D0 ) THEN
-c$$$         U(1) = -85D0
-c$$$c 24.40435748661816690235D0
-c$$$         U(2) =  1
-c$$$c 2936.558060263888834732D0
-c$$$      ELSE
-c$$$         U(1) = -54.05718097492029463610D0
-c$$$         U(2) =  1499.536614292324183019D0+1.D0
-c$$$      ENDIF
-
-      U(1) = vrest + 100.D0 * (1.D0-DSIN(x))
-      U(2) = 0.0D0
       RETURN
       END
       SUBROUTINE TRUU(T, X, U, NPDE)
