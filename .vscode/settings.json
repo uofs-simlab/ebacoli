@@ -1,0 +1,11 @@
+{
+    "cmake": {
+        "configureOnOpen": false,
+        "buildDirectory": "${workspaceRoot}/build-${buildType}",
+        "installPrefix": "${workspaceRoot}/build-${buildType}/install",
+        "configureSettings": {
+            "EBACOLI_BUILD_TESTS": "ON",
+            "EBACOLI_BUILD_EXAMPLES": "ON"
+        }
+    }
+}
