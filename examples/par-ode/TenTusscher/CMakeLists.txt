@@ -1,6 +1,10 @@
+############################################################################
+## ten Tusscher Monodomain example
 
-# Source files defining the system
-set(TenTusscher_SRC
+set(TARGET TT-monodomain)
+
+set(TARGET_SRC
+  driver-TT_monodomain-trimesh.f95
   TenTusscher.f
   TT_ebacoli.f
   f_d_COL10.f
@@ -24,14 +28,32 @@ set(TenTusscher_SRC
   f_d_COL9.f
   )
 
-# Rule for creating ten-Tusscher executables
-macro(create_TenTusscher_executable driver_file)
-  add_executable(${driver_file}
-    ${driver_file}.f95
-    ${TenTusscher_SRC}
-    )
-  target_link_libraries(${driver_file} ebacoli)
-endmacro(create_TenTusscher_executable)
+set(TARGET_EXE TT-monodomain-trimesh)
 
-create_TenTusscher_executable(driver-TT_monodomain-simple)
-create_TenTusscher_executable(driver-TT_monodomain-trimesh)
+############################################################################
+############################################################################
+# This section is generally automatic with the above defined variables
+cmake_minimum_required(VERSION 3.0)
+
+# EBACOLI_LIB_COMPILE is only defined when building the lib
+if(NOT DEFINED EBACOLI_LIB_COMPILE)
+  # Find the installed ebacoli
+  find_package(ebacoli 0.1 REQUIRED
+    HINTS ${EBACOLI_DIR} ${ebacoli_DIR} ${eBACOLI_DIR} ../ ../../ $ENV{EBACOLI_DIR} $ENV{ebacoli_DIR} $ENV{eBACOLI_DIR}
+    )
+  # define these which would otherwise be defined in the library build
+  PROJECT(${TARGET})
+  enable_language(Fortran)
+else()
+  # specify an install target if built as part of the library
+  install(PROGRAMS "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_EXE}" DESTINATION ${EBACOLI_RUNTIME_INSTALL_DIR})
+endif()
+
+add_executable(${TARGET_EXE} ${TARGET_SRC})
+target_compile_definitions(${TARGET_EXE} PUBLIC ${TARGET_COMPILE_OPTIONS})
+target_link_libraries(${TARGET_EXE} ebacoli)
+############################################################################
+############################################################################
+
+#create_TenTusscher_executable(driver-TT_monodomain-simple)
+#create_TenTusscher_executable(driver-TT_monodomain-trimesh)

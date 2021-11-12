@@ -1,6 +1,36 @@
+############################################################################
+# Modified FHN Monodomain example
+
+set(TARGET FHN2_monodomain)
+
+set(TARGET_SRC
+  driver-FHN2_monodomain-trimesh.f95
+  FHN2_monodomain.f
+  )
+
+set(TARGET_EXE FHN2_monodomain)
 
 ############################################################################
-# FHN Monodomain examples
+############################################################################
+# This section is generally automatic with the above defined variables
+cmake_minimum_required(VERSION 3.0)
 
-create_ebacoli_executable(driver-FHN2_monodomain-simple FHN2_monodomain)
-create_ebacoli_executable(driver-FHN2_monodomain-trimesh FHN2_monodomain)
+# EBACOLI_LIB_COMPILE is only defined when building the lib
+if(NOT DEFINED EBACOLI_LIB_COMPILE)
+  # Find the installed ebacoli
+  find_package(ebacoli 0.1 REQUIRED
+    HINTS ${EBACOLI_DIR} ${ebacoli_DIR} ${eBACOLI_DIR} ../ ../../ $ENV{EBACOLI_DIR} $ENV{ebacoli_DIR} $ENV{eBACOLI_DIR}
+    )
+  # define these which would otherwise be defined in the library build
+  PROJECT(${TARGET})
+  enable_language(Fortran)
+else()
+  # specify an install target if built as part of the library
+  install(PROGRAMS "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_EXE}" DESTINATION ${EBACOLI_RUNTIME_INSTALL_DIR})
+endif()
+
+add_executable(${TARGET_EXE} ${TARGET_SRC})
+target_compile_definitions(${TARGET_EXE} PUBLIC ${TARGET_COMPILE_OPTIONS})
+target_link_libraries(${TARGET_EXE} ebacoli)
+############################################################################
+############################################################################
