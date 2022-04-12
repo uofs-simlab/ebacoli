@@ -69,16 +69,22 @@ C
          istim = 0
       end if
 
-
 c     The parabolic equation
-      FVAL(1)= sigmai*( UXX(1) + UXX(3) ) +
-     &     ( U(1) - U(1)*U(1)*U(1)/3.D0 - U(2) ) / epsilon - istim
+      FVAL(1)= sigmai*( UXX(1) + UXX(5) ) +
+     &     ( U(1) - U(1)*U(1)*U(1)/3.D0 - U(3) ) / epsilon - istim
 
-c     The cell model equation
-      FVAL(2) = epsilon * ( U(1) + beta - gamma*U(2) )
+      FVAL(2)= sigmai*( UXX(2) + UXX(6) ) +
+     &     ( U(2) - U(2)*U(2)*U(2)/3.D0 - U(4) ) / epsilon - istim
 
-      FVAL(3) = sigmai*UXX(1) +(sigmai+sigmae)*UXX(3)
+C     The cell model equation
+      FVAL(3) = epsilon * ( U(1) + beta - gamma*U(3) )
 C
+      FVAL(4) = epsilon * ( U(2) + beta - gamma*U(4) )
+C
+      FVAL(5) = sigmai*UXX(1) +(sigmai+sigmae)*UXX(5)
+C
+      FVAL(6) = sigmai*UXX(2) +(sigmai+sigmae)*UXX(6)
+
       RETURN
       END
       SUBROUTINE DERIVF(T, X, U, UX, UXX, DFDU, DFDUX, DFDUXX, NPDE)
@@ -151,42 +157,34 @@ C     ASSIGN DFDU(1:NPDE,1:NPDE), DFDUX(1:NPDE,1:NPDE), AND
 C     DFDUXX(1:NPDE,1:NPDE) ACCORDING TO THE RIGHT HAND SIDE OF THE PDE
 C     IN TERMS OF U(1:NPDE), UX(1:NPDE), UXX(1:NPDE).
 C
+C     TODO index arrays in column major
+      DFDU   = 0.0D0
+      DFDUX  = 0.0D0
+      DFDUXX = 0.0D0
+
       DFDU(1,1) = ( 1.D0 - U(1)*U(1) ) / epsilon
-      DFDU(1,2) = -1.D0/epsilon
-      DFDU(1,3) = 0.D0
+      DFDU(1,3) = -1.D0/epsilon
 
-      DFDU(2,1) = epsilon
-      DFDU(2,2) = -gamma*epsilon
-      DFDU(2,3) = 0.D0
+      DFDU(2,2) = ( 1.D0 - U(2)*U(2) ) / epsilon
+      DFDU(2,4) = -1.D0/epsilon
 
-      DFDU(3,1) = 0.D0
-      DFDU(3,2) = 0.D0
-      DFDU(3,3) = 0.D0
-c
-      DFDUX(1,1) = 0.D0
-      DFDUX(1,2) = 0.D0
-      DFDUX(1,3) = 0.D0
+      DFDU(3,1) = epsilon
+      DFDU(3,3) = -gamma*epsilon
 
-      DFDUX(2,1) = 0.D0
-      DFDUX(2,2) = 0.D0
-      DFDUX(2,3) = 0.D0
+      DFDU(4,2) = epsilon
+      DFDU(4,4) = -gamma*epsilon
 
-      DFDUX(3,1) = 0.D0
-      DFDUX(3,2) = 0.D0
-      DFDUX(3,3) = 0.D0
-c
       DFDUXX(1,1) = sigmai
-      DFDUXX(1,2) = 0.d0
-      DFDUXX(1,3) = sigmai
+      DFDUXX(1,5) = sigmai
 
-      DFDUXX(2,1) = 0.d0
-      DFDUXX(2,2) = 0.d0
-      DFDUXX(2,3) = 0.d0
+      DFDUXX(2,2) = sigmai
+      DFDUXX(2,6) = sigmai
 
-      DFDUXX(3,1) = sigmai
-      DFDUXX(3,2) = 0.d0
-      DFDUXX(3,3) = sigmai+sigmae
+      DFDUXX(5,1) = sigmai
+      DFDUXX(5,5) = sigmai+sigmae
 
+      DFDUXX(6,2) = sigmai
+      DFDUXX(6,6) = sigmai+sigmae
 C
       RETURN
       END
@@ -223,8 +221,11 @@ c-----------------------------------------------------------------------
 c Loop indices:
         integer                 i
 C-----------------------------------------------------------------------
-      BVAL(1) = UX(1) - UX(3)
-      BVAL(3) = UX(3)
+      BVAL(1) = UX(1) - UX(5)
+      BVAL(5) = UX(5)
+C
+      BVAL(2) = UX(2) - UX(6)
+      BVAL(6) = UX(6)
 C
       RETURN
       END
@@ -261,9 +262,12 @@ C-----------------------------------------------------------------------
 c Loop indices:
         integer                 i
 C-----------------------------------------------------------------------
-      BVAL(1) = UX(1) - UX(3)
-      BVAL(3) = U(3)
+      BVAL(1) = UX(1) - UX(5)
+      BVAL(5) = U(5)
 C
+      BVAL(2) = UX(2) - UX(6)
+      BVAL(6) = U(6)
+
       RETURN
       END
       SUBROUTINE DIFBXA(T, U, UX, DBDU, DBDUX, DBDT, NPDE)
@@ -322,27 +326,18 @@ C     ASSIGN DBDU(1:NPDE,1:NPDE), DBDU(1:NPDE,1:NPDE), AND DBDT(1:NPDE)
 C     ACCORDING TO THE RIGHT BOUNDARY CONDITION EQUATION IN TERMS OF
 C     U(1:NPDE), UX(1:NPDE).
 C
-
-      DBDU = 0.0D0
+      DBDU  = 0.0D0
       DBDUX = 0.0D0
-      DBDT = 0.0D0
-      DBDU(1,1) = 0.0D0
-      DBDU(1,2) = 0.0D0
-      DBDU(1,3) = 0.0D0
+      DBDT  = 0.0D0
 c
       DBDUX(1,1) = 1.0D0
-      DBDUX(1,2) = 0.0D0
-      DBDUX(1,3) = -1.0D0
+      DBDUX(2,2) = 1.0D0
+      DBDUX(1,5) = -1.0D0
+      DBDUX(2,6) = -1.0D0
 c
-      DBDU(3,1) = 0.0D0
-      DBDU(3,2) = 0.0D0
-      DBDU(3,3) = 0.0D0
+      DBDUX(5,5) = 1.0D0
+      DBDUX(6,6) = 1.0D0
 c
-      DBDUX(3,1) = 0.0D0
-      DBDUX(3,2) = 0.0D0
-      DBDUX(3,3) = 1.0D0
-c
-      DBDT(1) = 0.0D0
       RETURN
       END
       SUBROUTINE DIFBXB(T, U, UX, DBDU, DBDUX, DBDT, NPDE)
@@ -404,27 +399,18 @@ C     ASSIGN DBDU(1:NPDE,1:NPDE), DBDU(1:NPDE,1:NPDE), AND DBDT(1:NPDE)
 C     ACCORDING TO THE RIGHT BOUNDARY CONDITION EQUATION IN TERMS OF
 C     U(1:NPDE), UX(1:NPDE).
 C
-      DBDU = 0.0D0
+      DBDU  = 0.0D0
       DBDUX = 0.0D0
-      DBDT = 0.0D0
-      DBDU(1,1) = 0.0D0
-      DBDU(1,2) = 0.0D0
-      DBDU(1,3) = 0.0D0
+      DBDT  = 0.0D0
 c
       DBDUX(1,1) = 1.0D0
-      DBDUX(1,2) = 0.0D0
-      DBDUX(1,3) = -1.0D0
+      DBDUX(2,2) = 1.0D0
+      DBDUX(1,5) = -1.0D0
+      DBDUX(2,6) = -1.0D0
 c
-      DBDU(3,1) = 0.0D0
-      DBDU(3,2) = 0.0D0
-      DBDU(3,3) = 1.0D0
-c
-      DBDUX(3,1) = 0.0D0
-      DBDUX(3,2) = 0.0D0
-      DBDUX(3,3) = 0.0D0
-c
-      DBDT(1) = 0.0D0
-c
+      DBDU(5,5) = 1.0D0
+      DBDU(6,6) = 1.0D0
+
       RETURN
       END
       SUBROUTINE UINIT(X, U, NPDE)
@@ -472,10 +458,12 @@ c$$$      ELSE
 c$$$         U(1) = Ulow
 c$$$      ENDIF
       U(1) = Ulow
-      U(2) = U2low
-      U(3) = 0.d0
+      U(2) = Ulow
+      U(3) = U2low
+      U(4) = U2low
+      U(5) = 0.0D0
+      U(6) = 0.0D0
 C
-
       RETURN
       END
       SUBROUTINE TRUU(T, X, U, NPDE)
