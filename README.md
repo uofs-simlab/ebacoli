@@ -7,17 +7,17 @@ The purpose of eBACOLI is to solve $m_u$ dimensional systems of second order par
 
 $$
 \begin{align}
-u_t(t,x) & = f(t, x, v(t,x), u(t,x), u_x(t,x), u_xx(t,x)), \\
+u_t(t,x) & = f(t, x, v(t,x), u(t,x), u_x(t,x), u_{xx}(t,x)), \\
 v_t(t,x) & = g(t, x, v(t,x), u(t,x))
 \end{align}
 $$
 
-where $x_a \lt x \lt x_b$ and $t \gt t_0$, with initial conditions at time $t = t_0$ are given by:
+where $a \lt x \lt b$ and $t \gt t_0$, with initial conditions at time $t = t_0$ are given by:
 
 $$
 \begin{align}
 u(t_0,x) & = u_0(x), \\
-v(t_0,x) = v_0(x)
+v(t_0,x) & = v_0(x)
 \end{align}
 $$
 
@@ -30,7 +30,7 @@ B_b(t, u(t,b), u_x(t,b), v(t,b), v_x(t,b)) & = 0,
 \end{align}
 $$
 
-for $t \gt t_0$ and $x = a$, $x = b$, respectively.
+for $t \gt t_0$ and $x = \{a,b\}$, respectively.
 
 Guide to the above notation:
 
