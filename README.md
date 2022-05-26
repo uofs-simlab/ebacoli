@@ -7,43 +7,49 @@ The purpose of eBACOLI is to solve $m_u$ dimensional systems of second order par
 
 $$
 \begin{align}
-u_t(t,x) & = f(t, x, v(t,x), u(t,x), u\_x(t,x), u\_xx(t,x)), \\
+u_t(t,x) & = f(t, x, v(t,x), u(t,x), u_x(t,x), u_xx(t,x)), \\
 v_t(t,x) & = g(t, x, v(t,x), u(t,x))
 \end{align}
 $$
 
-where x\_a &lt; x &lt; x\_b and t &gt; t0, with initial conditions at time t = t0 are given by:
+where $x_a \lt x \lt x_b$ and $t \gt t_0$, with initial conditions at time $t = t_0$ are given by:
 
-u(t0,x) = u\_0(x),
+$$
+\begin{align}
+u(t_0,x) & = u_0(x), \\
+v(t_0,x) = v_0(x)
+\end{align}
+$$
 
-v(t0,x) = v\_0(x)
+for $a \le x \le b$, subject to separated boundary conditions given by:
 
-for a &lt;= x &lt;= b, subject to separated boundary conditions given by:
+$$
+\begin{align}
+B_a(t, u(t,a), u_x(t,a), v(t,a), v_x(t,a)) & = 0, \\
+B_b(t, u(t,b), u_x(t,b), v(t,b), v_x(t,b)) & = 0,
+\end{align}
+$$
 
-Ba(t, u(t,a), u~x~(t,a), v(t,a), v\_x(t,a)) = 0,
-
-Bb(t, u(t,b), u~x~(t,b), v(t,b), v\_x(t,b)) = 0,
-
-for t &gt; t0 and x = a, x = b, respectively.
+for $t \gt t_0$ and $x = a$, $x = b$, respectively.
 
 Guide to the above notation:
 
-u\_t(t,x) - denotes the first partial derivative of u(t,x) with respect to the time variable t.
+$u_t(t,x)$ - denotes the first partial derivative of $u(t,x)$ with respect to the time variable $t$.
 
-u\_x(t,x) - denotes the first partial derivative of u(t,x) with respect to space variable x.
+$u_x(t,x)$ - denotes the first partial derivative of $u(t,x)$ with respect to space variable $x$.
 
-u\_xx(t,x) - denotes the second partial derivative of u(t,x) with respect to space variable x.
+$u_{xx}(t,x)$ - denotes the second partial derivative of $u(t,x)$ with respect to space variable $x$.
 
-Furthermore, the above functions f, u, Ba and Bb are m\_u dimensional vector functions, while the functions g and v are m\_v dimensional vector functions, and the total system size is m\_pde = m\_u + m\_v.
+Furthermore, the above functions $f$, $u$, $B_a$ and $B_b$ are $m_u$ dimensional vector functions, while the functions $g$ and $v$ are $m_v$ dimensional vector functions, and the total system size is $m_\text{pde} = m_u + m_v$.
 
 How
 ===
 
 The solution to this problem is adapted from BACOLI.
 
-BACOLI is a method of lines algorithm which uses B-spline collocation to discretize the spatial domain \[a,b\]. BACOLI uses a secondary interpolant of one degree higher or lower to estimate the error of the current solution, and refine either the spatial or temporal grid (or both) accordingly.
+BACOLI is a method of lines algorithm which uses B-spline collocation to discretize the spatial domain $[a,b]$. BACOLI uses a secondary interpolant of one degree higher or lower to estimate the error of the current solution, and refine either the spatial or temporal grid (or both) accordingly.
 
-The output is a vector of B-spline coefficients which can be used to calculate the approximate solution u(t,x) and its spatial derivatives at (tout,x) where a &lt;= x &lt;= b and t0 &lt; tout.
+The output is a vector of B-spline coefficients which can be used to calculate the approximate solution u(t,x) and its spatial derivatives at $(t_\text{out},x)$, where $a \le x \le b$ and $t_0 \lt t_\text{out}$.
 
 Building
 ========
