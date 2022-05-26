@@ -3,11 +3,14 @@ Extended B-spline Adaptive COLlocation with error control by Interpolation.
 Purpose
 =======
 
-The purpose of eBACOLI is to solve m~u~ dimensional systems of second order parabolic partial differential equations (PDEs) in one space variable that are coupled to an additional m~v~ ordinary differential equations (ODEs) in the form:
+The purpose of eBACOLI is to solve $m_u$ dimensional systems of second order parabolic partial differential equations (PDEs) in one space variable that are coupled to an additional $m_v$ ordinary differential equations (ODEs) in the form:
 
-u\_t(t,x) = f(t, x, v(t,x), u(t,x), u\_x(t,x), u\_xx(t,x)),
-
-v]_t(t,x) = g(t, x, v(t,x), u(t,x)),
+$$
+\begin{align}
+u_t(t,x) & = f(t, x, v(t,x), u(t,x), u\_x(t,x), u\_xx(t,x)), \\
+v_t(t,x) & = g(t, x, v(t,x), u(t,x))
+\end{align}
+$$
 
 where x\_a &lt; x &lt; x\_b and t &gt; t0, with initial conditions at time t = t0 are given by:
 
