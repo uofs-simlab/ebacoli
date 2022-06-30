@@ -209,7 +209,8 @@ def plot_interpolated_fields(ed, u_num=NOTHING, v_num=NOTHING, w_num=NOTHING,
                              u_labels=NOTHING, v_labels=NOTHING, w_labels=NOTHING,
                              u_linestyles=NOTHING, v_linestyles=NOTHING, w_linestyles=NOTHING,
                              u_colors=NOTHING, v_colors=NOTHING, w_colors=NOTHING,
-                             n_cont=1000,knot_show=False, knot_bottom=None):
+                             n_cont=1000,knot_show=False, knot_bottom=None,
+                             swap_axes=None):
     """
     Plot interpolated fields for eBACOLI data.
 
@@ -230,6 +231,7 @@ def plot_interpolated_fields(ed, u_num=NOTHING, v_num=NOTHING, w_num=NOTHING,
       [n_cont]       - size of 'continuous' variable
       [knot_show]    - show the knots (currently from knot_bottom to min plotted value)
       [knot_bottom]  - how far down do the knots' lines go
+      [swap_axes]    - bool, display independent variable vertically
     """
     # Default behaviour is to plot all fields
     if u_num is NOTHING:
@@ -293,13 +295,19 @@ def plot_interpolated_fields(ed, u_num=NOTHING, v_num=NOTHING, w_num=NOTHING,
     for i in u_num:
         ii += 1
         u = splev(x, (ed.xbs,ed.u_coeff[i],ed.p))
-        plt.plot(x, u, label=u_labels[ii], linestyle=u_linestyles[ii], color=u_colors[ii])
+        if swap_axes:
+            plt.plot(u, x, label=u_labels[ii], linestyle=u_linestyles[ii], color=u_colors[ii])
+        else:
+            plt.plot(x, u, label=u_labels[ii], linestyle=u_linestyles[ii], color=u_colors[ii])
 
     ii = -1
     for i in v_num:
         ii += 1
         v = splev(x, (ed.xbs,ed.v_coeff[i],ed.p))
-        plt.plot(x, v, label=v_labels[ii], linestyle=v_linestyles[ii], color=v_colors[ii])
+        if swap_axes:
+            plt.plot(v, x, label=v_labels[ii], linestyle=v_linestyles[ii], color=v_colors[ii])
+        else:
+            plt.plot(x, v, label=v_labels[ii], linestyle=v_linestyles[ii], color=v_colors[ii])
 
     ii = -1
     for i in w_num:
@@ -325,11 +333,18 @@ def plot_interpolated_fields(ed, u_num=NOTHING, v_num=NOTHING, w_num=NOTHING,
                 uvw_at_knot.append(splev(ed.xbs[i],(ed.xbs,ed.w_coeff[j],ed.p)))
             # draw line only up to PDE component with smallest value
             knot_top = min(uvw_at_knot)
-            plt.plot([ed.xbs[i],ed.xbs[i]],[knot_bottom,knot_top],'k-',linewidth=0.5)
+            if swap_axes:
+                plt.plot([knot_bottom,knot_top],[ed.xbs[i],ed.xbs[i]],'k-',linewidth=0.5)
+            else:
+                plt.plot([ed.xbs[i],ed.xbs[i]],[knot_bottom,knot_top],'k-',linewidth=0.5)
 
         # reset axes to where they were before knots drawn
-        axes.set_ylim([fig_bot,fig_top])
-        axes.set_xlim([fig_left,fig_right])
+        if swap_axes:
+            axes.set_xlim([fig_bot,fig_top])
+            axes.set_ylim([fig_left,fig_right])
+        else:
+            axes.set_ylim([fig_bot,fig_top])
+            axes.set_xlim([fig_left,fig_right])
 
     return axes
 
